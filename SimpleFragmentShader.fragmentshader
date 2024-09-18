@@ -1,0 +1,9 @@
+#version 330
+
+uniform int rendRed;
+uniform int rendGreen;
+uniform int rendBlue;
+void main()
+{
+	gl_FragColor = vec4(rendRed, rendGreen, rendBlue, 1.0);
+}
