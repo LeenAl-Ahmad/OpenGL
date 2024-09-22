@@ -10,6 +10,8 @@ public:
 	Camera(Resolution _reso);
 	virtual ~Camera() = default;
 
+
+
 	glm::mat4 GetProjection() { return projection; }
 	glm::mat4 GetView() { return view; }
 

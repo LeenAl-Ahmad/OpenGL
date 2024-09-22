@@ -28,5 +28,5 @@ void WindowController::NewWindow()
 Resolution WindowController::GetResolution()
 {
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	return Resolution(mode->width, mode->height);
+	return Resolution(mode->width, mode->height, 45.0f);
 }
