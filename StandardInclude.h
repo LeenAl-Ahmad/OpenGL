@@ -20,7 +20,9 @@
 #include <GLFW/glfw3.h>
 #include  <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
+#include "Resolution.h"
 #include "Singleton.h"
 
 using namespace std;

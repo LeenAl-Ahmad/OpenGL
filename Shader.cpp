@@ -18,6 +18,7 @@ void Shader::Cleanup()
 void Shader::LoadAttridutes()
 {
 	attrVertices = glGetAttribLocation(programID, "vertices");
+	attrWVP = glGetUniformLocation(programID, "WVP");
 }
 
 void Shader::EvaluateShader(int _infoLength, GLuint _id)

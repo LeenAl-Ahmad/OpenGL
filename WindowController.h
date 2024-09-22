@@ -1,4 +1,3 @@
-
 #ifndef WINDOW_CONTROLLER_H
 #define WINDOW_CONTROLLER_H
 
@@ -16,6 +15,7 @@ public:
 
 	// Methods
 	void NewWindow();
+	Resolution GetResolution();
 
 private:
 	// Members

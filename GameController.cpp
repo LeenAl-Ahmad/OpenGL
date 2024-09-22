@@ -15,6 +15,7 @@ void GameController::Initialize()
 	M_ASSERT(glewInit() == GLEW_OK, "Failed to initialize GLEW.");
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	camera = Camera(WindowController::GetInstance().GetResolution());
 }
 
 void GameController::RunGame()
@@ -44,7 +45,7 @@ void GameController::RunGame()
 		
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		mesh.Render();
+		mesh.Render(camera.GetProjection()* camera.GetView());
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 	} while (glfwGetKey(win, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(win) == 0);
