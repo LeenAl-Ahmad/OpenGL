@@ -10,14 +10,16 @@ public:
 	Camera(Resolution _reso);
 	virtual ~Camera() = default;
 
-
-
 	glm::mat4 GetProjection() { return projection; }
 	glm::mat4 GetView() { return view; }
+
+	void SetPosition(const glm::vec3& position);
+	void UpdateProjection(const Resolution& _res);
 
 private:
 	glm::mat4 projection = {};
 	glm::mat4 view = {};
+
 };
 
 #endif // !CAMERA_H
