@@ -23,6 +23,7 @@ public:
 private:
 	Shader shader = {};
 	Mesh mesh = {};
+	Camera camera = {};
 	std::array<Camera, 3> cameras;
 	std::array<Resolution, 3> resolutions;
 	int currentCameraIndex = 0;

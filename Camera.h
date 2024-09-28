@@ -7,9 +7,13 @@ class Camera
 {
 public:
 	Camera() = default;
-	Camera(Resolution _reso);
+	Camera(const Resolution& _reso, const float _n =0.1f, const float _f =1000.0f);
 	virtual ~Camera() = default;
 
+	
+	void LookAt(const glm::vec3& _position, const glm::vec3& _lookAt, const glm::vec3& _up) {
+		view = glm::lookAt(_position, _lookAt, _up);
+	}
 	glm::mat4 GetProjection() { return projection; }
 	glm::mat4 GetView() { return view; }
 

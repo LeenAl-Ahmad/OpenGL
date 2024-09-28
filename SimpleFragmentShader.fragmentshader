@@ -1,9 +1,9 @@
 #version 330
 
-uniform int rendRed;
-uniform int rendGreen;
-uniform int rendBlue;
+in vec4 retColor;
+out vec4 FragColor;
+
 void main()
 {
-	gl_FragColor = vec4(rendRed, rendGreen, rendBlue, 1.0);
+	FragColor = retColor;
 }
