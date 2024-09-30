@@ -76,6 +76,25 @@ void Mesh::Cleanup()
 void Mesh::Render(glm::mat4 wvp) {
 	glUseProgram(shader->GetProgramID());
 	
+	float time = glfwGetTime();
+	float scale = 0.01f + (sin(time) + 1.0f) / 2.0f * (2.0f - 0.01f);
+
+	// Create a temporary scaled vertex data
+	std::vector<float> scaledVertexData;
+	for (size_t i = 0; i < vertexData.size(); i += 7) { // Assume each vertex has 7 components
+		scaledVertexData.push_back(vertexData[i] * scale);       // X
+		scaledVertexData.push_back(vertexData[i + 1]);           // Y (no scaling)
+		scaledVertexData.push_back(vertexData[i + 2] * scale);   // Z
+		scaledVertexData.push_back(vertexData[i + 3]);           // R
+		scaledVertexData.push_back(vertexData[i + 4]);           // G
+		scaledVertexData.push_back(vertexData[i + 5]);           // B
+		scaledVertexData.push_back(vertexData[i + 6]);           // A
+	}
+
+	// Update buffer data with the scaled vertices
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, scaledVertexData.size() * sizeof(float), scaledVertexData.data(), GL_STATIC_DRAW);
+
 	world = glm::rotate(world, 0.01f/5, {0,1,0});
 
 	wvp *= world;
@@ -110,3 +129,4 @@ void Mesh::Render(glm::mat4 wvp) {
 	glDisableVertexAttribArray(shader->GetAttrVertices());
 	glDisableVertexAttribArray(shader->GetAttrColors());
 }
+

@@ -16,9 +16,9 @@ GameController::GameController()
     mesh = {};
 
     // Setting unique camera positions to ensure visual difference
-    cameras[0].SetPosition(glm::vec3(4, 3, 3));  // First camera position
-    cameras[1].SetPosition(glm::vec3(0, 5, 5));  // Second camera position
-    cameras[2].SetPosition(glm::vec3(-4, 3, 3)); // Third camera position
+    cameras[0].SetPosition(glm::vec3(0, 0, 30));  // First camera position
+    cameras[1].SetPosition(glm::vec3(0, 30, 30));  // Second camera position
+    cameras[2].SetPosition(glm::vec3(-30, 0, 30)); // Third camera position
 }
 
 void GameController::Initialize() {

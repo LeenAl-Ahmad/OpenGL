@@ -13,6 +13,7 @@ public:
 	void Create(Shader* _shader);
 	void Cleanup();
 	void Render(glm::mat4 wvp);
+	void SetRotation(float x, float y);
 
 	size_t GetVertexDataSize() const;
 	size_t GetIndexDataSize() const;

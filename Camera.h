@@ -14,6 +14,7 @@ public:
 	void LookAt(const glm::vec3& _position, const glm::vec3& _lookAt, const glm::vec3& _up) {
 		view = glm::lookAt(_position, _lookAt, _up);
 	}
+
 	glm::mat4 GetProjection() { return projection; }
 	glm::mat4 GetView() { return view; }
 

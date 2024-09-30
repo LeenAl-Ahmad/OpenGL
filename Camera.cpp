@@ -2,7 +2,7 @@
 
 Camera::Camera(const Resolution& _resolution, const float _n, const float _f)
 {
-	projection = glm::perspective(glm::radians(45.0f),
+	projection = glm::perspective(glm::radians(60.0f),
 		(float)_resolution.width / (float)_resolution.height,
 		_n,
 		_f);
