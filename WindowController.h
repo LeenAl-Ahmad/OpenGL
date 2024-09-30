@@ -23,5 +23,3 @@ private:
 };
 
 #endif // ! WINDOW_CONTROLLER_H
-
-

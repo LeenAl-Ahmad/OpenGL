@@ -14,14 +14,17 @@ public:
 	void Cleanup();
 	void Render(glm::mat4 wvp);
 
+	size_t GetVertexDataSize() const;
+	size_t GetIndexDataSize() const;
+
 private:
 	Shader* shader;
 	GLuint vertexBuffer = 0;
 	GLuint indexBuffer = 0;
 	std::vector<GLfloat> vertexData;
-	std::vector<GLubyte> indexData;
+	std::vector<GLbyte> indexData;
 	glm::mat4 world = glm::mat4(1);
+	float lastFrameTime = 0.0f;
 };
 
 #endif // ! MESH_H
-

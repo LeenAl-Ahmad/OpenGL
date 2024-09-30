@@ -1,4 +1,3 @@
-
 #ifndef GAME_CONTROLLER_H
 #define GAME_CONTROLLER_H
 
@@ -28,10 +27,7 @@ private:
 	std::array<Resolution, 3> resolutions;
 	int currentCameraIndex = 0;
 	int currentResolutionIndex = 0;
+	float lastFrameTime = 0.0f;
 };
 
 #endif // !GAME_CONTROLLER_H
-
-
-
-

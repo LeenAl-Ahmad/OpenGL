@@ -1,6 +1,5 @@
 #include "GameController.h"
 #include "WindowController.h"
-#include "Camera.h"
 #include "MyForm.h"
 #include <chrono>
 
@@ -22,8 +21,7 @@ GameController::GameController()
     cameras[2].SetPosition(glm::vec3(-4, 3, 3)); // Third camera position
 }
 
-void GameController::Initialize() 
-{
+void GameController::Initialize() {
     GLFWwindow* window = WindowController::GetInstance().GetWindow();
     M_ASSERT(glewInit() == GLEW_OK, "Failed to initialize GLEW.");
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);

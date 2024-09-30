@@ -14,11 +14,11 @@ public:
 	GLuint GetProgramID() { return programID; }
 	GLuint GetAttrVertices() { return attrVertices; }
 	GLuint GetAttrColors() { return attrColors; }
-
+	GLuint GetAttrWVP() { return attrWVP; }
 	// Methods
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 	void Cleanup();
-	GLuint GetAttrWVP() { return attrWVP; }
+	
 
 private:
 	// Methods
@@ -37,7 +37,4 @@ private:
 	int infoLogLength = 0;
 };
 
-
 #endif // !SHADER_H
-
-

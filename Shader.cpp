@@ -37,7 +37,6 @@ void Shader::EvaluateShader(int _infoLength, GLuint _id)
 	}
 }
 
-
 GLuint Shader::LoadShaderFile(const char* _filePath, GLenum _type)
 {
 	GLuint shaderID = glCreateShader(_type);
