@@ -16,9 +16,9 @@ GameController::GameController()
     mesh = {};
 
     // Setting unique camera positions to ensure visual difference
-    cameras[0].SetPosition(glm::vec3(0, 0, 30));  // First camera position
-    cameras[1].SetPosition(glm::vec3(0, 30, 30));  // Second camera position
-    cameras[2].SetPosition(glm::vec3(-30, 0, 30)); // Third camera position
+    cameras[0].SetPosition(glm::vec3(0, 0, 20));  // First camera position
+    cameras[1].SetPosition(glm::vec3(0, 20, 20));  // Second camera position
+    cameras[2].SetPosition(glm::vec3(-20, 0, 20)); // Third camera position
 }
 
 void GameController::Initialize() {
@@ -39,6 +39,9 @@ void GameController::RunGame() {
 
     mesh = Mesh();
     mesh.Create(&shader);
+    float rotationY = 0.0f; // Y-axis rotation angle
+    float rotationX = 0.0f; // simalar x-axis
+    float rotationSpeed = 0.1f; // Degrees per second
 
     while (!glfwWindowShouldClose(win)) {
         // Get the current time for debounce
@@ -53,6 +56,20 @@ void GameController::RunGame() {
             CyResolution();
             lastResolutionSwitchTime = currentTime; // Reset the debounce timer
         }
+        if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS) {
+            rotationY += rotationSpeed * (float)glfwGetTime(); // Rotate left
+        }
+        if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS) {
+            rotationY -= rotationSpeed * (float)glfwGetTime(); // Rotate right
+        }
+        if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS) {
+            rotationX += rotationSpeed * (float)glfwGetTime(); // Rotate up
+        }
+        if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS) {
+            rotationX -= rotationSpeed * (float)glfwGetTime(); // Rotate down
+        }
+        //calling the set rotate
+        mesh.SetRotation(rotationX, rotationY);
 
         // Clear screen and render
         glClear(GL_COLOR_BUFFER_BIT);

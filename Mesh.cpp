@@ -83,7 +83,7 @@ void Mesh::Render(glm::mat4 wvp) {
 	std::vector<float> scaledVertexData;
 	for (size_t i = 0; i < vertexData.size(); i += 7) { // Assume each vertex has 7 components
 		scaledVertexData.push_back(vertexData[i] * scale);       // X
-		scaledVertexData.push_back(vertexData[i + 1]);           // Y (no scaling)
+		scaledVertexData.push_back(vertexData[i + 1] * scale);           // Y (no scaling)
 		scaledVertexData.push_back(vertexData[i + 2] * scale);   // Z
 		scaledVertexData.push_back(vertexData[i + 3]);           // R
 		scaledVertexData.push_back(vertexData[i + 4]);           // G
@@ -94,8 +94,6 @@ void Mesh::Render(glm::mat4 wvp) {
 	// Update buffer data with the scaled vertices
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, scaledVertexData.size() * sizeof(float), scaledVertexData.data(), GL_STATIC_DRAW);
-
-	world = glm::rotate(world, 0.01f/5, {0,1,0});
 
 	wvp *= world;
 	glUniformMatrix4fv(shader->GetAttrWVP(), 1, FALSE, &wvp[0][0]);
@@ -130,3 +128,7 @@ void Mesh::Render(glm::mat4 wvp) {
 	glDisableVertexAttribArray(shader->GetAttrColors());
 }
 
+void Mesh::SetRotation(float rotationX, float rotationY) {
+	world = glm::rotate(glm::mat4(1.0f), glm::radians(rotationY), glm::vec3(0, 1, 0)); // Y-axis rotation
+	world = glm::rotate(world, glm::radians(rotationX), glm::vec3(1, 0, 0));
+}
