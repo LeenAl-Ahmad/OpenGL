@@ -28,6 +28,8 @@ private:
 	int currentCameraIndex = 0;
 	int currentResolutionIndex = 0;
 	float lastFrameTime = 0.0f;
+
+	std::vector<Mesh> npcs;
 };
 
 #endif // !GAME_CONTROLLER_H
