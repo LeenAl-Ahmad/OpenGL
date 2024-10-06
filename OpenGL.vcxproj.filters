@@ -42,6 +42,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -71,6 +74,9 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SimpleFragmentShader.fragmentshader">
@@ -79,5 +85,13 @@
     <Text Include="SimpleVertexShader.vertexshader">
       <Filter>Shaders</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Pattern.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Tacos.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

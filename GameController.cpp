@@ -1,106 +1,134 @@
-#include "GameController.h"
-#include "WindowController.h"
-#include "MyForm.h"
-#include <chrono>
+#include "Mesh.h"
+#include "Shader.h"
 
-// Adding a small delay between key presses to avoid rapid changes
-const float debounceTime = 0.2f; // 200ms delay between keypress actions
-float lastCameraSwitchTime = 0;
-float lastResolutionSwitchTime = 0;
-
-GameController::GameController()
-    : cameras{ Camera(Resolution(1024, 768, 45.0f)), Camera(Resolution(800, 600, 60.0f)), Camera(Resolution(1280, 720, 90.0f)) },
-    resolutions{ Resolution(1024, 768, 45.0f), Resolution(800, 600, 60.0f), Resolution(1280, 720, 90.0f) },
-    currentCameraIndex(0), currentResolutionIndex(0) {
-    shader = {};
-    mesh = {};
-
-    // Setting unique camera positions to ensure visual difference
-    cameras[0].SetPosition(glm::vec3(0, 0, 20));  // First camera position
-    cameras[1].SetPosition(glm::vec3(0, 20, 20));  // Second camera position
-    cameras[2].SetPosition(glm::vec3(-20, 0, 20)); // Third camera position
+Mesh::~Mesh()
+{
+	if (vertexBuffer != 0)
+	{
+		glDeleteBuffers(1, &vertexBuffer);
+	}
+	if (indexBuffer != 0)
+	{
+		glDeleteBuffers(1, &indexBuffer);
+	}
 }
 
-void GameController::Initialize() {
-    GLFWwindow* window = WindowController::GetInstance().GetWindow();
-    M_ASSERT(glewInit() == GLEW_OK, "Failed to initialize GLEW.");
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glEnable(GL_CULL_FACE);
-
-    camera = Camera(WindowController::GetInstance().GetResolution());
-    camera.LookAt({ 200, 200, 200 }, { 0,0,0 }, { 0,1,0 });
+size_t Mesh::GetVertexDataSize() const {
+	return vertexData.size();
 }
 
-void GameController::RunGame() {
-    GLFWwindow* win = WindowController::GetInstance().GetWindow();
-    shader = Shader();
-    shader.LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
-
-    mesh = Mesh();
-    mesh.Create(&shader);
-    float rotationY = 0.0f; // Y-axis rotation angle
-    float rotationX = 0.0f; // simalar x-axis
-    float rotationSpeed = 0.1f; // Degrees per second
-
-    while (!glfwWindowShouldClose(win)) {
-        // Get the current time for debounce
-        float currentTime = (float)glfwGetTime();
-
-        // Poll for key input to switch cameras and resolutions
-        if (glfwGetKey(win, GLFW_KEY_C) == GLFW_PRESS && currentTime - lastCameraSwitchTime > debounceTime) {
-            CyCamera();
-            lastCameraSwitchTime = currentTime; // Reset the debounce timer
-        }
-        if (glfwGetKey(win, GLFW_KEY_V) == GLFW_PRESS && currentTime - lastResolutionSwitchTime > debounceTime) {
-            CyResolution();
-            lastResolutionSwitchTime = currentTime; // Reset the debounce timer
-        }
-        if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS) {
-            rotationY += rotationSpeed * (float)glfwGetTime(); // Rotate left
-        }
-        if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS) {
-            rotationY -= rotationSpeed * (float)glfwGetTime(); // Rotate right
-        }
-        if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS) {
-            rotationX += rotationSpeed * (float)glfwGetTime(); // Rotate up
-        }
-        if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS) {
-            rotationX -= rotationSpeed * (float)glfwGetTime(); // Rotate down
-        }
-        //calling the set rotate
-        mesh.SetRotation(rotationX, rotationY);
-
-        // Clear screen and render
-        glClear(GL_COLOR_BUFFER_BIT);
-        mesh.Render(cameras[currentCameraIndex].GetProjection() * cameras[currentCameraIndex].GetView());
-        glfwSwapBuffers(win);
-        glfwPollEvents();
-    }
-
-    mesh.Cleanup();
-    shader.Cleanup();
+size_t Mesh::GetIndexDataSize() const {
+	return indexData.size();
 }
 
-void GameController::CyCamera() {
-    // Cycle through the cameras array
-    currentCameraIndex = (currentCameraIndex + 1) % cameras.size();
+void Mesh::Create(Shader* _shader)
+{
+	shader = _shader;
 
-    // You could log the camera change here, if needed
-    std::cout << "Switched to Camera " << currentCameraIndex + 1 << std::endl;
+	float a = 1.0f;
+	float b = 1.0f;
+
+	vertexData = {
+		// Positions             // Colors (R, G, B, A)
+		-a, 0.0f,  b,     1.0f, 0.0f ,0.0f ,1.0f,  // Vertex 0
+		 a, 0.0f,  b,     0.0f, 0.549f, 0.0f, 1.0f, // Vertex 1
+		-a, 0.0f, -b,     1.0f, 1.0f, 0.0f, 1.0f,  // Vertex 2
+		 a, 0.0f, -b,     1.0f, 1.0f, 0.0f, 1.0f,  // Vertex 3
+		 0.0f,  b,  a,     0.0f, 0.0f, 1.0f, 1.0f,  // Vertex 4
+		 0.0f,  b, -a,     0.294f, 0.0f, 0.51f, 1.0f,// Vertex 5
+		 0.0f, -b,  a,     0.502f, 0.0f, 0.502f, 1.0f,// Vertex 6
+		 0.0f, -b, -a,     1.0f, 1.0f, 1.0f, 1.0f,  // Vertex 7
+		 b,  a, 0.0f,      0.0f, 1.0f, 1.0f, 1.0f,  // Vertex 8
+		-b,  a, 0.0f,      0.0f, 0.0f, 0.0f, 1.0f,  // Vertex 9
+		 b, -a, 0.0f,      0.118f, 0.565f, 1.0f, 1.0f,// Vertex 10
+		-b, -a, 0.0f,      0.863f, 0.078f, 0.235f, 1.0f // Vertex 11
+	};
+
+
+	glGenBuffers(1, &vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
+
+#pragma region Icosahedron Index Data
+	indexData = {
+		0,6,1,0,11,6,1,4,0,1,8,4,
+		1,10,8,2,5,3,2,9,5,2,11,9,
+		3,7,2,3,10,7,4,8,5,4,9,0,
+		5,8,3,5,9,4,6,10,1,6,11,7,
+		7,10,6,7,11,2,8,10,3,9,11,0
+	};
+#pragma endregion
+
+	glGenBuffers(1, &indexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, indexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, indexData.size() * sizeof(unsigned int), indexData.data(), GL_STATIC_DRAW);
 }
 
-void GameController::CyResolution() {
-    // Cycle through the resolutions array
-    currentResolutionIndex = (currentResolutionIndex + 1) % resolutions.size();
 
-    // Re-initialize the cameras with the new resolution
-    for (auto& camera : cameras) {
-        camera.UpdateProjection(resolutions[currentResolutionIndex]);
-    }
+void Mesh::Cleanup()
+{
+	glDeleteBuffers(1, &vertexBuffer);
+	glDeleteBuffers(1, &indexBuffer);
+	vertexBuffer = 0;
+	indexBuffer = 0;
+}
 
-    std::cout << "Switched to Resolution: "
-        << resolutions[currentResolutionIndex].width << "x"
-        << resolutions[currentResolutionIndex].height << " FoV: "
-        << resolutions[currentResolutionIndex].FoV << std::endl;
+void Mesh::Render(glm::mat4 wvp) {
+	glUseProgram(shader->GetProgramID());
+
+	float time = glfwGetTime();
+	float scale = 0.01f + (sin(time) + 1.0f) / 2.0f * (2.0f - 0.01f);
+
+	// Create a temporary scaled vertex data
+	std::vector<float> scaledVertexData;
+	for (size_t i = 0; i < vertexData.size(); i += 7) { // Assume each vertex has 7 components
+		scaledVertexData.push_back(vertexData[i] * scale);       // X
+		scaledVertexData.push_back(vertexData[i + 1] * scale);           // Y (no scaling)
+		scaledVertexData.push_back(vertexData[i + 2] * scale);   // Z
+		scaledVertexData.push_back(vertexData[i + 3]);           // R
+		scaledVertexData.push_back(vertexData[i + 4]);           // G
+		scaledVertexData.push_back(vertexData[i + 5]);           // B
+		scaledVertexData.push_back(vertexData[i + 6]);           // A
+	}
+
+	// Update buffer data with the scaled vertices
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, scaledVertexData.size() * sizeof(float), scaledVertexData.data(), GL_STATIC_DRAW);
+
+	wvp *= world;
+	glUniformMatrix4fv(shader->GetAttrWVP(), 1, FALSE, &wvp[0][0]);
+
+
+	// Vertex and color attribute setup
+	glEnableVertexAttribArray(shader->GetAttrVertices());
+	glVertexAttribPointer(
+		shader->GetAttrVertices(),
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		7 * sizeof(float),
+		(void*)0
+	);
+
+	glEnableVertexAttribArray(shader->GetAttrColors());
+	glVertexAttribPointer(
+		shader->GetAttrColors(),
+		4,
+		GL_FLOAT,
+		GL_FALSE,
+		7 * sizeof(float),
+		(void*)(3 * sizeof(float)));
+
+	// Draw the Icosahedron
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	//glDrawArrays(GL_TRIANGLES, 0, vertexData.size()/7);
+	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_BYTE, (void*)0);
+	glDisableVertexAttribArray(shader->GetAttrVertices());
+	glDisableVertexAttribArray(shader->GetAttrColors());
+}
+
+void Mesh::SetRotation(float rotationX, float rotationY) {
+	world = glm::rotate(glm::mat4(1.0f), glm::radians(rotationY), glm::vec3(0, 1, 0)); // Y-axis rotation
+	world = glm::rotate(world, glm::radians(rotationX), glm::vec3(1, 0, 0));
 }
