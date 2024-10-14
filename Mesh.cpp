@@ -25,23 +25,16 @@ void Mesh::Create(Shader* _shader)
 {
 	shader = _shader;
 
-	float a =1.0f;
+	float a =0.5f;
 	float b = 1.0f;
 
 	vertexData = {
 		// Positions             // Colors (R, G, B, A)
-		-a, 0.0f,  b,     1.0f, 0.0f ,0.0f ,1.0f,  // Vertex 0
-		 a, 0.0f,  b,     0.0f, 0.549f, 0.0f, 1.0f, // Vertex 1
-		-a, 0.0f, -b,     1.0f, 1.0f, 0.0f, 1.0f,  // Vertex 2
-		 a, 0.0f, -b,     1.0f, 1.0f, 0.0f, 1.0f,  // Vertex 3
-		 0.0f,  b,  a,     0.0f, 0.0f, 1.0f, 1.0f,  // Vertex 4
-		 0.0f,  b, -a,     0.294f, 0.0f, 0.51f, 1.0f,// Vertex 5
-		 0.0f, -b,  a,     0.502f, 0.0f, 0.502f, 1.0f,// Vertex 6
-		 0.0f, -b, -a,     1.0f, 1.0f, 1.0f, 1.0f,  // Vertex 7
-		 b,  a, 0.0f,      0.0f, 1.0f, 1.0f, 1.0f,  // Vertex 8
-		-b,  a, 0.0f,      0.0f, 0.0f, 0.0f, 1.0f,  // Vertex 9
-		 b, -a, 0.0f,      0.118f, 0.565f, 1.0f, 1.0f,// Vertex 10
-		-b, -a, 0.0f,      0.863f, 0.078f, 0.235f, 1.0f // Vertex 11
+		-a, -a, 0.0f,     1.0f, 0.0f ,0.0f ,1.0f,  // Vertex 0 (bottom-left)
+		 a,  a, 0.0f,     0.0f, 0.549f, 0.0f, 1.0f, // Vertex 1 (top-right)
+		-a,  a, 0.0f,     1.0f, 1.0f, 0.0f, 1.0f,  // Vertex 2 (top-left)
+		 a, -a, 0.0f,     1.0f, 1.0f, 0.0f, 1.0f,
+	
 	};
 
 
@@ -51,11 +44,8 @@ void Mesh::Create(Shader* _shader)
 
 #pragma region Icosahedron Index Data
 	indexData = {
-		0,6,1,0,11,6,1,4,0,1,8,4,
-		1,10,8,2,5,3,2,9,5,2,11,9,
-		3,7,2,3,10,7,4,8,5,4,9,0,
-		5,8,3,5,9,4,6,10,1,6,11,7,
-		7,10,6,7,11,2,8,10,3,9,11,0
+		0,1, 2,
+		0,3,1
 	};
 #pragma endregion
 
