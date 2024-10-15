@@ -12,6 +12,7 @@ Mesh::~Mesh()
 		glDeleteBuffers(1, &indexBuffer);
 	}
 	texture.Cleanup();
+	texture2.Cleanup();
 }
 
 size_t Mesh::GetVertexDataSize() const {
@@ -25,9 +26,13 @@ size_t Mesh::GetIndexDataSize() const {
 void Mesh::Create(Shader* _shader)
 {
 	shader = _shader;
+	
 	texture = Texture();
 	texture.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Tacos.jpg");
-
+	
+	texture2 = Texture();
+	texture2.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Pattern.png");
+	
 	float a =5.0f;
 	
 
@@ -63,6 +68,7 @@ void Mesh::Cleanup()
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteBuffers(1, &indexBuffer);
 	texture.Cleanup();
+	texture2.Cleanup();
 	vertexBuffer = 0;
 	indexBuffer = 0;
 }
@@ -111,6 +117,11 @@ void Mesh::Render(glm::mat4 wvp) {
 	glBindTexture(GL_TEXTURE_2D, texture.GetTexture());
 	glUniform1i(shader->GetSampler1(), 0);
 	
+	glActiveTexture(GL_TEXTURE1);  // Use texture unit 1 for sampler2
+	glBindTexture(GL_TEXTURE_2D, texture2.GetTexture());
+	glUniform1i(shader->GetSampler2(), 1);  // Set the second texture uniform to texture unit 1
+
+
 	//glDrawArrays(GL_TRIANGLES, 0, vertexData.size()/8);
 	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_BYTE, (void*)0);
 	glDisableVertexAttribArray(shader->GetAttrVertices());

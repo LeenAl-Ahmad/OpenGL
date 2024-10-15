@@ -13,8 +13,11 @@ void main()
     //FragColor = texture(sampler1, retTexCoord);
 
     //ex2
-    FragColor = texture(sampler1, retTexCoord)* vec4(retColor, 1.0f);
+    //FragColor = texture(sampler1, retTexCoord)* vec4(retColor, 1.0f);
     
     //ex3
+    //FragColor  = mix(texture(sampler1, retTexCoord), texture(sampler2, retTexCoord), 0.3);
 
+    //ex4
+    FragColor  = mix(texture(sampler1, retTexCoord), texture(sampler2, retTexCoord), 0.3) *vec4(retColor, 1.0f);
 }

@@ -18,6 +18,7 @@ public:
 
 	GLuint GetAttrTexCoords() { return  attrTexCoords; }
 	GLuint GetSampler1() { return sampler1; }
+	GLuint GetSampler2() { return sampler2; }
 	// Methods
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 	void Cleanup();
@@ -38,6 +39,7 @@ private:
 	GLuint attrWVP = 0;
 	GLuint attrTexCoords = 0;
 	GLuint sampler1 = 0;
+	GLuint sampler2 = 0;
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;
 };

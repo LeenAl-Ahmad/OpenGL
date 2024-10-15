@@ -39,3 +39,4 @@ void Texture::LoadTexture(std::string _f)
 	stbi_image_free(data);
 
 }
+

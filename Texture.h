@@ -10,8 +10,10 @@ public:
 	virtual ~Texture();
 
 	GLuint GetTexture() { return texture; }
+	GLuint GetTexture2() { return texture2; }
 
 	void LoadTexture(std::string _file);
+	void LoadTexture2(std::string _file);
 	void Cleanup();
 private:
 
@@ -19,6 +21,7 @@ private:
 	int height = -1;
 	int channels = -1;
 	GLuint texture;
+	GLuint texture2;
 };
 
 
