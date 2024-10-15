@@ -15,6 +15,9 @@ public:
 	GLuint GetAttrVertices() { return attrVertices; }
 	GLuint GetAttrColors() { return attrColors; }
 	GLuint GetAttrWVP() { return attrWVP; }
+
+	GLuint GetAttrTexCoords() { return  attrTexCoords; }
+	GLuint GetSampler1() { return sampler1; }
 	// Methods
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 	void Cleanup();
@@ -33,6 +36,8 @@ private:
 	GLuint attrVertices = 0;
 	GLuint attrColors = 0;
 	GLuint attrWVP = 0;
+	GLuint attrTexCoords = 0;
+	GLuint sampler1 = 0;
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;
 };
