@@ -1,7 +1,10 @@
 #include "GameController.h"
 #include "WindowController.h"
-#include "MyForm.h"
-#include <chrono>
+#ifdef USE_Tool_WINDOW
+    #include "ToolWindow.h"
+#endif // USE_Tool_WINDOW
+
+
 
 // Adding a small delay between key presses to avoid rapid changes
 const float debounceTime = 0.2f; // 200ms delay between keypress actions
@@ -26,24 +29,46 @@ void GameController::Initialize() {
     M_ASSERT(glewInit() == GLEW_OK, "Failed to initialize GLEW.");
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
 
     camera = Camera(WindowController::GetInstance().GetResolution());
-    camera.LookAt({ 100, 100, 100 }, { 0,0,0 }, { 0,1,0 });
+    camera.LookAt({ 2, 2, 2 }, { 0,0,0 }, { 0,1,0 });
 }
 
 void GameController::RunGame() {
-    GLFWwindow* win = WindowController::GetInstance().GetWindow();
+#ifdef USE_TOOL_WINDOW
+    OpenGL::ToolWindow^ window = gcnew OpenGL::ToolWindow();
+    if (showToolWindows)
+    {
+        window->Show();
+    }
+#endif // USE_TOOL_WINDOW
+
     shader = Shader();
-    shader.LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
+    shader.LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
 
     mesh = Mesh();
     mesh.Create(&shader);
+
+    GLFWwindow* win = WindowController::GetInstance().GetWindow();
+
     float rotationY = 0.0f; // Y-axis rotation angle
     float rotationX = 0.0f; // simalar x-axis
     float rotationSpeed = 0.1f; // Degrees per second
 
     while (!glfwWindowShouldClose(win)) {
+#ifdef USE_TOOL_WINDOW
+        System::Window::Forms::Application::DoEvents();
+
+        GLuint loc = 0;
+        loc = glGetUniformLocation(shader.GetProgramID(), "RenderRedChannel");
+        glUniform1i(loc, (int)OpenGL::ToolWindow::RenderRedChannel);
+        loc = glGetUniformLocation(shader.GetProgramID(), "RenderGreenChannel");
+        glUniform1i(loc, (int)OpenGL::ToolWindow::RenderGreenChannel);
+        loc = glGetUniformLocation(shader.GetProgramID(), "RenderBlueChannel");
+        glUniform1i(loc, (int)OpenGL::ToolWindow::RenderBlueChannel);
+#endif // USE_TOOL_WINDOW
+
         // Get the current time for debounce
         float currentTime = (float)glfwGetTime();
 
@@ -72,7 +97,7 @@ void GameController::RunGame() {
         mesh.SetRotation(rotationX, rotationY);
 
         // Clear screen and render
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mesh.Render(cameras[currentCameraIndex].GetProjection() * cameras[currentCameraIndex].GetView());
         glfwSwapBuffers(win);
         glfwPollEvents();

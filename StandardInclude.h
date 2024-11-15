@@ -2,7 +2,7 @@
 
 #ifndef STANDARD_INCLUDE_H
 #define STANDARD_INCLUDE_H
-
+#define TOOL_WINDOW_ENABLED
 #define GLM_ENABLE_EXPERIMANTAL
 
 #include <vector>

@@ -97,4 +97,12 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Diffuse.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Diffuse.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
 </Project>

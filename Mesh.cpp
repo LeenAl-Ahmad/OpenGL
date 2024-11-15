@@ -35,14 +35,53 @@ void Mesh::Create(Shader* _shader)
 	
 	float a =5.0f;
 	
-
-	vertexData = {
+	/*vertexData = {
 		// Positions      // Colors (R, G, B)  // Texture coordinates 
 		 a,  a, 0.0f,     1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 
 		 a, -a, 0.0f,     0.0f, 1.0f, 0.0f,    1.0f, 0.0f,
 		-a, -a, 0.0f,     0.0f, 0.0f ,1.0f,    0.0f, 0.0f,
 		-a,  a, 0.0f,     1.0f, 1.0f, 1.0f,    0.0f, 1.0f
 	
+	};*/
+	vertexData = {
+		/* Position */ /* Normals */ /* Texture Coords */
+-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
+
 	};
 
 
@@ -50,11 +89,12 @@ void Mesh::Create(Shader* _shader)
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
 
-#pragma region Icosahedron Index Data
+	/*#pragma region Icosahedron Index Data
 	indexData = {
 		2, 0, 3,
 		2, 1, 0
-	};
+	};*/
+
 #pragma endregion
 
 	glGenBuffers(1, &indexBuffer);
@@ -91,8 +131,8 @@ void Mesh::Render(glm::mat4 wvp) {
 		(void*)0
 	);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-
-	glEnableVertexAttribArray(shader->GetAttrColors());
+	
+	/*glEnableVertexAttribArray(shader->GetAttrColors());
 	glVertexAttribPointer(
 		shader->GetAttrColors(),
 		3,
@@ -101,7 +141,17 @@ void Mesh::Render(glm::mat4 wvp) {
 		8 * sizeof(float),
 		(void*)(3 * sizeof(float))
 	);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);*/
+	glEnableVertexAttribArray(shader->GetAttrNormals());
+	glVertexAttribPointer(
+		shader->GetAttrNormals(),
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		8 * sizeof(float),
+		(void*)(3* sizeof(float))
+	);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 
 	glEnableVertexAttribArray(shader->GetAttrTexCoords());
 	glVertexAttribPointer(
@@ -122,10 +172,11 @@ void Mesh::Render(glm::mat4 wvp) {
 	glUniform1i(shader->GetSampler2(), 1);  // Set the second texture uniform to texture unit 1
 
 
-	//glDrawArrays(GL_TRIANGLES, 0, vertexData.size()/8);
-	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_BYTE, (void*)0);
+	glDrawArrays(GL_TRIANGLES, 0, vertexData.size()/8);
+	//glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_BYTE, (void*)0);
 	glDisableVertexAttribArray(shader->GetAttrVertices());
-	glDisableVertexAttribArray(shader->GetAttrColors());
+	//glDisableVertexAttribArray(shader->GetAttrColors());
+	glDisableVertexAttribArray(shader->GetAttrNormals());
 	glDisableVertexAttribArray(shader->GetAttrTexCoords());
 }
 

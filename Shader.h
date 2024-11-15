@@ -15,13 +15,14 @@ public:
 	GLuint GetAttrVertices() { return attrVertices; }
 	GLuint GetAttrColors() { return attrColors; }
 	GLuint GetAttrWVP() { return attrWVP; }
-
+	GLuint GetAttrNormals() { return attrNormals; }
 	GLuint GetAttrTexCoords() { return  attrTexCoords; }
 	GLuint GetSampler1() { return sampler1; }
 	GLuint GetSampler2() { return sampler2; }
 	// Methods
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 	void Cleanup();
+	void SetVec3(const char* _name, glm::vec3 _value);
 	
 
 private:
@@ -37,6 +38,7 @@ private:
 	GLuint attrVertices = 0;
 	GLuint attrColors = 0;
 	GLuint attrWVP = 0;
+	GLuint attrNormals = 0;
 	GLuint attrTexCoords = 0;
 	GLuint sampler1 = 0;
 	GLuint sampler2 = 0;

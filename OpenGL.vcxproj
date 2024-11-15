@@ -180,6 +180,10 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <Image Include="Assets\Pattern.png" />
     <Image Include="Assets\Tacos.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Diffuse.fragmentshader" />
+    <None Include="Diffuse.vertexshader" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

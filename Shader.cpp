@@ -19,10 +19,20 @@ void Shader::LoadAttridutes()
 {
 	attrVertices = glGetAttribLocation(programID, "vertices");
 	attrColors = glGetAttribLocation(programID, "colors");
+	attrNormals = glGetAttribLocation(programID, "normals");
 	attrTexCoords = glGetAttribLocation(programID, "texCoords");
 	sampler1 = glGetUniformLocation(programID, "sampler1");
 	sampler2 = glGetUniformLocation(programID, "sampler2");
 	attrWVP = glGetUniformLocation(programID, "WVP");
+}
+
+void Shader::SetVec3(const char* _name, glm::vec3 _value)
+{
+	GLuint loc = glGetUniformLocation(programID, _name);
+	if (loc != -1)
+	{
+		glUniform3fv(loc, 1, &_value[0]);
+	}
 }
 
 void Shader::EvaluateShader(int _infoLength, GLuint _id)
