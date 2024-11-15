@@ -15,7 +15,7 @@ void Shader::Cleanup()
 	programID = 0;
 }
 
-void Shader::LoadAttridutes()
+void Shader::LoadAttributes()
 {
 	attrVertices = glGetAttribLocation(programID, "vertices");
 	attrColors = glGetAttribLocation(programID, "colors");
@@ -44,6 +44,15 @@ void Shader::SetMat4(const char* _name, glm::mat4 _value)
 	}
 }
 
+void Shader::SetFloat(const char* _name, float _v)
+{
+	GLuint loc = glGetUniformLocation(programID, _name);
+	if (loc != -1)
+	{
+		glUniform1f(loc, _v);
+	}
+}
+
 void Shader::EvaluateShader(int _infoLength, GLuint _id)
 {
 	if (_infoLength > 0)
@@ -67,7 +76,8 @@ GLuint Shader::LoadShaderFile(const char* _filePath, GLenum _type)
 	std::string shaderCode;
 
 	std::ifstream shaderStream(_filePath, std::ios::in);
-	M_ASSERT(shaderStream.is_open(), ("Impossible to open %s. Are you in the right directory? Don't forget to read the FAQ!\n", _filePath));
+	M_ASSERT(shaderStream.is_open(),
+		("Impossible to open %s. Are you in the right directory? Don't forget to read the FAQ!\n", _filePath));
 	std::string Line = "";
 	while (getline(shaderStream, Line))
 	{
@@ -114,5 +124,5 @@ void Shader::CreateShaderProgram(const char* _vertexFilePath, const char* _fragm
 void Shader::LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath)
 {
 	CreateShaderProgram(_vertexFilePath, _fragmentFilePath);
-	LoadAttridutes();
+	LoadAttributes();
 }

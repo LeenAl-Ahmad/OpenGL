@@ -12,19 +12,21 @@ public:
 
 	
 	void LookAt(const glm::vec3& _position, const glm::vec3& _lookAt, const glm::vec3& _up) {
+		position = _position;
 		view = glm::lookAt(_position, _lookAt, _up);
 	}
 
 	glm::mat4 GetProjection() { return projection; }
 	glm::mat4 GetView() { return view; }
+	glm::vec3 GetPosition() { return position; }
 
-	void SetPosition(const glm::vec3& position);
+	void SetPosition(const glm::vec3& _pos);
 	void UpdateProjection(const Resolution& _res);
 
 private:
-	glm::mat4 projection = {};
-	glm::mat4 view = {};
-
+	glm::mat4 projection = glm::mat4(1.0f);
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::vec3 position = {};
 };
 
 #endif // !CAMERA_H

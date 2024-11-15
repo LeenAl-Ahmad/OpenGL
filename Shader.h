@@ -24,12 +24,13 @@ public:
 	void Cleanup();
 	void SetVec3(const char* _name, glm::vec3 _value);
 	void SetMat4(const char* _name, glm::mat4 _value);
+	void SetFloat(const char* _name, float _v);
 
 private:
 	// Methods
 	void CreateShaderProgram(const char* _vertexFilePath, const char* _fragmentFilePath);
 	GLuint LoadShaderFile(const char* _filePath, GLenum _type);
-	void LoadAttridutes();
+	void LoadAttributes();
 	void EvaluateShader(int _infoLength, GLuint _id);
 	
 
