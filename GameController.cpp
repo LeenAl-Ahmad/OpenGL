@@ -15,13 +15,15 @@ GameController::GameController()
     : cameras{ Camera(Resolution(1024, 768, 45.0f)), Camera(Resolution(800, 600, 60.0f)), Camera(Resolution(1280, 720, 90.0f)) },
     resolutions{ Resolution(1024, 768, 45.0f), Resolution(800, 600, 60.0f), Resolution(1280, 720, 90.0f) },
     currentCameraIndex(0), currentResolutionIndex(0) {
-    shader = {};
-    mesh = {};
-
-    // Setting unique camera positions to ensure visual difference
-    cameras[0].SetPosition(glm::vec3(0, 0, 20));  // First camera position
-    cameras[1].SetPosition(glm::vec3(0, 20, 20));  // Second camera position
-    cameras[2].SetPosition(glm::vec3(-20, 0, 20)); // Third camera position
+    shaderColor = {};
+    shaderDiffuse = {};
+    meshLight = {};
+    meshBox = {};
+    /*// Setting unique camera positions to ensure visual difference
+    cameras[0].SetPosition(glm::vec3(0, 0, 10));  // First camera position
+    cameras[1].SetPosition(glm::vec3(0, 10, 10));  // Second camera position
+    cameras[2].SetPosition(glm::vec3(-10, 0, 10)); // Third camera position*/
+    
 }
 
 void GameController::Initialize() {
@@ -44,11 +46,20 @@ void GameController::RunGame() {
     }
 #endif // USE_TOOL_WINDOW
 
-    shader = Shader();
-    shader.LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
+    shaderColor = Shader();
+    shaderColor.LoadShaders("Color.vertexshader", "Color.fragmentshader");
+    shaderDiffuse = Shader();
+    shaderDiffuse.LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
 
-    mesh = Mesh();
-    mesh.Create(&shader);
+    meshLight = Mesh();
+    meshLight.Create(&shaderColor);
+    meshLight.SetPosition({ 1.0f, 0.5f, 0.5f });
+    meshLight.SetScalo({ 0.1f, 0.1f, 0.1f });
+
+    meshBox = Mesh();
+    meshBox.Create(&shaderDiffuse);
+    meshBox.SetLightColor({ 0.5f, 0.9f, 0.5f });
+    meshBox.SetLightPosition(meshLight.GetPosition());
 
     GLFWwindow* win = WindowController::GetInstance().GetWindow();
 
@@ -68,8 +79,7 @@ void GameController::RunGame() {
         loc = glGetUniformLocation(shader.GetProgramID(), "RenderBlueChannel");
         glUniform1i(loc, (int)OpenGL::ToolWindow::RenderBlueChannel);
 #endif // USE_TOOL_WINDOW
-
-        // Get the current time for debounce
+        /*// Get the current time for debounce
         float currentTime = (float)glfwGetTime();
 
         // Poll for key input to switch cameras and resolutions
@@ -92,30 +102,31 @@ void GameController::RunGame() {
         }
         if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS) {
             rotationX -= rotationSpeed * (float)glfwGetTime(); // Rotate down
-        }
-        //calling the set rotate
-        mesh.SetRotation(rotationX, rotationY);
-
+        }*/
+        
+        
         // Clear screen and render
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        mesh.Render(cameras[currentCameraIndex].GetProjection() * cameras[currentCameraIndex].GetView());
+        meshLight.Render(camera.GetProjection() * camera.GetView());
+        meshBox.Render(camera.GetProjection() * camera.GetView());
         glfwSwapBuffers(win);
         glfwPollEvents();
     }
 
-    mesh.Cleanup();
-    shader.Cleanup();
+    meshLight.Cleanup();
+    shaderColor.Cleanup();
+    meshBox.Cleanup();
+    shaderDiffuse.Cleanup();
 }
-
-void GameController::CyCamera() {
+/*void GameController::CyCamera() {
     // Cycle through the cameras array
     currentCameraIndex = (currentCameraIndex + 1) % cameras.size();
 
     // You could log the camera change here, if needed
     std::cout << "Switched to Camera " << currentCameraIndex + 1 << std::endl;
-}
+}*/
 
-void GameController::CyResolution() {
+/*void GameController::CyResolution() {
     // Cycle through the resolutions array
     currentResolutionIndex = (currentResolutionIndex + 1) % resolutions.size();
 
@@ -128,4 +139,5 @@ void GameController::CyResolution() {
         << resolutions[currentResolutionIndex].width << "x"
         << resolutions[currentResolutionIndex].height << " FoV: "
         << resolutions[currentResolutionIndex].FoV << std::endl;
-}
+}*/
+

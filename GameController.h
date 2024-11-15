@@ -20,8 +20,11 @@ public:
 	void CyResolution();
 
 private:
-	Shader shader = {};
-	Mesh mesh = {};
+	Shader shaderColor = {};
+	Shader shaderDiffuse = {};
+	Mesh meshBox = {};
+	Mesh meshLight = {};
+
 	Camera camera = {};
 	std::array<Camera, 3> cameras;
 	std::array<Resolution, 3> resolutions;

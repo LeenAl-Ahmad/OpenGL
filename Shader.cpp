@@ -35,6 +35,15 @@ void Shader::SetVec3(const char* _name, glm::vec3 _value)
 	}
 }
 
+void Shader::SetMat4(const char* _name, glm::mat4 _value)
+{
+	GLuint loc = glGetUniformLocation(programID, _name);
+	if (loc != -1)
+	{
+		glUniformMatrix4fv(loc, 1, GL_FALSE, &_value[0][0]);
+	}
+}
+
 void Shader::EvaluateShader(int _infoLength, GLuint _id)
 {
 	if (_infoLength > 0)

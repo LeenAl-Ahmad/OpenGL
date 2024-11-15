@@ -113,14 +113,9 @@ void Mesh::Cleanup()
 	indexBuffer = 0;
 }
 
-void Mesh::Render(glm::mat4 wvp) {
-	glUseProgram(shader->GetProgramID());
-
-	wvp *= world;
-	glUniformMatrix4fv(shader->GetAttrWVP(), 1, FALSE, &wvp[0][0]);
-	
-
-	// Vertex and color attribute setup
+void Mesh::BindAttributes()
+{
+#pragma region vertices attribute buffer 
 	glEnableVertexAttribArray(shader->GetAttrVertices());
 	glVertexAttribPointer(
 		shader->GetAttrVertices(),
@@ -131,7 +126,9 @@ void Mesh::Render(glm::mat4 wvp) {
 		(void*)0
 	);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	
+#pragma endregion
+
+#pragma region index attribute buffer 
 	/*glEnableVertexAttribArray(shader->GetAttrColors());
 	glVertexAttribPointer(
 		shader->GetAttrColors(),
@@ -142,6 +139,9 @@ void Mesh::Render(glm::mat4 wvp) {
 		(void*)(3 * sizeof(float))
 	);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);*/
+#pragma endregion
+
+#pragma region normals attribute buffer 
 	glEnableVertexAttribArray(shader->GetAttrNormals());
 	glVertexAttribPointer(
 		shader->GetAttrNormals(),
@@ -149,10 +149,12 @@ void Mesh::Render(glm::mat4 wvp) {
 		GL_FLOAT,
 		GL_FALSE,
 		8 * sizeof(float),
-		(void*)(3* sizeof(float))
+		(void*)(3 * sizeof(float))
 	);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+#pragma endregion
 
+#pragma region  TexCoords attribute buffer 
 	glEnableVertexAttribArray(shader->GetAttrTexCoords());
 	glVertexAttribPointer(
 		shader->GetAttrTexCoords(),
@@ -162,14 +164,30 @@ void Mesh::Render(glm::mat4 wvp) {
 		8 * sizeof(float),
 		(void*)(6 * sizeof(float))
 	);
-	
+#pragma endregion
+
+#pragma region set Texture 0
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.GetTexture());
 	glUniform1i(shader->GetSampler1(), 0);
-	
+#pragma endregion	
+
+#pragma region set Texture 1
 	glActiveTexture(GL_TEXTURE1);  // Use texture unit 1 for sampler2
 	glBindTexture(GL_TEXTURE_2D, texture2.GetTexture());
 	glUniform1i(shader->GetSampler2(), 1);  // Set the second texture uniform to texture unit 1
+#pragma endregion
+}
+
+void Mesh::Render(glm::mat4 _pv) {
+	glUseProgram(shader->GetProgramID());
+
+
+	rotate.y += 0.005f;
+	
+	CalculateTransform();
+	SetShaderVariable(_pv);
+	BindAttributes();
 
 
 	glDrawArrays(GL_TRIANGLES, 0, vertexData.size()/8);
@@ -183,4 +201,22 @@ void Mesh::Render(glm::mat4 wvp) {
 void Mesh::SetRotation(float rotationX, float rotationY) {
 	world = glm::rotate(glm::mat4(1.0f), glm::radians(rotationY), glm::vec3(0, 1, 0)); // Y-axis rotation
 	world = glm::rotate(world, glm::radians(rotationX), glm::vec3(1, 0, 0));
+}
+
+void Mesh::CalculateTransform() {
+	world = glm::translate(glm::mat4(1.0f), position);
+	//world = glm::rotate(world, rotate.y, glm::vec3(0, 1, 0));
+	//world = glm::rotate(world, rotate.x, glm::vec3(1, 0, 0));
+	//world = glm::rotate(world, rotate.z, glm::vec3(0, 0, 1));
+	world = glm::scale(world, scale);
+}
+
+void Mesh::SetShaderVariable(glm::mat4 _pv)
+{
+	shader->SetMat4("World", world);
+	shader->SetVec3("AmbientLight", { 0.1f, 0.1f, 0.1f });
+	shader->SetVec3("DiffuseColor", { 1.0f, 1.0f, 1.0f });
+	shader->SetVec3("LightDirection", lightPosition);
+	shader->SetVec3("LightColor", lightColor);
+	shader->SetMat4("WVP", _pv * world);
 }
