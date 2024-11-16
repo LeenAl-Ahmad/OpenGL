@@ -6,6 +6,7 @@ Camera::Camera(const Resolution& _resolution, const float _n, const float _f)
 		(float)_resolution.width / (float)_resolution.height,
 		_n,
 		_f);
+
 	 view = glm::lookAt(
 		glm::vec3(0, 0, 0),
 		glm::vec3(0, 0, 0),

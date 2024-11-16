@@ -30,12 +30,12 @@ void GameController::Initialize() {
     GLFWwindow* window = WindowController::GetInstance().GetWindow();
     M_ASSERT(glewInit() == GLEW_OK, "Failed to initialize GLEW.");
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
     glEnable(GL_DEPTH_TEST);
     srand(time(0));
 
     camera = Camera(WindowController::GetInstance().GetResolution());
-    camera.LookAt({ 2, 2, 2 }, { 0,0,0 }, { 0,1,0 });
+    camera.LookAt({ 1, 1, 1 }, { 0,0,0 }, { 0,1,0 });
 }
 
 void GameController::RunGame() {
@@ -54,20 +54,24 @@ void GameController::RunGame() {
 
     meshLight = new Mesh();
     meshLight->Create(&shaderColor);
-    meshLight->SetPosition({ 1.0f, 0.5f, 0.0f });
+    meshLight->SetPosition({ 0.5f, 0.0f, -0.5f });
     meshLight->SetScalo({ 0.1f, 0.1f, 0.1f });
 
-    for (int i = 0; i < 10; i++)
+    for (int row = 0; row < 10; row++)
     {
-        Mesh* box = new Mesh();
-        box->Create(&shaderDiffuse);
-        box->SetLightColor({ 0.5f, 0.9f, 0.5f });
-        box->SetLightPosition(meshLight->GetPosition());
-        box->SetCameraPosition(camera.GetPosition());
-        box->SetScalo({ 0.3f, 0.3f, 0.3f });
-        box->SetPosition({ glm::linearRand(-1.0f, 1.0f), glm::linearRand(-1.0f, 1.0f),glm::linearRand(-1.0f, 1.0f) });
-        meshBoxes.push_back(box);
+        for (int col = 0; col < 10; col++)
+            {
+                Mesh* box = new Mesh();
+                box->Create(&shaderDiffuse);
+                box->SetLightColor({ 1.0f, 1.0f, 1.0f });
+                box->SetLightPosition(meshLight->GetPosition());
+                box->SetCameraPosition(camera.GetPosition());
+                box->SetScalo({ 0.1f, 0.1f, 0.1f });
+                box->SetPosition({ 0.0f, -0.5f +(float)row/10.0f, -0.2f + (float)col /10.0f});
+                meshBoxes.push_back(box);
+            }
     }
+    
 
     GLFWwindow* win = WindowController::GetInstance().GetWindow();
 
@@ -111,7 +115,46 @@ void GameController::RunGame() {
         if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS) {
             rotationX -= rotationSpeed * (float)glfwGetTime(); // Rotate down
         }*/
+        /*float currentTime = (float)glfwGetTime();
+
+        // Move camera position
+        if (glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS) {
+            cameraPosition.z -= cameraSpeed; // Move forward
+        }
+        if (glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS) {
+            cameraPosition.z += cameraSpeed; // Move backward
+        }
+        if (glfwGetKey(win, GLFW_KEY_LEFT) == GLFW_PRESS) {
+            cameraPosition.x -= cameraSpeed; // Move left
+        }
+        if (glfwGetKey(win, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+            cameraPosition.x += cameraSpeed; // Move right
+        }
+        if (glfwGetKey(win, GLFW_KEY_PAGE_UP) == GLFW_PRESS) {
+            cameraPosition.y += cameraSpeed; // Move up
+        }
+        if (glfwGetKey(win, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS) {
+            cameraPosition.y -= cameraSpeed; // Move down
+        }
+
+        // Adjust LookAt target
+        if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS) {
+            lookAtTarget.y += cameraSpeed; // Look up
+        }
+        if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS) {
+            lookAtTarget.y -= cameraSpeed; // Look down
+        }
+        if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS) {
+            lookAtTarget.x -= cameraSpeed; // Look left
+        }
+        if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS) {
+            lookAtTarget.x += cameraSpeed; // Look right
+        }
+
+        // Update the camera view matrix
+        camera.LookAt(cameraPosition, lookAtTarget, { 0.0f, 1.0f, 0.0f });*/
         
+
         
         // Clear screen and render
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

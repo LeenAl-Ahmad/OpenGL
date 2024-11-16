@@ -31,6 +31,9 @@ private:
 	int currentCameraIndex = 0;
 	int currentResolutionIndex = 0;
 	float lastFrameTime = 0.0f;
+	glm::vec3 cameraPosition = { 10.0f, 10.0f, 10.0f };  // Initial camera position
+	glm::vec3 lookAtTarget = { 0.0f, 0.0f, 0.0f };      // Initial LookAt target
+	float cameraSpeed = 0.1f;
 };
 
 #endif // !GAME_CONTROLLER_H
