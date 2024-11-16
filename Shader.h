@@ -25,6 +25,7 @@ public:
 	void SetVec3(const char* _name, glm::vec3 _value);
 	void SetMat4(const char* _name, glm::mat4 _value);
 	void SetFloat(const char* _name, float _v);
+	void SetTextureSampler(const char* _name, GLuint _texUint, int _texYintId, int _v);
 
 private:
 	// Methods

@@ -28,10 +28,10 @@ void Mesh::Create(Shader* _shader)
 	shader = _shader;
 	
 	texture = Texture();
-	texture.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Tacos.jpg");
+	texture.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/MetalFrameWood.jpg");
 	
 	texture2 = Texture();
-	texture2.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Pattern.png");
+	texture2.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/MetalFrame.jpg");
 	
 	float a =5.0f;
 	
@@ -166,17 +166,7 @@ void Mesh::BindAttributes()
 	);
 #pragma endregion
 
-#pragma region set Texture 0
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture.GetTexture());
-	glUniform1i(shader->GetSampler1(), 0);
-#pragma endregion	
 
-#pragma region set Texture 1
-	glActiveTexture(GL_TEXTURE1);  // Use texture unit 1 for sampler2
-	glBindTexture(GL_TEXTURE_2D, texture2.GetTexture());
-	glUniform1i(shader->GetSampler2(), 1);  // Set the second texture uniform to texture unit 1
-#pragma endregion
 }
 
 void Mesh::Render(glm::mat4 _pv) {
@@ -214,12 +204,16 @@ void Mesh::CalculateTransform() {
 void Mesh::SetShaderVariable(glm::mat4 _pv)
 {
 	shader->SetMat4("World", world);
-	shader->SetVec3("AmbientLight", { 0.1f, 0.1f, 0.1f });
-	shader->SetVec3("DiffuseColor", { 1.0f, 1.0f, 1.0f });
-	shader->SetFloat("SpecularStrength", 5.0f);
-	shader->SetVec3("SpecularColor", { 3.0f, 3.0f, 3.0f });
-	shader->SetVec3("LightDirection", lightPosition);
-	shader->SetVec3("LightColor", lightColor);
 	shader->SetMat4("WVP", _pv * world);
 	shader->SetVec3("CameraPosition", cameraPosition);
+
+	shader->SetVec3("light.ambientColor", { 0.1f, 0.1f, 0.1f });
+	shader->SetVec3("light.diffuseColor", { 1.0f, 1.0f, 1.0f });
+	shader->SetVec3("lighht.specularColor", { 3.0f, 3.0f, 3.0f });
+	shader->SetVec3("light.position", lightPosition);
+	shader->SetVec3("light.color", lightColor);
+
+	shader->SetFloat("material.specularStrength", 8.0f);
+	shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, texture.GetTexture());
+	shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, texture2.GetTexture());
 }
