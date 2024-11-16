@@ -22,8 +22,8 @@ public:
 private:
 	Shader shaderColor = {};
 	Shader shaderDiffuse = {};
-	Mesh meshBox = {};
-	Mesh meshLight = {};
+	std::vector<Mesh*> meshBoxes;
+	Mesh* meshLight = {};
 
 	Camera camera = {};
 	std::array<Camera, 3> cameras;
