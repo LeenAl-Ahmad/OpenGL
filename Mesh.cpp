@@ -1,5 +1,7 @@
 #include "Mesh.h"
 #include "Shader.h"
+#include "GameController.h"
+#include <OBJ_Loader.h>
 
 Mesh::~Mesh()
 {
@@ -23,83 +25,46 @@ size_t Mesh::GetIndexDataSize() const {
 	return indexData.size();
 }
 
-void Mesh::Create(Shader* _shader)
+void Mesh::Create(Shader* _shader, std::string _file)
 {
 	shader = _shader;
 	
+	objl::Loader loader;
+	M_ASSERT(loader.LoadFile(_file) == true, "Failed to load mesh");
+
+	for (unsigned int i = 0; i < loader.LoadedMeshes.size(); i++)
+	{
+		objl::Mesh curMesh = loader.LoadedMeshes[i];
+		for (unsigned int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+			vertexData.push_back(curMesh.Vertices[j].Position.X);
+			vertexData.push_back(curMesh.Vertices[j].Position.Y);
+			vertexData.push_back(curMesh.Vertices[j].Position.Z);
+			vertexData.push_back(curMesh.Vertices[j].Normal.X);
+			vertexData.push_back(curMesh.Vertices[j].Normal.Y);
+			vertexData.push_back(curMesh.Vertices[j].Normal.Z);
+			vertexData.push_back(curMesh.Vertices[j].TextureCoordinate.X);
+			vertexData.push_back(curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+	}
+
+	std::string diffuseMap = loader.LoadedMaterials[0].map_Kd;
+	const size_t last_slash_idx = diffuseMap.find_last_of("\\/");
+	if (std::string::npos != last_slash_idx)
+	{
+		diffuseMap.erase(0, last_slash_idx + 1);
+	}
+
 	texture = Texture();
-	texture.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/MetalFrameWood.jpg");
-	
+	texture.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Models/" + diffuseMap);
+
 	texture2 = Texture();
-	texture2.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/MetalFrame.jpg");
-	
-	float a =5.0f;
-	
-	/*vertexData = {
-		// Positions      // Colors (R, G, B)  // Texture coordinates 
-		 a,  a, 0.0f,     1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 
-		 a, -a, 0.0f,     0.0f, 1.0f, 0.0f,    1.0f, 0.0f,
-		-a, -a, 0.0f,     0.0f, 0.0f ,1.0f,    0.0f, 0.0f,
-		-a,  a, 0.0f,     1.0f, 1.0f, 1.0f,    0.0f, 1.0f
-	
-	};*/
-	vertexData = {
-		/* Position */ /* Normals */ /* Texture Coords */
--0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
--0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
--0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
--0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
--0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
--0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
--0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
--0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
--0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
--0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
--0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
--0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
--0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
--0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
--0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
--0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
--0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
--0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
-
-	};
-
+	texture2.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Models/" + diffuseMap);
 
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
 
-	/*#pragma region Icosahedron Index Data
-	indexData = {
-		2, 0, 3,
-		2, 1, 0
-	};*/
-
-#pragma endregion
-
-	glGenBuffers(1, &indexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, indexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, indexData.size() * sizeof(unsigned int), indexData.data(), GL_STATIC_DRAW);
 }
 
 
@@ -115,6 +80,7 @@ void Mesh::Cleanup()
 
 void Mesh::BindAttributes()
 {
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 #pragma region vertices attribute buffer 
 	glEnableVertexAttribArray(shader->GetAttrVertices());
 	glVertexAttribPointer(
@@ -125,20 +91,7 @@ void Mesh::BindAttributes()
 		8 * sizeof(float),
 		(void*)0
 	);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-#pragma endregion
-
-#pragma region index attribute buffer 
-	/*glEnableVertexAttribArray(shader->GetAttrColors());
-	glVertexAttribPointer(
-		shader->GetAttrColors(),
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		8 * sizeof(float),
-		(void*)(3 * sizeof(float))
-	);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);*/
+	
 #pragma endregion
 
 #pragma region normals attribute buffer 
@@ -166,7 +119,6 @@ void Mesh::BindAttributes()
 	);
 #pragma endregion
 
-
 }
 
 void Mesh::Render(glm::mat4 _pv) {
@@ -180,12 +132,11 @@ void Mesh::Render(glm::mat4 _pv) {
 	BindAttributes();
 
 
-	glDrawArrays(GL_TRIANGLES, 0, vertexData.size()/8);
-	//glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_BYTE, (void*)0);
-	glDisableVertexAttribArray(shader->GetAttrVertices());
-	//glDisableVertexAttribArray(shader->GetAttrColors());
-	glDisableVertexAttribArray(shader->GetAttrNormals());
-	glDisableVertexAttribArray(shader->GetAttrTexCoords());
+	glGenBuffers(1, &indexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size() * sizeof(unsigned int), indexData.data(), GL_STATIC_DRAW);
+	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_INT, 0);
+
 }
 
 void Mesh::SetRotation(float rotationX, float rotationY) {
@@ -207,19 +158,32 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetMat4("WVP", _pv * world);
 	shader->SetVec3("CameraPosition", cameraPosition);
 
-	shader->SetVec3("light.ambientColor", { 0.1f, 0.1f, 0.1f });
-	shader->SetVec3("light.diffuseColor", { 1.0f, 1.0f, 1.0f });
-	shader->SetVec3("light.specularColor", { 3.0f, 3.0f, 3.0f });
-	shader->SetVec3("light.position", lightPosition);
-	shader->SetVec3("light.direction", glm::normalize(glm::vec3({0,0,0}) - lightPosition));
-	shader->SetVec3("light.color", lightColor);
-	shader->SetFloat("light.constant", 1.0f);
-	shader->SetFloat("light.linear", 0.09f);
-	shader->SetFloat("light.quadratic", 0.032f);
-	shader->SetFloat("light.coneAngle", glm::radians(15.0f));
-	shader->SetFloat("light.falloff", 100);
+	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
+	for (int i = 0; i < lights.size(); i++)
+	{
+		shader->SetVec3(Concat("light[", i,"].ambientColor").c_str(), {0.1f, 0.1f, 0.1f});
+		shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), lights[i]->GetColor());
+		shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), { 3.0f, 3.0f, 3.0f });
+
+		shader->SetVec3(Concat("light[", i, "].position").c_str(), lights[i]->GetPosition());
+		shader->SetVec3(Concat("light[", i, "].direction").c_str(), lights[i]->GetLightDirection());
+		
+		shader->SetFloat(Concat("light[", i, "].constant").c_str(), 1.0f);
+		shader->SetFloat(Concat("light[", i, "].linear").c_str(), 0.09f);
+		shader->SetFloat(Concat("light[", i, "].quadratic").c_str(), 0.032f);
+
+		shader->SetFloat(Concat("light[", i, "].coneAngle").c_str(), glm::radians(15.0f));
+		shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 100);
+	}
+	
 
 	shader->SetFloat("material.specularStrength", 8.0f);
 	shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, texture.GetTexture());
 	shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, texture2.GetTexture());
+}
+
+std::string Mesh::Concat(const std::string& _s1, int _index, const std::string& _s2)
+{
+	std::string index = std::to_string(_index);
+	return (_s1 + index + _s2);
 }

@@ -77,7 +77,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)/External/glfw-3.3.4/include;$(SolutionDir)/External/glm;$(SolutionDir)/External/glew-2.1.0/include;$(SolutionDir)/External/stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/External/glfw-3.3.4/include;$(SolutionDir)/External/glm;$(SolutionDir)/External/glew-2.1.0/include;$(SolutionDir)/External/stb;$(SolutionDir)/External/obj_loader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,6 +147,7 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="External\obj_loader\OBJ_Loader.h" />
     <ClInclude Include="External\stb\stb_image.h" />
     <ClInclude Include="GameController.h" />
     <ClInclude Include="Mesh.h" />
@@ -184,10 +185,16 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <Image Include="Assets\Wood.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
     <None Include="Color.fragmentshader" />
     <None Include="Color.vertexshader" />
     <None Include="Diffuse.fragmentshader" />
     <None Include="Diffuse.vertexshader" />
+    <None Include="Assets\Models\untitled.mtl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Assets\Models\untitled.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,6 +18,6 @@ void main()
     gl_Position = WVP * vec4(vertices, 1.0);
     retNormal = normalize(mat3(transpose(inverse(World))) * normals);
     retTexCoord = texCoords;
-    retFragPos = vec3(World * vec4(vertices, 1.0));
+    retFragPos = vec3(World * vec4(vertices, 1.0f));
     retViewDirection = normalize(CameraPosition - retFragPos);
 }

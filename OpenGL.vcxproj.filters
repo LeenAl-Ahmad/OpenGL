@@ -80,6 +80,9 @@
     <ClInclude Include="WindowController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="External\obj_loader\OBJ_Loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SimpleFragmentShader.fragmentshader">
@@ -96,6 +99,15 @@
     <Image Include="Assets\Tacos.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Assets\MetalFrame.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\MetalFrameWood.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Wood.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Diffuse.fragmentshader">
@@ -110,5 +122,11 @@
     <None Include="Color.vertexshader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+    <None Include="Assets\Models\untitled.mtl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Assets\Models\untitled.obj" />
   </ItemGroup>
 </Project>

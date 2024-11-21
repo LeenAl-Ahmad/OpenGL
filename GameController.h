@@ -16,8 +16,9 @@ public:
 
 	void Initialize();
 	void RunGame();
-	void CyCamera();
-	void CyResolution();
+
+	std::vector<Mesh*>& GetLights() { return lights; }
+	const Camera& GetCamera() { return camera; }
 
 private:
 	Shader shaderColor = {};
@@ -34,6 +35,8 @@ private:
 	glm::vec3 cameraPosition = { 10.0f, 10.0f, 10.0f };  // Initial camera position
 	glm::vec3 lookAtTarget = { 0.0f, 0.0f, 0.0f };      // Initial LookAt target
 	float cameraSpeed = 0.1f;
+
+	std::vector<Mesh*> lights;
 };
 
 #endif // !GAME_CONTROLLER_H
