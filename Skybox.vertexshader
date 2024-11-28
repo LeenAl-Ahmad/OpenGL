@@ -9,5 +9,5 @@ uniform mat4 PV;
 void main()
 {
 	retTexCoords = vertices;
-	gl_position = PV * vec4(vertices, 1.0);
+	gl_Position = PV * vec4(vertices, 1.0);
 }

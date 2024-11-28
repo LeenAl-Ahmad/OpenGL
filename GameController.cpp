@@ -63,13 +63,13 @@ void GameController::RunGame()
 
 #pragma region Skybox Setup
         skybox = new SkyBox();
-        skybox->Create(&shaderSkybox, "../Assets/Models/Skybox.obj", 
-            { "../Assets/Textures/Skybox/right.jpg", 
-            "../Assets/Textures/Skybox/left.jpg", 
-            "../Assets/Textures/Skybox/top.jpg", 
-            "../Assets/Textures/Skybox/bottom.jpg", 
-            "../Assets/Textures/Skybox/front.jpg", 
-            "../Assets/Textures/Skybox/back.jpg"});
+        skybox->Create(&shaderSkybox, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Skybox.obj", 
+            { "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/right.jpg", 
+            "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/left.jpg", 
+            "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/top.jpg", 
+            "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/bottom.jpg", 
+            "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/front.jpg", 
+            "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/back.jpg"});
 #pragma endregion
 
     GLFWwindow* win = WindowController::GetInstance().GetWindow(); 

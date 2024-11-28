@@ -56,10 +56,10 @@ void Mesh::Create(Shader* _shader, std::string _file)
 	}
 
 	texture = Texture();
-	texture.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Models/" + diffuseMap);
+	texture.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/" + diffuseMap);
 
 	texture2 = Texture();
-	texture2.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Models/" + diffuseMap);
+	texture2.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/" + diffuseMap);
 
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);

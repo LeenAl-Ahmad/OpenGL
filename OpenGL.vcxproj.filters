@@ -154,11 +154,19 @@
     </None>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
-    <None Include="Skybox.fragmentshader" />
-    <None Include="Skybox.vertexshader" />
     <None Include="External\freetype-2.10.4\release dll\win32\freetype.dll" />
-    <None Include="Font.fragmentshader" />
-    <None Include="Font.vertexshader" />
+    <None Include="Skybox.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Skybox.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Font.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Font.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Library Include="External\freetype-2.10.4\release dll\win32\freetype.lib" />
