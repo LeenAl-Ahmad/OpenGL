@@ -12,8 +12,7 @@ Camera::Camera(const Resolution& _resolution, const float _n, const float _f)
 		glm::vec3(0, 0, 0),
 		glm::vec3(0, 1, 0));
 }
-
-void Camera::SetPosition(const glm::vec3& position) 
+/*void Camera::SetPosition(const glm::vec3& position) 
 {
 	// Set the view matrix based on the new camera position
 	view = glm::lookAt(position, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)); // Look at the origin
@@ -25,4 +24,14 @@ void Camera::UpdateProjection(const Resolution& _res)
 		(float)_res.width / (float)_res.height,
 		0.1f,
 		1000.0f);
+}*/
+
+
+void Camera::Rotate()
+{
+	angle += 0.1f;
+	lookAt.x = cos(glm::radians(angle)) * 100;
+	lookAt.z = sin(glm::radians(angle)) * 100;
+
+	view = glm::lookAt(position, lookAt, glm::vec3(0, 1, 0));
 }

@@ -10,18 +10,18 @@ public:
 	virtual ~Texture();
 
 	GLuint GetTexture() { return texture; }
-	GLuint GetTexture2() { return texture2; }
 
 	void LoadTexture(std::string _file);
-	void LoadTexture2(std::string _file);
+	void LoadCubeMap(std::vector<std::string> _file);
 	void Cleanup();
+
 private:
 
+	bool EndsWith(const std::string& _str, const std::string& _suffix);
 	int width = -1;
 	int height = -1;
 	int channels = -1;
 	GLuint texture;
-	GLuint texture2;
 };
 
 

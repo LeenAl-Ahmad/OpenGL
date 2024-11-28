@@ -77,13 +77,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)/External/glfw-3.3.4/include;$(SolutionDir)/External/glm;$(SolutionDir)/External/glew-2.1.0/include;$(SolutionDir)/External/stb;$(SolutionDir)/External/obj_loader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/External/glfw-3.3.4/include;$(SolutionDir)/External/glm;$(SolutionDir)/External/glew-2.1.0/include;$(SolutionDir)/External/stb;$(SolutionDir)/External/obj_loader;$(SolutionDir)/External/freetype-2.10.4/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)/External/glfw-3.3.4/lib-vc2019;$(SolutionDir)/External/glew-2.1.0/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/External/glfw-3.3.4/lib-vc2019;$(SolutionDir)/External/glew-2.1.0/lib;$(SolutionDir)/External/freetype-2.10.4/release static/win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32d.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PreBuildEvent>
@@ -137,11 +137,13 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="SKYBOX.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="WindowController.cpp" />
   </ItemGroup>
@@ -149,6 +151,7 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <ClInclude Include="Camera.h" />
     <ClInclude Include="External\obj_loader\OBJ_Loader.h" />
     <ClInclude Include="External\stb\stb_image.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="GameController.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MyForm.h">
@@ -157,6 +160,7 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <ClInclude Include="Resolution.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SKYBOX.h" />
     <ClInclude Include="StandardInclude.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="WindowController.h" />
@@ -182,6 +186,12 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <Image Include="Assets\MetalFrameWood.jpg" />
     <Image Include="Assets\Pattern.png" />
     <Image Include="Assets\Tacos.jpg" />
+    <Image Include="Assets\Textures\Skybox\back.jpg" />
+    <Image Include="Assets\Textures\Skybox\bottom.jpg" />
+    <Image Include="Assets\Textures\Skybox\front.jpg" />
+    <Image Include="Assets\Textures\Skybox\left.jpg" />
+    <Image Include="Assets\Textures\Skybox\right.jpg" />
+    <Image Include="Assets\Textures\Skybox\top.jpg" />
     <Image Include="Assets\Wood.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -191,10 +201,15 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <None Include="Color.vertexshader" />
     <None Include="Diffuse.fragmentshader" />
     <None Include="Diffuse.vertexshader" />
-    <None Include="Assets\Models\untitled.mtl" />
+    <None Include="External\freetype-2.10.4\release dll\win32\freetype.dll" />
+    <None Include="Font.fragmentshader" />
+    <None Include="Font.vertexshader" />
+    <None Include="Skybox.fragmentshader" />
+    <None Include="Skybox.vertexshader" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="Assets\Models\untitled.obj" />
+    <Library Include="External\freetype-2.10.4\release dll\win32\freetype.lib" />
+    <Library Include="External\freetype-2.10.4\release static\win32\freetype.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,17 +1,18 @@
 #ifndef GAME_CONTROLLER_H
 #define GAME_CONTROLLER_H
 
-#include "StandardInclude.h"
+#include "WindowController.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "SKYBOX.h"
 #include "Camera.h"
 
-#include <array>
+
 
 class GameController : public Singleton< GameController>
 {
 public:
-	GameController();
+	GameController() = default;
 	virtual ~GameController() = default;
 
 	void Initialize();
@@ -21,22 +22,16 @@ public:
 	const Camera& GetCamera() { return camera; }
 
 private:
+	Camera camera = {};
+
 	Shader shaderColor = {};
 	Shader shaderDiffuse = {};
+	Shader shaderFont = {};
+	Shader shaderSkybox = {};
+
 	std::vector<Mesh*> meshBoxes;
-	Mesh* meshLight = {};
-
-	Camera camera = {};
-	std::array<Camera, 3> cameras;
-	std::array<Resolution, 3> resolutions;
-	int currentCameraIndex = 0;
-	int currentResolutionIndex = 0;
-	float lastFrameTime = 0.0f;
-	glm::vec3 cameraPosition = { 10.0f, 10.0f, 10.0f };  // Initial camera position
-	glm::vec3 lookAtTarget = { 0.0f, 0.0f, 0.0f };      // Initial LookAt target
-	float cameraSpeed = 0.1f;
-
 	std::vector<Mesh*> lights;
+	SkyBox* skybox = nullptr;
 };
 
 #endif // !GAME_CONTROLLER_H
