@@ -10,8 +10,9 @@ void GameController::Initialize() {
     M_ASSERT(glewInit() == GLEW_OK, "Failed to initialize GLEW.");
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
-    glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+    glCullFace(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     srand(time(0));
 
@@ -43,9 +44,9 @@ void GameController::RunGame()
 #pragma region Model setup
         Mesh* light = new Mesh();
         light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
-        light->SetColor({1.0f, 1.0f, 1.0f});
-        light->SetScalo({1.0f, 1.0f, 1.0f});
-        light->SetPosition({ 5.0f, 1.0f, 0.0f });
+        light->SetColor({5.0f, 1.0f, 1.0f});
+        light->SetScalo({0.1f, 0.1f, .10f});
+        light->SetPosition({ 1.5f, 0.0f, 1.0f });
         lights.push_back(light);
     
         
@@ -53,22 +54,8 @@ void GameController::RunGame()
         box->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj");
         box->SetCameraPosition(camera.GetPosition());
         box->SetScalo({ 1.0f, 1.0f, 1.0f });
-        box->SetPosition({5.0f, 0.0f, 5.0f});
+        box->SetPosition({0.0f, 0.0f, 0.0f});
         meshBoxes.push_back(box);
-
-        Mesh* plane = new Mesh();
-        plane->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Plane.obj");
-        plane->SetCameraPosition(camera.GetPosition());
-        plane->SetScalo({ 1.0f, 1.0f, 1.0f });
-        plane->SetPosition({ -1.0f, -1.0f, -1.0f });
-        meshBoxes.push_back(plane);
-
-        Mesh* windowMesh = new Mesh();
-        windowMesh->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Window.obj");
-        windowMesh->SetCameraPosition(camera.GetPosition());
-        windowMesh->SetScalo({ 1.0f, 1.0f, 1.0f });
-        windowMesh->SetPosition({ 0.0f, 0.0f, 0.0f });
-        meshBoxes.push_back(windowMesh);
 #pragma endregion 
 
         Font* arialFont = new Font();

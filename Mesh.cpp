@@ -161,7 +161,7 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)
 	{
-		shader->SetVec3(Concat("light[", i,"].ambientColor").c_str(), {0.1f, 0.1f, 0.1f});
+		shader->SetVec3(Concat("light[", i,"].ambientColor").c_str(), {1.0f, 1.0f, 1.0f});
 		shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), lights[i]->GetColor());
 		shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), { 3.0f, 3.0f, 3.0f });
 
