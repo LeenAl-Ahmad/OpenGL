@@ -32,6 +32,8 @@ private:
 	std::vector<Mesh*> meshes;
 	std::vector<Mesh*> lights;
 	SkyBox* skybox = nullptr;
+
+	GLuint vao;
 };
 
 #endif // !GAME_CONTROLLER_H

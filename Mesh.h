@@ -24,7 +24,7 @@ public:
 	glm::vec3 GetLightDirection() { return lightDirection; }
 	void SetCameraPosition(glm::vec3 _camerPosition) { cameraPosition = _camerPosition; }
 
-	void Create(Shader* _shader, std::string _file);
+	void Create(Shader* _shader, std::string _file, int _instanceCount = 1);
 	void Cleanup();
 	void CalculateTransform();
 	void Render(glm::mat4 wvp);
@@ -40,24 +40,30 @@ private:
 	std::string RemoveFolder(std::string& _map);
 	void CalculateTangents(std::vector<objl::Vertex> _vertices, objl::Vector3& _tang, objl::Vector3& _bitang);
 
-	Shader* shader;
+	Shader* shader = nullptr;
 	Texture textureDiffuse{};
 	Texture textureSpecular{};
 	Texture textureNormal{};
 	GLuint vertexBuffer = 0;
 	GLuint indexBuffer = 0;
+	GLuint instanceBuffer = 0;
 	std::vector<GLfloat> vertexData;
 	std::vector<GLbyte> indexData;
+	std::vector<GLfloat> instanceData;
 	bool enableNormalMaps = false;
+
+	int instanceCount = 0;
+	bool enableInstancing = false;
 
 	int vertexStride = 0;
 
 	glm::mat4 world = glm::mat4(1);
 	glm::vec3 position{ 0.0f, 0.0f, 0.0f };
-	glm::vec3 lightDirection{ 0.0f, 0.0f, 0.0f };
 	glm::vec3 rotation{ 0.0f, 0.0f, 0.0f };
 	glm::vec3 scale{ 1.0f, 1.0f, 1.0f };
 	glm::vec3 color{ 1.0f, 1.0f, 1.0f };
+
+	glm::vec3 lightDirection{ 0.0f, 0.0f, 0.0f };
 	glm::vec3 cameraPosition{ 0.0f, 0.0f, 0.0f };
 };
 

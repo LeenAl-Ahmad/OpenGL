@@ -19,6 +19,7 @@ public:
 	GLuint GetAttrTexCoords() { return  attrTexCoords; }
 	GLuint GetAttrTangents() { return attrTangents; }
 	GLuint GetAttrBitangents() { return attrBitangents; }
+	GLuint GetAttrInstanceMatrix() { return attrInstanceMatrix; }
 	
 	// Methods
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
@@ -45,11 +46,14 @@ private:
 	GLuint attrWVP = 0;
 	GLuint attrNormals = 0;
 	GLuint attrTexCoords = 0;
+
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;
 
 	GLuint attrTangents = 0;
 	GLuint attrBitangents = 0;
+
+	GLuint attrInstanceMatrix = 0;
 };
 
 #endif // !SHADER_H

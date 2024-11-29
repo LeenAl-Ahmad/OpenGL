@@ -17,6 +17,9 @@ void GameController::Initialize() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     srand(time(0));
 
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
     camera = Camera(WindowController::GetInstance().GetResolution());
     camera.LookAt({ 5,5,5 }, { 0,0,0 }, { 0,1,0 });
 }
@@ -45,9 +48,9 @@ void GameController::RunGame()
 #pragma region Model setup
         Mesh* light = new Mesh();
         light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
-        light->SetColor({1.0f, 1.0f, 1.0f});
-        light->SetScalo({0.1f, 0.1f, 0.1f});
+        light->SetColor({3.0f, 1.0f, 1.0f});
         light->SetPosition({ 0.0f, 0.8f, 1.0f });
+        light->SetScalo({ 0.1f, 0.1f, 0.1f });
         lights.push_back(light);
     
         
@@ -60,9 +63,9 @@ void GameController::RunGame()
         meshes.push_back(mesh);*/ 
 #pragma region Cube
         Mesh* mesh = new Mesh();
-        mesh->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj");
+        mesh->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj", 1000);
         mesh->SetCameraPosition(camera.GetPosition());
-        mesh->SetScalo({ 1.0f, 1.0f, 1.0f });
+        mesh->SetScalo({ 0.1f, 0.1f, 0.1f });
         mesh->SetPosition({ 0.0f, 0.0f, 0.0f });
         meshes.push_back(mesh);
 #pragma endregion 

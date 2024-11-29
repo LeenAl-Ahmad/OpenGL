@@ -24,6 +24,7 @@ void Shader::LoadAttributes()
 	attrWVP = glGetUniformLocation(programID, "WVP");
 	attrTangents = glGetAttribLocation(programID, "tangents");
 	attrBitangents = glGetAttribLocation(programID, "bitangents");
+	attrInstanceMatrix = glGetAttribLocation(programID, "instanceMatrix");
 }
 
 void Shader::SetVec3(const char* _name, glm::vec3 _value)
