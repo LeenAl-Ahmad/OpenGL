@@ -4,6 +4,7 @@
     #include "ToolWindow.h"
 #endif // USE_Tool_WINDOW
 #include "Font.h"
+#include "GameClass.h"
 
 void GameController::Initialize() {
     GLFWwindow* window = WindowController::GetInstance().GetWindow();
@@ -17,7 +18,7 @@ void GameController::Initialize() {
     srand(time(0));
 
     camera = Camera(WindowController::GetInstance().GetResolution());
-    camera.LookAt({ 2,2,2 }, { 0,0,0 }, { 0,1,0 });
+    camera.LookAt({ 5,5,5 }, { 0,0,0 }, { 0,1,0 });
 }
 
 void GameController::RunGame() 
@@ -50,14 +51,20 @@ void GameController::RunGame()
         lights.push_back(light);
     
         
-        Mesh* mesh = nullptr;
+       /**Mesh* mesh = nullptr;
         mesh = new Mesh();
         mesh->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Fighter.obj");
         mesh->SetCameraPosition(camera.GetPosition());
         mesh->SetScalo({ 0.002f, 0.002f, 0.002f });
         mesh->SetPosition({0.0f, 0.0f, 0.0f});
+        meshes.push_back(mesh);*/ 
+#pragma region Cube
+        Mesh* mesh = new Mesh();
+        mesh->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj");
+        mesh->SetCameraPosition(camera.GetPosition());
+        mesh->SetScalo({ 1.0f, 1.0f, 1.0f });
+        mesh->SetPosition({ 0.0f, 0.0f, 0.0f });
         meshes.push_back(mesh);
-
 #pragma endregion 
 
         Font* arialFont = new Font();
@@ -74,13 +81,14 @@ void GameController::RunGame()
             "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/front.jpg", 
             "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/back.jpg"});
 #pragma endregion*/
-
+        GameTime::GetInstance().Intialize();
     GLFWwindow* win = WindowController::GetInstance().GetWindow(); 
 
         do
         {
+            GameTime::GetInstance().Update();
             // Clear screen and render
-            glClear(GL_COLOR_BUFFER_BIT /* | GL_DEPTH_BUFFER_BIT*/);
+            glClear(GL_COLOR_BUFFER_BIT  | GL_DEPTH_BUFFER_BIT);
 
             //camera.Rotate();
             //glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
@@ -90,14 +98,15 @@ void GameController::RunGame()
             {
                 light->Render(camera.GetProjection() * camera.GetView());
             }
-            glm::vec3 rotationspead = { 0.0f, 0.05f, 0.0f };
+
+            glm::vec3 rotationspeed = { 0.0f, 0.05f, 0.0f };
             for (auto mesh : meshes)
             {
-                //box->SetRotation1(box->GetRotation1() + rotationspead);
+                mesh->SetRotation(mesh->GetRotation() + rotationspeed);
                 mesh->Render(camera.GetProjection() * camera.GetView());
             }
 
-            arialFont->RenderText("Hello World", 10, 500, 0.5f, { 1.0f, 1.0f, 0.0f });
+            arialFont->RenderText(std::to_string(GameTime::GetInstance().Fps()), 100, 100, 0.5f, {1.0f, 1.0f, 0.0f});
 
             glfwSwapBuffers(win);
             glfwPollEvents();

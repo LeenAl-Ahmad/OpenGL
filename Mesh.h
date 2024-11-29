@@ -15,8 +15,8 @@ public:
 
 	void SetPosition(glm::vec3 _p) { position = _p; }
 	glm::vec3 GetPosition() { return position; }
-	//void SetRotation1(glm::vec3 _rotation1) { rotation1 = _rotation1; }
-	//glm::vec3 GetRotation1() { return rotation1; }
+	void SetRotation(glm::vec3 _rotation1) { rotation = _rotation1; }
+	glm::vec3 GetRotation() { return rotation; }
 	void SetScalo(glm::vec3 _s) { scale = _s; }
 	void SetColor(glm::vec3 _color) { color = _color; }
 	glm::vec3 GetColor() { return color; }
