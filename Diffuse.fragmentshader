@@ -4,7 +4,8 @@ in vec3 retFragPos;
 in vec3 retNormal;
 in vec2 retTexCoord;
 in vec3 retViewDirection;
-in mat4 retWorld;
+in mat3 retTBN;
+
 
 out vec4 FragColor;
 
@@ -44,12 +45,13 @@ void main() {
         vec3 lightDir = normalize(light[i].position - retFragPos);
 
         vec3 normal = retNormal;
-        if (EnableNormalMaps) {
+        if (EnableNormalMaps == true) 
+        {
             normal = texture(material.normalTexture, retTexCoord).rgb;
             normal = normal * 2.0 - 1.0;
-            normal = normalize(mat3(retWorld) * normal);
+            normal = normalize(retTBN * normal);
         }
-        float lambertianStrength = max(dot(lightDir, normal), 0.0); // Fixed typo: "lamdertianStrength".
+        float lambertianStrength = dot(lightDir, normal); // Fixed typo: "lamdertianStrength".
 
         // Specular lighting calculation
         vec3 refl = reflect(-lightDir, normal);

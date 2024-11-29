@@ -17,6 +17,8 @@ public:
 	GLuint GetAttrWVP() { return attrWVP; }
 	GLuint GetAttrNormals() { return attrNormals; }
 	GLuint GetAttrTexCoords() { return  attrTexCoords; }
+	GLuint GetAttrTangents() { return attrTangents; }
+	GLuint GetAttrBitangents() { return attrBitangents; }
 	
 	// Methods
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
@@ -25,7 +27,7 @@ public:
 	void SetMat4(const char* _name, glm::mat4 _value);
 	void SetFloat(const char* _name, float _v);
 	void SetTextureSampler(const char* _name, GLuint _texUint, int _texYintId, int _v);
-	//void SetInt(const char* _name, int _v);
+	void SetInt(const char* _name, int _v);
 
 
 private:
@@ -45,6 +47,9 @@ private:
 	GLuint attrTexCoords = 0;
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;
+
+	GLuint attrTangents = 0;
+	GLuint attrBitangents = 0;
 };
 
 #endif // !SHADER_H

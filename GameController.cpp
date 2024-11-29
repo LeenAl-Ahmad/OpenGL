@@ -46,16 +46,17 @@ void GameController::RunGame()
         light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
         light->SetColor({1.0f, 1.0f, 1.0f});
         light->SetScalo({0.1f, 0.1f, 0.1f});
-        light->SetPosition({ 0.0f, 0.1f, 1.0f });
+        light->SetPosition({ 0.0f, 0.8f, 1.0f });
         lights.push_back(light);
     
         
-        Mesh* box = new Mesh();
-        box->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Wall.obj");
-        box->SetCameraPosition(camera.GetPosition());
-        box->SetScalo({ 1.0f, 1.0f, 1.0f });
-        box->SetPosition({0.0f, 0.0f, 0.0f});
-        meshes.push_back(box);
+        Mesh* mesh = nullptr;
+        mesh = new Mesh();
+        mesh->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Fighter.obj");
+        mesh->SetCameraPosition(camera.GetPosition());
+        mesh->SetScalo({ 0.002f, 0.002f, 0.002f });
+        mesh->SetPosition({0.0f, 0.0f, 0.0f});
+        meshes.push_back(mesh);
 
 #pragma endregion 
 
@@ -121,26 +122,5 @@ void GameController::RunGame()
     shaderColor.Cleanup();
     shaderDiffuse.Cleanup();
 }
-/*void GameController::CyCamera() {
-    // Cycle through the cameras array
-    currentCameraIndex = (currentCameraIndex + 1) % cameras.size();
 
-    // You could log the camera change here, if needed
-    std::cout << "Switched to Camera " << currentCameraIndex + 1 << std::endl;
-}*/
-
-/*void GameController::CyResolution() {
-    // Cycle through the resolutions array
-    currentResolutionIndex = (currentResolutionIndex + 1) % resolutions.size();
-
-    // Re-initialize the cameras with the new resolution
-    for (auto& camera : cameras) {
-        camera.UpdateProjection(resolutions[currentResolutionIndex]);
-    }
-
-    std::cout << "Switched to Resolution: "
-        << resolutions[currentResolutionIndex].width << "x"
-        << resolutions[currentResolutionIndex].height << " FoV: "
-        << resolutions[currentResolutionIndex].FoV << std::endl;
-}*/
 

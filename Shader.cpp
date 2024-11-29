@@ -22,6 +22,8 @@ void Shader::LoadAttributes()
 	attrNormals = glGetAttribLocation(programID, "normals");
 	attrTexCoords = glGetAttribLocation(programID, "texCoords");
 	attrWVP = glGetUniformLocation(programID, "WVP");
+	attrTangents = glGetAttribLocation(programID, "tangents");
+	attrBitangents = glGetAttribLocation(programID, "bitangents");
 }
 
 void Shader::SetVec3(const char* _name, glm::vec3 _value)
@@ -136,11 +138,11 @@ void Shader::LoadShaders(const char* _vertexFilePath, const char* _fragmentFileP
 	LoadAttributes();
 }
 
-/*void Shader::SetInt(const char* _name, int _v)
+void Shader::SetInt(const char* _name, int _v)
 {
 	GLuint loc = glGetUniformLocation(programID, _name);
 	if (loc != -1)
 	{
 		glUniform1i(loc, _v);
 	}
-}*/
+}

@@ -23,7 +23,7 @@ size_t Mesh::GetIndexDataSize() const {
 	return indexData.size();
 }
 
-/*std::string Mesh::RemoveFolder(std::string& _m)
+std::string Mesh::RemoveFolder(std::string& _m)
 {
 	const size_t last_slash_idx = _m.find_last_of("\\/");
 	if (std::string::npos != last_slash_idx)
@@ -31,7 +31,26 @@ size_t Mesh::GetIndexDataSize() const {
 		_m.erase(0, last_slash_idx + 1);
 	}
 	return _m;
-}*/
+}
+
+void Mesh::CalculateTangents(std::vector<objl::Vertex> _vertices, objl::Vector3& _t, objl::Vector3& _bt)
+{
+	objl::Vector3 edge1 = _vertices[1].Position - _vertices[0].Position;
+	objl::Vector3 edge2 = _vertices[2].Position - _vertices[0].Position;
+	objl::Vector2 deltaUV1 = _vertices[1].TextureCoordinate - _vertices[0].TextureCoordinate;
+	objl::Vector2 deltaUV2 = _vertices[2].TextureCoordinate - _vertices[0].TextureCoordinate;
+
+	float f = 1.0f / (deltaUV1.X * deltaUV2.Y - deltaUV2.X * deltaUV1.Y);
+
+	_t.X = f * (deltaUV2.Y * edge1.X - deltaUV1.Y * edge2.X);
+	_t.Y = f * (deltaUV2.Y * edge1.Y - deltaUV1.Y * edge2.Y);
+	_t.Z = f * (deltaUV2.Y * edge1.Z - deltaUV1.Y * edge2.Z);
+
+	_bt.X = f * (-deltaUV2.X * edge1.X + deltaUV1.X * edge2.X);
+	_bt.Y = f * (-deltaUV2.X * edge1.Y + deltaUV1.X * edge2.Y);
+	_bt.Z = f * (-deltaUV2.X * edge1.Z + deltaUV1.X * edge2.Z);
+
+}
 
 void Mesh::Create(Shader* _shader, std::string _file)
 {
@@ -43,6 +62,24 @@ void Mesh::Create(Shader* _shader, std::string _file)
 	for (unsigned int i = 0; i < loader.LoadedMeshes.size(); i++)
 	{
 		objl::Mesh curMesh = loader.LoadedMeshes[i];
+		std::vector<objl::Vector3> tangents;
+		std::vector<objl::Vector3> bitangents;
+		std::vector<objl::Vertex> triangle;
+		objl::Vector3 tangent;
+		objl::Vector3 bitangent;
+		for (unsigned int j = 0; j < curMesh.Vertices.size(); j += 3)
+		{
+			triangle.clear();
+			triangle.push_back(curMesh.Vertices[j]);
+			triangle.push_back(curMesh.Vertices[j + 1]);
+			triangle.push_back(curMesh.Vertices[j + 2]);
+			CalculateTangents(triangle, tangent, bitangent);
+			tangents.push_back(tangent);
+			bitangents.push_back(bitangent);
+
+
+
+		}
 		for (unsigned int j = 0; j < curMesh.Vertices.size(); j++)
 		{
 			vertexData.push_back(curMesh.Vertices[j].Position.X);
@@ -53,6 +90,17 @@ void Mesh::Create(Shader* _shader, std::string _file)
 			vertexData.push_back(curMesh.Vertices[j].Normal.Z);
 			vertexData.push_back(curMesh.Vertices[j].TextureCoordinate.X);
 			vertexData.push_back(curMesh.Vertices[j].TextureCoordinate.Y);
+
+			if (loader.LoadedMaterials[0].map_bump != "")
+			{
+				int index = j / 3;
+				vertexData.push_back(tangents[index].X);
+				vertexData.push_back(tangents[index].Y);
+				vertexData.push_back(tangents[index].Z);
+				vertexData.push_back(bitangents[index].X);
+				vertexData.push_back(bitangents[index].Y);
+				vertexData.push_back(bitangents[index].Z);
+			}
 		}
 	}
 
@@ -63,7 +111,7 @@ void Mesh::Create(Shader* _shader, std::string _file)
 		diffuseMap.erase(0, last_slash_idx + 1);
 	}
 
-/*#pragma region  Texture Loading
+#pragma region  Texture Loading
 	textureDiffuse = Texture();
 	if (loader.LoadedMaterials[0].map_Kd != "")
 	{
@@ -83,11 +131,17 @@ void Mesh::Create(Shader* _shader, std::string _file)
 	textureNormal = Texture();
 	if (loader.LoadedMaterials[0].map_bump != "")
 	{
-		enableNormalMap = true;
+		enableNormalMaps = true;
 		textureNormal.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Textures/" + RemoveFolder(loader.LoadedMaterials[0].map_bump));
 	}
 
-#pragma endregion*/
+#pragma endregion
+
+	vertexStride = 8;
+	if (enableNormalMaps)
+	{
+		vertexStride += 6;
+	}
 
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -145,23 +199,29 @@ void Mesh::BindAttributes()
 	);
 #pragma endregion
 
+#pragma region BindNormalMapData
+
+	if (enableNormalMaps)
+	{
+		glEnableVertexAttribArray(shader->GetAttrTangents());
+		glVertexAttribPointer(shader->GetAttrBitangents(),
+			3, GL_FLOAT, GL_FALSE, vertexStride * sizeof(float), (void*)(8 * sizeof(float)));
+
+		glEnableVertexAttribArray(shader->GetAttrTangents());
+		glVertexAttribPointer(shader->GetAttrBitangents(),
+			3, GL_FLOAT, GL_FALSE, vertexStride * sizeof(float), (void*)(11 * sizeof(float)));
+	}
+
 }
 
 void Mesh::Render(glm::mat4 _pv) {
 	glUseProgram(shader->GetProgramID());
-
-
-	//rotate.y += 0.005f;
 	
 	CalculateTransform();
 	SetShaderVariable(_pv);
 	BindAttributes();
 
-
-	glGenBuffers(1, &indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size() * sizeof(unsigned int), indexData.data(), GL_STATIC_DRAW);
-	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, vertexData.size()/ vertexStride);
 
 }
 
@@ -172,9 +232,6 @@ void Mesh::SetRotation(float rotationX, float rotationY) {
 
 void Mesh::CalculateTransform() {
 	world = glm::translate(glm::mat4(1.0f), position);
-	//world = glm::rotate(world, rotate.y, glm::vec3(0, 1, 0));
-	//world = glm::rotate(world, rotate.x, glm::vec3(1, 0, 0));
-	//world = glm::rotate(world, rotate.z, glm::vec3(0, 0, 1));
 	world = glm::scale(world, scale);
 }
 
@@ -183,7 +240,7 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetMat4("World", world);
 	shader->SetMat4("WVP", _pv * world);
 	shader->SetVec3("CameraPosition", cameraPosition);
-	//shader->SetInt("EnableNormalMaps", enableNormalMaps);
+	shader->SetInt("EnableNormalMaps", enableNormalMaps);
 
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)
@@ -205,9 +262,9 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	
 
 	shader->SetFloat("material.specularStrength", 8.0f);
-	//shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, textureDiffuse.GetTexture());
-	//shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, textureSpecular.GetTexture());
-	//shader->SetTextureSampler("material.normalTexture", GL_TEXTURE2, 2, textureNormal.GetTexture());
+	shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, textureDiffuse.GetTexture());
+    shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, textureSpecular.GetTexture());
+	shader->SetTextureSampler("material.normalTexture", GL_TEXTURE2, 2, textureNormal.GetTexture());
 
 }
 
