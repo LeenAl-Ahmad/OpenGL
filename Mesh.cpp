@@ -13,8 +13,6 @@ Mesh::~Mesh()
 	{
 		glDeleteBuffers(1, &indexBuffer);
 	}
-	texture.Cleanup();
-	texture2.Cleanup();
 }
 
 size_t Mesh::GetVertexDataSize() const {
@@ -24,6 +22,16 @@ size_t Mesh::GetVertexDataSize() const {
 size_t Mesh::GetIndexDataSize() const {
 	return indexData.size();
 }
+
+/*std::string Mesh::RemoveFolder(std::string& _m)
+{
+	const size_t last_slash_idx = _m.find_last_of("\\/");
+	if (std::string::npos != last_slash_idx)
+	{
+		_m.erase(0, last_slash_idx + 1);
+	}
+	return _m;
+}*/
 
 void Mesh::Create(Shader* _shader, std::string _file)
 {
@@ -55,11 +63,31 @@ void Mesh::Create(Shader* _shader, std::string _file)
 		diffuseMap.erase(0, last_slash_idx + 1);
 	}
 
-	texture = Texture();
-	texture.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/" + diffuseMap);
+/*#pragma region  Texture Loading
+	textureDiffuse = Texture();
+	if (loader.LoadedMaterials[0].map_Kd != "")
+	{
+		textureDiffuse.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Textures/" + RemoveFolder(loader.LoadedMaterials[0].map_Kd));
+	}
+	else
+	{
+		textureDiffuse.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Textures/Pattern.png");
+	}
 
-	texture2 = Texture();
-	texture2.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/" + diffuseMap);
+	textureSpecular = Texture();
+	if (loader.LoadedMaterials[0].map_Ks != "")
+	{
+		textureSpecular.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Textures/" + RemoveFolder(loader.LoadedMaterials[0].map_Ks));
+	}
+
+	textureNormal = Texture();
+	if (loader.LoadedMaterials[0].map_bump != "")
+	{
+		enableNormalMap = true;
+		textureNormal.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Textures/" + RemoveFolder(loader.LoadedMaterials[0].map_bump));
+	}
+
+#pragma endregion*/
 
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -72,8 +100,6 @@ void Mesh::Cleanup()
 {
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteBuffers(1, &indexBuffer);
-	texture.Cleanup();
-	texture2.Cleanup();
 	vertexBuffer = 0;
 	indexBuffer = 0;
 }
@@ -125,7 +151,7 @@ void Mesh::Render(glm::mat4 _pv) {
 	glUseProgram(shader->GetProgramID());
 
 
-	rotate.y += 0.005f;
+	//rotate.y += 0.005f;
 	
 	CalculateTransform();
 	SetShaderVariable(_pv);
@@ -157,6 +183,7 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetMat4("World", world);
 	shader->SetMat4("WVP", _pv * world);
 	shader->SetVec3("CameraPosition", cameraPosition);
+	//shader->SetInt("EnableNormalMaps", enableNormalMaps);
 
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)
@@ -178,8 +205,10 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	
 
 	shader->SetFloat("material.specularStrength", 8.0f);
-	shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, texture.GetTexture());
-	shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, texture2.GetTexture());
+	//shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, textureDiffuse.GetTexture());
+	//shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, textureSpecular.GetTexture());
+	//shader->SetTextureSampler("material.normalTexture", GL_TEXTURE2, 2, textureNormal.GetTexture());
+
 }
 
 std::string Mesh::Concat(const std::string& _s1, int _index, const std::string& _s2)

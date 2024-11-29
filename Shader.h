@@ -17,8 +17,7 @@ public:
 	GLuint GetAttrWVP() { return attrWVP; }
 	GLuint GetAttrNormals() { return attrNormals; }
 	GLuint GetAttrTexCoords() { return  attrTexCoords; }
-	GLuint GetSampler1() { return sampler1; }
-	GLuint GetSampler2() { return sampler2; }
+	
 	// Methods
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 	void Cleanup();
@@ -26,6 +25,8 @@ public:
 	void SetMat4(const char* _name, glm::mat4 _value);
 	void SetFloat(const char* _name, float _v);
 	void SetTextureSampler(const char* _name, GLuint _texUint, int _texYintId, int _v);
+	//void SetInt(const char* _name, int _v);
+
 
 private:
 	// Methods
@@ -42,8 +43,6 @@ private:
 	GLuint attrWVP = 0;
 	GLuint attrNormals = 0;
 	GLuint attrTexCoords = 0;
-	GLuint sampler1 = 0;
-	GLuint sampler2 = 0;
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;
 };

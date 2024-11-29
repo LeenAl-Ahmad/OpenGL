@@ -17,7 +17,7 @@ void GameController::Initialize() {
     srand(time(0));
 
     camera = Camera(WindowController::GetInstance().GetResolution());
-    camera.LookAt({ 0,0,0 }, { 0,0,0 }, { 0,1,0 });
+    camera.LookAt({ 2,2,2 }, { 0,0,0 }, { 0,1,0 });
 }
 
 void GameController::RunGame() 
@@ -37,30 +37,32 @@ void GameController::RunGame()
     shaderDiffuse.LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
     shaderFont = Shader();
     shaderFont.LoadShaders("Font.vertexshader", "Font.fragmentshader");
-    shaderSkybox = Shader();
-    shaderSkybox.LoadShaders("Skybox.vertexshader", "Skybox.fragmentshader");
+    //shaderSkybox = Shader();
+    //shaderSkybox.LoadShaders("Skybox.vertexshader", "Skybox.fragmentshader");
 #pragma endregion
 
 #pragma region Model setup
         Mesh* light = new Mesh();
         light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
-        light->SetColor({5.0f, 1.0f, 1.0f});
-        light->SetScalo({0.1f, 0.1f, .10f});
-        light->SetPosition({ 1.5f, 0.0f, 1.0f });
+        light->SetColor({1.0f, 1.0f, 1.0f});
+        light->SetScalo({0.1f, 0.1f, 0.1f});
+        light->SetPosition({ 0.0f, 0.1f, 1.0f });
         lights.push_back(light);
     
         
         Mesh* box = new Mesh();
-        box->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj");
+        box->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Wall.obj");
         box->SetCameraPosition(camera.GetPosition());
         box->SetScalo({ 1.0f, 1.0f, 1.0f });
         box->SetPosition({0.0f, 0.0f, 0.0f});
-        meshBoxes.push_back(box);
+        meshes.push_back(box);
+
 #pragma endregion 
 
         Font* arialFont = new Font();
         arialFont->Create(&shaderFont, "C:/Users/leana/source/repos/OpenGL/Assets/Fonts/arial.ttf", 100);
 
+/*
 #pragma region Skybox Setup
         skybox = new SkyBox();
         skybox->Create(&shaderSkybox, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Skybox.obj", 
@@ -70,7 +72,7 @@ void GameController::RunGame()
             "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/bottom.jpg", 
             "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/front.jpg", 
             "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/back.jpg"});
-#pragma endregion
+#pragma endregion*/
 
     GLFWwindow* win = WindowController::GetInstance().GetWindow(); 
 
@@ -79,22 +81,23 @@ void GameController::RunGame()
             // Clear screen and render
             glClear(GL_COLOR_BUFFER_BIT /* | GL_DEPTH_BUFFER_BIT*/);
 
-            camera.Rotate();
-            glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
-            skybox->Render(camera.GetProjection() * view);
+            //camera.Rotate();
+            //glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
+            //skybox->Render(camera.GetProjection() * view);
 
             for (auto light : lights)
             {
                 light->Render(camera.GetProjection() * camera.GetView());
             }
-            glm::vec3 rotationspead = { 0.0f, 0.005f, 0.0f };
-            for (auto box : meshBoxes)
+            glm::vec3 rotationspead = { 0.0f, 0.05f, 0.0f };
+            for (auto mesh : meshes)
             {
-                box->SetRotation1(box->GetRotation1() + rotationspead);
-                box->Render(camera.GetProjection() * camera.GetView());
+                //box->SetRotation1(box->GetRotation1() + rotationspead);
+                mesh->Render(camera.GetProjection() * camera.GetView());
             }
 
             arialFont->RenderText("Hello World", 10, 500, 0.5f, { 1.0f, 1.0f, 0.0f });
+
             glfwSwapBuffers(win);
             glfwPollEvents();
 
@@ -108,7 +111,7 @@ void GameController::RunGame()
         delete light;
     }
     
-    for (auto box : meshBoxes)
+    for (auto box : meshes)
     {
         box->Cleanup();
         delete box;
