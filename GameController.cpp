@@ -1,7 +1,9 @@
 #include "GameController.h"
 #include "WindowController.h"
-#ifdef USE_Tool_WINDOW
-    #include "ToolWindow.h"
+#ifdef USE_TOOL_WINDOW
+    #include"MyForm.h"
+#define USE_TOOL_WINDOW
+
 #endif // USE_Tool_WINDOW
 #include "Font.h"
 #include "GameClass.h"
@@ -20,138 +22,127 @@ void GameController::Initialize() {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
+    // Camera setup
     camera = Camera(WindowController::GetInstance().GetResolution());
-    camera.LookAt({ 5,5,5 }, { 0,0,0 }, { 0,1,0 });
+    camera.LookAt({ 0, 0, 5 }, { 0, 0, 0 }, { 0, 1, 0 }); // Camera at {0, 0, 5}
 
     screenWidth = WindowController::GetInstance().GetResolution().width;
     screenHeight = WindowController::GetInstance().GetResolution().height;
 
-    projMatrix = camera.GetProjection(); // Retrieve projection matrix from the camera
-    viewMatrix = camera.GetView();       // Retrieve view matrix from the camera
+    projMatrix = camera.GetProjection();
+    viewMatrix = camera.GetView();
+
+    // Light setup
+    light = new Mesh();
+    light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");  // Use sphere object for the light
+    light->SetColor({ 3.0f, 1.0f, 1.0f });
+    light->SetPosition({ 0.0f, 0.0f, 4.0f });  // Light at {0, 0, 4}
+    light->SetScalo({ 0.1f, 0.1f, 0.1f });
+    lights.push_back(light);
+
+    // Suzanne with Hat Position (can use a custom model like "Monkey.obj" or another model)
+    Mesh* suzanne = new Mesh();
+    suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj");
+    suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
+    meshes.push_back(suzanne);
+
+    // Sphere with Specular Strength and Scale
+    Mesh* sphere = new Mesh();
+    sphere->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
+    sphere->SetPosition({ 0.0f, 0.0f, 0.0f });
+    sphere->SetScalo({ 0.5f, 0.5f, 0.5f });
+    sphere->SetColor({ 1.0f, 0.5f, 0.0f });  // Example color
+    sphere->SetLightDirection({ 1.0f, 1.0f, 1.0f });
+    //sphere->SetSpecularStrength(4.0f);
+    meshes.push_back(sphere);
+
+    // Cube with Specular Strength and Color
+    /*Mesh* cube = new Mesh();
+    cube->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj");
+    cube->SetPosition({ 0.0f, 0.0f, 0.0f });
+    cube->SetScalo({ 1.0f, 1.0f, 1.0f });
+    cube->SetColor({ 1.0f, 0.0f, 0.0f });  // Example color
+    cube->SetLightDirection({ 1.0f, 1.0f, 1.0f });  // Set specular light direction
+    meshes.push_back(cube);*/
+
 }
 
-void GameController::RunGame() 
-{
-    
-#ifdef USE_TOOL_WINDOW
-    OpenGL::ToolWindow^ window = gcnew OpenGL::ToolWindow();
-    window->Show();
-    
-#endif // USE_TOOL_WINDOW
-    
-#pragma region Shader Setup
+void GameController::RunGame() {
+    // Set up the shaders and window as usual
     shaderColor = Shader();
     shaderColor.LoadShaders("Color.vertexshader", "Color.fragmentshader");
     shaderDiffuse = Shader();
     shaderDiffuse.LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
     shaderFont = Shader();
     shaderFont.LoadShaders("Font.vertexshader", "Font.fragmentshader");
-    //shaderSkybox = Shader();
-    //shaderSkybox.LoadShaders("Skybox.vertexshader", "Skybox.fragmentshader");
-    
-#pragma endregion
 
-#pragma region Model setup
-        light = new Mesh();
-        light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
-        light->SetColor({3.0f, 1.0f, 1.0f});
-        light->SetPosition({ 3.0f, 3.8f, 3.0f });
-        light->SetScalo({ 0.1f, 0.1f, 0.1f });
-        lights.push_back(light);
-    
-        
-       /**Mesh* mesh = nullptr;
-        mesh = new Mesh();
-        mesh->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Fighter.obj");
-        mesh->SetCameraPosition(camera.GetPosition());
-        mesh->SetScalo({ 0.002f, 0.002f, 0.002f });
-        mesh->SetPosition({0.0f, 0.0f, 0.0f});
-        meshes.push_back(mesh);*/ 
-#pragma region Cube
-        Mesh* mesh = new Mesh();
-        mesh->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj", 1);
-        mesh->SetCameraPosition(camera.GetPosition());
-        mesh->SetScalo({ 1.0f, 1.1f, 1.1f });
-        mesh->SetPosition({ 0.0f, 0.0f, 0.0f });
-        meshes.push_back(mesh);
-#pragma endregion 
+    Font* arialFont = new Font();
+    arialFont->Create(&shaderFont, "C:/Users/leana/source/repos/OpenGL/Assets/Fonts/arial.ttf", 48);
 
-        Font* arialFont = new Font();
-        arialFont->Create(&shaderFont, "C:/Users/leana/source/repos/OpenGL/Assets/Fonts/arial.ttf", 100);
+    // Initialize GameTime
+    GameTime::GetInstance().Intialize();
 
-/*
-#pragma region Skybox Setup
-        skybox = new SkyBox();
-        skybox->Create(&shaderSkybox, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Skybox.obj", 
-            { "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/right.jpg", 
-            "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/left.jpg", 
-            "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/top.jpg", 
-            "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/bottom.jpg", 
-            "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/front.jpg", 
-            "C:/Users/leana/source/repos/OpenGL/Assets/Textures/Skybox/back.jpg"});
-#pragma endregion*/
-        GameTime::GetInstance().Intialize();
-    GLFWwindow* win = WindowController::GetInstance().GetWindow(); 
+    GLFWwindow* win = WindowController::GetInstance().GetWindow();
 
-        do
-        {
-            System::Windows::Forms::Application::DoEvents();
+#ifdef USE_TOOL_WINDOW
+    OpenGL::MyForm^ window = gcnew OpenGL::MyForm();
+        window->Show();
+#endif // USE_TOOL_WINDOW
 
-           
-            GameTime::GetInstance().Update();
-            // Clear screen and render
-            glClear(GL_COLOR_BUFFER_BIT  | GL_DEPTH_BUFFER_BIT);
+    do {
+        System::Windows::Forms::Application::DoEvents();
 
-            //mouse
-            double mouseX, mouseY;
-            glfwGetCursorPos(win, &mouseX, &mouseY);
-            UpdateObjToMouse(mouseX, mouseY);
+        GameTime::GetInstance().Update();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            // Convert mouse position to string
-            std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
+        // Mouse input and other UI updates (as before)
+        double mouseX, mouseY;
+        glfwGetCursorPos(win, &mouseX, &mouseY);
+        UpdateObjToMouse(mouseX, mouseY);
 
-            // Render mouse position on screen
-            arialFont->RenderText(mousePositionText, 100, 100, 1.0f, { 1.0f, 1.0f, 0.0f });
+        std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
+        arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
 
-            //camera.Rotate();
-            //glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
-            //mesh->Render(camera.GetProjection() * view);
-
-            for (auto light : lights)
-            {
-                light->Render(camera.GetProjection() * camera.GetView());
-            }
-
-            glm::vec3 rotationspeed = { 0.0f, 0.05f, 0.0f };
-            for (auto mesh : meshes)
-            {
-                mesh->SetRotation(mesh->GetRotation() + rotationspeed);
-                mesh->Render(camera.GetProjection() * camera.GetView());
-            }
-
-            glfwSwapBuffers(win);
-            glfwPollEvents();
-
+        // Render lights
+        for (auto light : lights) {
+            light->Render(camera.GetProjection() * camera.GetView());
         }
 
-        while (glfwGetKey(win, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(win) == 0);
+        for (auto mesh : meshes) {
+            if (mesh == light) {  // Exclude the light from being rendered again as a mesh
+                mesh->Render(camera.GetProjection() * camera.GetView());
+            }
+        }
+        // Continuous rotation for objects
+        glm::vec3 rotationspeed = { 0.0f, 0.05f, 0.0f };  // Rotate 0.05 radians per frame around Y-axis
+        for (auto mesh : meshes) {
+            mesh->SetRotation(rotationspeed);  // Apply rotation to each mesh
+            mesh->Render(camera.GetProjection() * camera.GetView());
+        }
 
-    for (auto light : lights)
-    {
+        glfwSwapBuffers(win);
+        glfwPollEvents();
+
+    } while (glfwGetKey(win, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(win) == 0);
+
+    // Cleanup
+    for (auto light : lights) {
         light->Cleanup();
         delete light;
     }
-    
-    for (auto box : meshes)
-    {
-        box->Cleanup();
-        delete box;
+    lights.clear();
+
+    for (auto mesh : meshes) {
+        mesh->Cleanup();
+        delete mesh;
     }
-    
+    meshes.clear();
+
     shaderFont.Cleanup();
     shaderColor.Cleanup();
     shaderDiffuse.Cleanup();
 }
+
 
 void GameController::UpdateObjToMouse(double mX, double mY)
 {

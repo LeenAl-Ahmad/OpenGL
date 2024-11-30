@@ -75,7 +75,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;USE_TOOL_WINDOW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)/External/glfw-3.3.4/include;$(SolutionDir)/External/glm;$(SolutionDir)/External/glew-2.1.0/include;$(SolutionDir)/External/stb;$(SolutionDir)/External/obj_loader;$(SolutionDir)/External/freetype-2.10.4/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>

@@ -16,7 +16,8 @@ public:
 	//mouse obj
 	void SetPositionM(const glm::vec3& newPos);
 	glm::vec3 GetPositionM() const;
-
+	void SetRotationObj(const glm::mat4& rotationMatrix) { world = rotationMatrix * world; }
+	glm::mat4 GetWorld() const { return world; }
 	void SetPosition(glm::vec3 _p) { position = _p; }
 	glm::vec3 GetPosition() { return position; }
 	void SetRotation(glm::vec3 _rotation1) { rotation = _rotation1; }

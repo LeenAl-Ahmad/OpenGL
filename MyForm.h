@@ -218,7 +218,7 @@ namespace OpenGL {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1172, 621);
+			this->ClientSize = System::Drawing::Size(466, 410);
 			this->Controls->Add(this->bluetrackBar);
 			this->Controls->Add(this->greentrackBar);
 			this->Controls->Add(this->redtrackBar);
