@@ -26,14 +26,13 @@ void GameController::Initialize() {
 
 void GameController::RunGame() 
 {
+    
 #ifdef USE_TOOL_WINDOW
     OpenGL::ToolWindow^ window = gcnew OpenGL::ToolWindow();
-    if (showToolWindows)
-    {
-        window->Show();
-    }
+    window->Show();
+    
 #endif // USE_TOOL_WINDOW
-
+    
 #pragma region Shader Setup
     shaderColor = Shader();
     shaderColor.LoadShaders("Color.vertexshader", "Color.fragmentshader");
@@ -43,6 +42,7 @@ void GameController::RunGame()
     shaderFont.LoadShaders("Font.vertexshader", "Font.fragmentshader");
     //shaderSkybox = Shader();
     //shaderSkybox.LoadShaders("Skybox.vertexshader", "Skybox.fragmentshader");
+    
 #pragma endregion
 
 #pragma region Model setup
@@ -63,9 +63,9 @@ void GameController::RunGame()
         meshes.push_back(mesh);*/ 
 #pragma region Cube
         Mesh* mesh = new Mesh();
-        mesh->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj", 1000);
+        mesh->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj", 1);
         mesh->SetCameraPosition(camera.GetPosition());
-        mesh->SetScalo({ 0.1f, 0.1f, 0.1f });
+        mesh->SetScalo({ 1.0f, 1.1f, 1.1f });
         mesh->SetPosition({ 0.0f, 0.0f, 0.0f });
         meshes.push_back(mesh);
 #pragma endregion 
@@ -89,6 +89,9 @@ void GameController::RunGame()
 
         do
         {
+            System::Windows::Forms::Application::DoEvents();
+
+           
             GameTime::GetInstance().Update();
             // Clear screen and render
             glClear(GL_COLOR_BUFFER_BIT  | GL_DEPTH_BUFFER_BIT);

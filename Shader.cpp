@@ -25,6 +25,16 @@ void Shader::LoadAttributes()
 	attrTangents = glGetAttribLocation(programID, "tangents");
 	attrBitangents = glGetAttribLocation(programID, "bitangents");
 	attrInstanceMatrix = glGetAttribLocation(programID, "instanceMatrix");
+	
+	MoveLight= glGetUniformLocation(programID, "moveLight");
+	spStrength = glGetUniformLocation(programID, "SpecularStrength");
+	redbar = glGetUniformLocation(programID, "redBar");
+	greenBar = glGetUniformLocation(programID, "greenBar");
+	blueBar = glGetUniformLocation(programID, "blueBar");
+	posColor = glGetUniformLocation(programID, "viewPos");
+	setObjPos = glGetUniformLocation(programID, "viewPos");
+	moveCube = glGetUniformLocation(programID, "moveCube");
+
 }
 
 void Shader::SetVec3(const char* _name, glm::vec3 _value)

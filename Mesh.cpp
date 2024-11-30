@@ -284,6 +284,7 @@ void Mesh::Render(glm::mat4 _pv) {
 	
 	CalculateTransform();
 	SetShaderVariable(_pv);
+
 	BindAttributes();
 	if (enableInstancing)
 	{

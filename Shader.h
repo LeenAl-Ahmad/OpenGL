@@ -21,6 +21,31 @@ public:
 	GLuint GetAttrBitangents() { return attrBitangents; }
 	GLuint GetAttrInstanceMatrix() { return attrInstanceMatrix; }
 	
+	GLuint GetAttrML() {
+		return MoveLight;
+	}
+	GLuint GetAttrSPS() {
+		return spStrength;
+	}
+	GLuint GetAttrR() {
+		return redbar;
+	}
+	GLuint GetAttrG() {
+		return greenBar;
+	}
+	GLuint GetAttrB() {
+		return blueBar;
+	}
+	GLuint GetAttrCP() {
+		return posColor;
+	}
+	GLuint GetAttrROP() {
+		return setObjPos;
+	}
+	GLuint GetAttrMC() {
+		return moveCube;
+	}
+
 	// Methods
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 	void Cleanup();
@@ -54,6 +79,16 @@ private:
 	GLuint attrBitangents = 0;
 
 	GLuint attrInstanceMatrix = 0;
+
+	GLuint MoveLight = 0;
+	GLuint setLightPos = 0;
+	GLuint spStrength = 0;
+	GLuint redbar = 0;
+	GLuint greenBar = 0;
+	GLuint blueBar = 0;
+	GLuint posColor = 0;
+	GLuint setObjPos = 0;
+	GLuint moveCube = 0;
 };
 
 #endif // !SHADER_H

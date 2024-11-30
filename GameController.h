@@ -28,6 +28,7 @@ private:
 	Shader shaderDiffuse = {};
 	Shader shaderFont = {};
 	Shader shaderSkybox = {};
+	Shader shader = {};
 
 	std::vector<Mesh*> meshes;
 	std::vector<Mesh*> lights;
