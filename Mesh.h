@@ -13,6 +13,10 @@ public:
 	Mesh() = default;
 	virtual ~Mesh();
 
+	//mouse obj
+	void SetPositionM(const glm::vec3& newPos);
+	glm::vec3 GetPositionM() const;
+
 	void SetPosition(glm::vec3 _p) { position = _p; }
 	glm::vec3 GetPosition() { return position; }
 	void SetRotation(glm::vec3 _rotation1) { rotation = _rotation1; }
@@ -65,6 +69,9 @@ private:
 
 	glm::vec3 lightDirection{ 0.0f, 0.0f, 0.0f };
 	glm::vec3 cameraPosition{ 0.0f, 0.0f, 0.0f };
+
+	double mouseX, mouseY;
+	
 };
 
 #endif // ! MESH_H

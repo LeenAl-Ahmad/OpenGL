@@ -1,6 +1,6 @@
 #version 330
 
-in vec4 vertices;
+layout(location = 0) in vec4 vertices;
 
 uniform mat4 projection;
 

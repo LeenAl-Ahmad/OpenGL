@@ -361,3 +361,13 @@ std::string Mesh::Concat(const std::string& _s1, int _index, const std::string& 
 	std::string index = std::to_string(_index);
 	return (_s1 + index + _s2);
 }
+
+//Mouse obj
+void Mesh::SetPositionM(const glm::vec3& newPos)
+{
+	position = newPos;
+}
+glm::vec3 Mesh::GetPositionM() const
+{
+	return position;
+}

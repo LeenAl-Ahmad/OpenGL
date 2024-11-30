@@ -18,6 +18,9 @@ public:
 	void Initialize();
 	void RunGame();
 
+	//Mouse
+	void UpdateObjToMouse(double mouseX, double mouseY);
+
 	std::vector<Mesh*>& GetLights() { return lights; }
 	const Camera& GetCamera() { return camera; }
 
@@ -35,6 +38,12 @@ private:
 	SkyBox* skybox = nullptr;
 
 	GLuint vao;
+
+	//Mouse
+	int screenWidth, screenHeight;
+	glm::mat4 projMatrix;
+	glm::mat4 viewMatrix;
+	Mesh* light;
 };
 
 #endif // !GAME_CONTROLLER_H

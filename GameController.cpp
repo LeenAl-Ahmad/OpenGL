@@ -22,6 +22,12 @@ void GameController::Initialize() {
 
     camera = Camera(WindowController::GetInstance().GetResolution());
     camera.LookAt({ 5,5,5 }, { 0,0,0 }, { 0,1,0 });
+
+    screenWidth = WindowController::GetInstance().GetResolution().width;
+    screenHeight = WindowController::GetInstance().GetResolution().height;
+
+    projMatrix = camera.GetProjection(); // Retrieve projection matrix from the camera
+    viewMatrix = camera.GetView();       // Retrieve view matrix from the camera
 }
 
 void GameController::RunGame() 
@@ -46,10 +52,10 @@ void GameController::RunGame()
 #pragma endregion
 
 #pragma region Model setup
-        Mesh* light = new Mesh();
+        light = new Mesh();
         light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
         light->SetColor({3.0f, 1.0f, 1.0f});
-        light->SetPosition({ 0.0f, 0.8f, 1.0f });
+        light->SetPosition({ 3.0f, 3.8f, 3.0f });
         light->SetScalo({ 0.1f, 0.1f, 0.1f });
         lights.push_back(light);
     
@@ -96,9 +102,20 @@ void GameController::RunGame()
             // Clear screen and render
             glClear(GL_COLOR_BUFFER_BIT  | GL_DEPTH_BUFFER_BIT);
 
+            //mouse
+            double mouseX, mouseY;
+            glfwGetCursorPos(win, &mouseX, &mouseY);
+            UpdateObjToMouse(mouseX, mouseY);
+
+            // Convert mouse position to string
+            std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
+
+            // Render mouse position on screen
+            arialFont->RenderText(mousePositionText, 100, 100, 1.0f, { 1.0f, 1.0f, 0.0f });
+
             //camera.Rotate();
             //glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
-            //skybox->Render(camera.GetProjection() * view);
+            //mesh->Render(camera.GetProjection() * view);
 
             for (auto light : lights)
             {
@@ -111,8 +128,6 @@ void GameController::RunGame()
                 mesh->SetRotation(mesh->GetRotation() + rotationspeed);
                 mesh->Render(camera.GetProjection() * camera.GetView());
             }
-
-            arialFont->RenderText(std::to_string(GameTime::GetInstance().Fps()), 100, 100, 0.5f, {1.0f, 1.0f, 0.0f});
 
             glfwSwapBuffers(win);
             glfwPollEvents();
@@ -137,5 +152,39 @@ void GameController::RunGame()
     shaderColor.Cleanup();
     shaderDiffuse.Cleanup();
 }
+
+void GameController::UpdateObjToMouse(double mX, double mY)
+{
+    // Convert mouse position to Normalized Device Coordinates (NDC)
+    float x = (2.0f * mX) / screenWidth - 1.0f;
+    float y = 1.0f - (2.0f * mY) / screenHeight; // Invert Y-axis
+
+    glm::vec4 ndcCoords = glm::vec4(x, y, 0.0f, 1.0f); // Z = 0 for the near plane
+
+    // Unproject NDC coordinates to world space
+    glm::vec4 worldCoords = glm::inverse(projMatrix * viewMatrix) * ndcCoords;
+    worldCoords /= worldCoords.w; // Divide by W for perspective correction
+
+    // Compute direction vector from camera to mouse position in world space
+    glm::vec3 cameraPos = camera.GetPosition();
+    glm::vec3 worldPos = glm::vec3(worldCoords);
+    glm::vec3 rayDir = glm::normalize(worldPos - cameraPos);
+
+    // Set a fixed depth (distance from camera)
+    float depth = 7.0f; // You can adjust this value to control distance
+    glm::vec3 targetPosition = cameraPos + rayDir * depth;
+
+    // Apply an offset to move the light slightly to the right
+    glm::vec3 offset = glm::vec3(0.3f, 0.0f, 0.0f); // Offset 3 units to the right
+    targetPosition += offset;
+
+    // Update the light object's position
+    if (light)
+    {
+        light->SetPosition(targetPosition);
+    }
+}
+
+
 
 
