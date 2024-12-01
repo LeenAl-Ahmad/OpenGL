@@ -23,7 +23,7 @@ public:
 	void UpdateObj(double mouseX, double mouseY);
 	bool ResetLightPos();
 	bool ResetObjPos();
-	void UpdateScene();
+	void UpdateScene(GLFWwindow* window);
 	void SetSpecularStrength(float strength){specularStrength = strength; }
 
 	std::vector<Mesh*>& GetLights() { return lights; }
@@ -48,6 +48,7 @@ private:
 
 	std::vector<Mesh*> meshes;
 	std::vector<Mesh*> lights;
+	std::vector<Mesh*> cubes;
 	SkyBox* skybox = nullptr;
 
 	GLuint vao;
@@ -58,12 +59,19 @@ private:
 	glm::mat4 viewMatrix;
 	Mesh* light;
 	Mesh* suzanne;
-
+	Mesh* cube;
+	Mesh* sphere;
+	Mesh* newCube;
 	
 	glm::vec3 lastLightPosition;
 	glm::vec3 lastObjPosition;
 	float specularStrength = 4.0f;
 	
+	const float sphereRadius = 0.5f;           // Radius of the sphere
+	const float cubeSpeed = 1.0f;
+	int minCubesToSpawn = 10;                  // Minimum number of cubes to spawn
+	int maxCubesToSpawn = 20;
+	float deltaTime = 0.016f;
 };
 
 #endif // !GAME_CONTROLLER_H

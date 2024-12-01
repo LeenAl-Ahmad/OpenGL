@@ -21,7 +21,7 @@ public:
 	GLuint GetAttrBitangents() { return attrBitangents; }
 	GLuint GetAttrInstanceMatrix() { return attrInstanceMatrix; }
 	
-	GLuint GetAttrSPS() { return attrSpStrength; }
+	GLuint GetAttrSPS() {return attrSpStrength;}
 
 	GLuint GetAttrML() {
 		return MoveLight;

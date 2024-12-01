@@ -47,26 +47,35 @@ void GameController::Initialize() {
     suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj");
     suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
     suzanne->SetRotationObj({ 0.0f, 0.0f, 0.0f });
+    //suzanne->SetColor({});
     suzanne->SetSpecularStrength(4.0f);
     meshes.push_back(suzanne);
 
-    // Cube with Specular Strength and Color
-    /*Mesh* sphere = new Mesh();
+    sphere = new Mesh();
     sphere->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
     sphere->SetPosition({ 0.0f, 0.0f, 0.0f });
     sphere->SetScalo({ 0.5f, 0.5f, 0.5f });
-    sphere->SetColor({ 1.0f, 0.5f, 0.0f });  // Example color
+    sphere->SetColor({ 1.0f, 0.5f, 0.0f }); // Example color
     sphere->SetLightDirection({ 1.0f, 1.0f, 1.0f });
-    //sphere->SetSpecularStrength(4.0f);
     meshes.push_back(sphere);
-    Mesh* cube = new Mesh();
-    cube->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj");
-    cube->SetPosition({ 0.0f, 0.0f, 0.0f });
-    cube->SetScalo({ 1.0f, 1.0f, 1.0f });
-    cube->SetColor({ 1.0f, 0.0f, 0.0f });  // Example color
-    cube->SetLightDirection({ 1.0f, 1.0f, 1.0f });  // Set specular light direction
-    meshes.push_back(cube);*/
 
+    int cubeCount = glm::linearRand(10, 20); // Random number of cubes
+    for (int i = 0; i < cubeCount; ++i) {
+        glm::vec3 randomOffset = glm::vec3(
+            glm::linearRand(-5.0f, 5.0f),
+            glm::linearRand(-5.0f, 5.0f),
+            glm::linearRand(-5.0f, 5.0f)
+        );
+        glm::vec3 cubePosition = sphere->GetPosition() + randomOffset;
+        newCube = new Mesh();
+        newCube->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube1.obj");
+        newCube->SetPosition(cubePosition);
+        newCube->SetScalo({ 0.5f, 0.5f, 0.5f });
+        newCube->SetLightDirection({ 1.0f, 1.0f, 1.0f });
+        meshes.push_back(newCube);
+        cubes.push_back(newCube); // Track cubes
+    }
+    
 }
 
 void GameController::RunGame() {
@@ -118,7 +127,11 @@ void GameController::RunGame() {
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
         }
         
-        
+        if (moveCube)
+        {
+            UpdateScene(win);
+        }
+
         // Render lights
         for (auto light : lights) {
             light->Render(camera.GetProjection() * camera.GetView());
@@ -145,6 +158,7 @@ void GameController::RunGame() {
 
         }
         
+
         // Continuous rotation for objects
         glm::vec3 rotationspeed = { 0.0f, 0.05f, 0.0f };  // Rotate 0.05 radians per frame around Y-axis
         for (auto mesh : meshes) 
@@ -248,10 +262,42 @@ void GameController::UpdateObj(double mX, double mY) {
     }
 }
 
-void GameController::UpdateScene()
-{
+void GameController::UpdateScene(GLFWwindow* window) {
+    if (suzanne) {
+        meshes.erase(std::remove(meshes.begin(), meshes.end(), suzanne), meshes.end());
+        delete suzanne;
+        suzanne = nullptr;
+    }
+    
+    sphere->Render(camera.GetProjection() * camera.GetView());
+    // Spawn cubes when the left mouse button is pressed
+    for (auto mesh : cubes) {
+        mesh->Render(camera.GetProjection() * camera.GetView());
+    }
 
+    // Move cubes towards the sphere and remove them if they reach the sphere
+    for (auto it = cubes.begin(); it != cubes.end();) {
+        Mesh* cube = *it;
+
+        glm::vec3 direction = glm::normalize(sphere->GetPosition() - cube->GetPosition());
+        glm::vec3 newPosition = cube->GetPosition() + direction * cubeSpeed * deltaTime;
+        cube->SetPosition(newPosition);
+
+        // Check if the cube reaches the sphere
+        if (glm::length(newPosition - sphere->GetPosition()) <= sphereRadius) {
+            meshes.erase(std::remove(meshes.begin(), meshes.end(), cube), meshes.end());
+            delete cube; // Clean memory
+            it = cubes.erase(it); // Remove cube from list
+        }
+        else {
+            ++it;
+        }
+    }
+
+    // Print the number of currently spawned cubes
+    std::cout << "Cubes: " << cubes.size() << std::endl;
 }
+
 
 bool GameController::ResetObjPos() {
     if (suzanne) {
