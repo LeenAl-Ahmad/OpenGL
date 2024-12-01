@@ -221,36 +221,52 @@ void GameController::HandleMouseClick(GLFWwindow* window) {
     double mouseX, mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);  // Get mouse position
 
-    // Convert mouse position to screen space coordinates
-    float x = static_cast<float>(mouseX);
-    float y = static_cast<float>(mouseY);
-    glm::vec3 moveDirection(0.0f, 0.0f, 0.0f);
-    float speed = 0.1f;  // Speed of light movement
-
     // Get screen width and height
     float screenWidth = static_cast<float>(WindowController::GetInstance().GetResolution().width);
     float screenHeight = static_cast<float>(WindowController::GetInstance().GetResolution().height);
 
+    // Calculate the center of the screen
+    float centerX = screenWidth / 2.0f;
+    float centerY = screenHeight / 2.0f;
+
     // Determine which quadrant of the screen was clicked
-    if (x < screenWidth / 2 && y < screenHeight / 2) {  // Top-left quadrant
-        moveDirection = glm::vec3(-1.0f, 1.0f, 0.0f);  // Move light to the top-left
+    glm::vec3 moveDirection(0.0f, 0.0f, 0.0f);
+    float speed = 0.1f;  // Base speed of light movement
+
+    // Determine which quadrant of the screen was clicked and move accordingly
+    if (mouseX < centerX && mouseY < centerY) {  // Top-left quadrant
+        moveDirection = glm::vec3(-1.0f, 1.0f, 0.0f);  // Move light up-left
     }
-    else if (x >= screenWidth / 2 && y < screenHeight / 2) {  // Top-right quadrant
-        moveDirection = glm::vec3(1.0f, 1.0f, 0.0f);  // Move light to the top-right
+    else if (mouseX >= centerX && mouseY < centerY) {  // Top-right quadrant
+        moveDirection = glm::vec3(1.0f, 1.0f, 0.0f);  // Move light up-right
     }
-    else if (x < screenWidth / 2 && y >= screenHeight / 2) {  // Bottom-left quadrant
-        moveDirection = glm::vec3(-1.0f, -1.0f, 0.0f);  // Move light to the bottom-left
+    else if (mouseX < centerX && mouseY >= centerY) {  // Bottom-left quadrant
+        moveDirection = glm::vec3(-1.0f, -1.0f, 0.0f);  // Move light down-left
     }
-    else if (x >= screenWidth / 2 && y >= screenHeight / 2) {  // Bottom-right quadrant
-        moveDirection = glm::vec3(1.0f, -1.0f, 0.0f);  // Move light to the bottom-right
+    else if (mouseX >= centerX && mouseY >= centerY) {  // Bottom-right quadrant
+        moveDirection = glm::vec3(1.0f, -1.0f, 0.0f);  // Move light down-right
     }
 
-    // Move the light based on the direction and how far into the quadrant you clicked
-    moveDirection *= speed * glm::length(glm::vec3(x - screenWidth / 2, y - screenHeight / 2, 0.0f));
+    // Calculate the distance from the center (in pixels)
+    float distanceFromCenter = glm::length(glm::vec2(mouseX - centerX, mouseY - centerY));
+
+    // Adjust speed based on distance from the center
+    float maxDistance = glm::length(glm::vec2(centerX, centerY)); // Max distance in any quadrant
+    speed *= (distanceFromCenter / maxDistance);  // Scale the movement speed
+
+    // Move the light in the direction of the clicked quadrant
+    moveDirection *= speed;
+
+    // Update the light's position based on the calculated direction and speed
     lastLightPosition += moveDirection;
 
-    // Update the light position
+    // Set the updated position for the light
     light->SetPosition(lastLightPosition);
+
+    // Optional: Print out for debugging
+    std::cout << "Mouse Position: (" << mouseX << ", " << mouseY << ") Speed: " << speed
+        << " Direction: (" << moveDirection.x << ", " << moveDirection.y << ", " << moveDirection.z << ")" << std::endl;
 }
+
 
 
