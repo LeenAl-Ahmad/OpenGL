@@ -25,9 +25,7 @@ void Shader::LoadAttributes()
 	attrTangents = glGetAttribLocation(programID, "tangents");
 	attrBitangents = glGetAttribLocation(programID, "bitangents");
 	attrInstanceMatrix = glGetAttribLocation(programID, "instanceMatrix");
-	spStrength = glGetUniformLocation(programID, "SpecularStrength");
-	
-
+	attrSpStrength = glGetUniformLocation(programID, "SpecularStrength");
 }
 
 void Shader::SetVec3(const char* _name, glm::vec3 _value)
@@ -149,4 +147,13 @@ void Shader::SetInt(const char* _name, int _v)
 	{
 		glUniform1i(loc, _v);
 	}
+}
+
+void Shader::SetUniform(const std::string& name, float value) {
+	GLuint location = glGetUniformLocation(programID, name.c_str());
+	if (location == -1) {
+		std::cerr << "Uniform " << name << " not found!" << std::endl;
+		return;
+	}
+	glUniform1f(location, value);
 }

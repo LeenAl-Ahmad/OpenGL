@@ -15,7 +15,7 @@ void GameController::Initialize() {
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_BLEND);
+    glCullFace(GL_BACK);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     srand(time(0));
 
@@ -43,9 +43,11 @@ void GameController::Initialize() {
     lights.push_back(light);
 
     // Suzanne with Hat Position (can use a custom model like "Monkey.obj" or another model)
-    Mesh* suzanne = new Mesh();
+    suzanne = new Mesh();
     suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj");
     suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
+    suzanne->SetRotationObj({ 0.0f, 0.0f, 0.0f });
+    suzanne->SetSpecularStrength(4.0f);
     meshes.push_back(suzanne);
 
     // Cube with Specular Strength and Color
@@ -95,6 +97,10 @@ void GameController::RunGame() {
         GameTime::GetInstance().Update();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+            HandleMouseClick(win);
+        }
+
         // Mouse input and other UI updates (as before)
         if (moveLight) {  // moveLight flag is set from the checkbox in MyForm
             double mouseX, mouseY;
@@ -105,7 +111,7 @@ void GameController::RunGame() {
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
         }
         
-
+        
         // Render lights
         for (auto light : lights) {
             light->Render(camera.GetProjection() * camera.GetView());
@@ -123,11 +129,21 @@ void GameController::RunGame() {
         }
         // Continuous rotation for objects
         glm::vec3 rotationspeed = { 0.0f, 0.05f, 0.0f };  // Rotate 0.05 radians per frame around Y-axis
-        for (auto mesh : meshes) {
-            mesh->SetRotation(rotationspeed);  // Apply rotation to each mesh
-            mesh->Render(camera.GetProjection() * camera.GetView());
+        for (auto mesh : meshes) 
+        {
+            if (mesh == suzanne) {
+                // Accumulate rotation
+                glm::vec3 currentRotation = mesh->GetRotation1();
+                mesh->SetRotationObj(currentRotation + rotationspeed);
 
+                // Update specular strength from trackbar (already assumed you have dynamic `specularStrength` value)
+                mesh->SetSpecularStrength(specularStrength);
+
+                // Render Suzanne
+                mesh->Render(camera.GetProjection() * camera.GetView());
+            }
         }
+
         glfwSwapBuffers(win);
         glfwPollEvents();
 
@@ -199,6 +215,42 @@ void GameController::ResetLightPos() {
 
         light->SetPosition(lastLightPosition);  // Use the stored position
     }
+}
+
+void GameController::HandleMouseClick(GLFWwindow* window) {
+    double mouseX, mouseY;
+    glfwGetCursorPos(window, &mouseX, &mouseY);  // Get mouse position
+
+    // Convert mouse position to screen space coordinates
+    float x = static_cast<float>(mouseX);
+    float y = static_cast<float>(mouseY);
+    glm::vec3 moveDirection(0.0f, 0.0f, 0.0f);
+    float speed = 0.1f;  // Speed of light movement
+
+    // Get screen width and height
+    float screenWidth = static_cast<float>(WindowController::GetInstance().GetResolution().width);
+    float screenHeight = static_cast<float>(WindowController::GetInstance().GetResolution().height);
+
+    // Determine which quadrant of the screen was clicked
+    if (x < screenWidth / 2 && y < screenHeight / 2) {  // Top-left quadrant
+        moveDirection = glm::vec3(-1.0f, 1.0f, 0.0f);  // Move light to the top-left
+    }
+    else if (x >= screenWidth / 2 && y < screenHeight / 2) {  // Top-right quadrant
+        moveDirection = glm::vec3(1.0f, 1.0f, 0.0f);  // Move light to the top-right
+    }
+    else if (x < screenWidth / 2 && y >= screenHeight / 2) {  // Bottom-left quadrant
+        moveDirection = glm::vec3(-1.0f, -1.0f, 0.0f);  // Move light to the bottom-left
+    }
+    else if (x >= screenWidth / 2 && y >= screenHeight / 2) {  // Bottom-right quadrant
+        moveDirection = glm::vec3(1.0f, -1.0f, 0.0f);  // Move light to the bottom-right
+    }
+
+    // Move the light based on the direction and how far into the quadrant you clicked
+    moveDirection *= speed * glm::length(glm::vec3(x - screenWidth / 2, y - screenHeight / 2, 0.0f));
+    lastLightPosition += moveDirection;
+
+    // Update the light position
+    light->SetPosition(lastLightPosition);
 }
 
 

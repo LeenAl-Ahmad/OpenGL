@@ -21,6 +21,8 @@ public:
 	GLuint GetAttrBitangents() { return attrBitangents; }
 	GLuint GetAttrInstanceMatrix() { return attrInstanceMatrix; }
 	
+	GLuint GetAttrSPS() { return attrSpStrength; }
+
 	GLuint GetAttrML() {
 		return MoveLight;
 	}
@@ -29,9 +31,7 @@ public:
 	{
 		return lightPos;
 	}
-	GLuint GetAttrSPS() {
-		return spStrength;
-	}
+	
 	GLuint GetAttrR() {
 		return redbar;
 	}
@@ -59,7 +59,7 @@ public:
 	void SetFloat(const char* _name, float _v);
 	void SetTextureSampler(const char* _name, GLuint _texUint, int _texYintId, int _v);
 	void SetInt(const char* _name, int _v);
-
+	void SetUniform(const std::string& name, float value);
 
 private:
 	// Methods
@@ -76,6 +76,7 @@ private:
 	GLuint attrWVP = 0;
 	GLuint attrNormals = 0;
 	GLuint attrTexCoords = 0;
+	GLuint attrSpStrength = 0;
 
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;
@@ -87,7 +88,6 @@ private:
 
 	GLuint MoveLight = 0;
 	GLuint lightPos = 0;
-	GLuint spStrength = 0;
 	GLuint redbar = 0;
 	GLuint greenBar = 0;
 	GLuint blueBar = 0;

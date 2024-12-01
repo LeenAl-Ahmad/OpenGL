@@ -18,24 +18,26 @@ public:
 	glm::vec3 GetPositionM() const;
 	void SetRotationObj(const glm::mat4& rotationMatrix) { world = rotationMatrix * world; }
 	glm::mat4 GetWorld() const { return world; }
-	void SetPosition(glm::vec3 _p) { position = _p; }
+	void SetPosition(glm::vec3 _p) { position = _p; UpdateWorldMatrix(); }
 	glm::vec3 GetPosition() { return position; }
-	void SetRotation(glm::vec3 _rotation1) { rotation = _rotation1; }
-	glm::vec3 GetRotation() { return rotation; }
-	void SetScalo(glm::vec3 _s) { scale = _s; }
+	void SetRotationObj(const glm::vec3& rot) { rotation = rot; UpdateWorldMatrix(); }
+	glm::vec3 GetRotation1() { return rotation; }
+	void SetScalo(glm::vec3 _s) { scale = _s; UpdateWorldMatrix(); }
 	void SetColor(glm::vec3 _color) { color = _color; }
 	glm::vec3 GetColor() { return color; }
 	void SetLightDirection(glm::vec3 _lD) { lightDirection = _lD; }
 	glm::vec3 GetLightDirection() { return lightDirection; }
 	void SetCameraPosition(glm::vec3 _camerPosition) { cameraPosition = _camerPosition; }
-	void SetSpecularStrength(float strength) {specularStrength = strength;}
+	void SetSpecularStrength(float strength) { specularStrength = strength; }
+	float GetSpecularStrength() { return specularStrength; }
+	void SetSpecularColor(const glm::vec3& color) { specularColor = color; }
+	glm::vec3 GetSpecularColor() const { return specularColor; }
 
 	void Create(Shader* _shader, std::string _file, int _instanceCount = 1);
 	void Cleanup();
 	void CalculateTransform();
 	void Render(glm::mat4 wvp);
 	void SetRotation(float x, float y);
-	void Update();
 
 	size_t GetVertexDataSize() const;
 	size_t GetIndexDataSize() const;
@@ -43,6 +45,15 @@ public:
 	void SetClicked(bool invert)
 	{
 		clicked = invert;
+	}
+
+	void Mesh::UpdateWorldMatrix() {
+		world = glm::mat4(1.0f);
+		world = glm::translate(world, position);                     // Apply translation
+		world = glm::rotate(world, rotation.x, glm::vec3(1, 0, 0));  // Apply rotation X
+		world = glm::rotate(world, rotation.y, glm::vec3(0, 1, 0));  // Apply rotation Y
+		world = glm::rotate(world, rotation.z, glm::vec3(0, 0, 1));  // Apply rotation Z
+		world = glm::scale(world, scale);
 	}
 
 private:
@@ -82,7 +93,7 @@ private:
 
 	bool clicked;
 	float specularStrength = 1.0f;
-	
+	glm::vec3 specularColor;
 };
 
 #endif // ! MESH_H

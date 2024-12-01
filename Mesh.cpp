@@ -175,6 +175,7 @@ void Mesh::Create(Shader* _shader, std::string _file, int _instanceCount)
 	{
 		vertexStride += 6;
 	}
+	UpdateWorldMatrix();
 }
 
 
@@ -280,6 +281,8 @@ void Mesh::BindAttributes()
 }
 
 void Mesh::Render(glm::mat4 _pv) {
+	UpdateWorldMatrix();
+
 	glUseProgram(shader->GetProgramID());
 	
 	CalculateTransform();
@@ -332,6 +335,7 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetVec3("CameraPosition", cameraPosition);
 	shader->SetInt("EnableNormalMaps", enableNormalMaps);
 	shader->SetInt("EnableInstancing", enableInstancing);
+	shader->SetFloat("material.specularStrength", 8.0f);
 
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)
@@ -339,6 +343,7 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 		shader->SetVec3(Concat("light[", i,"].ambientColor").c_str(), {1.0f, 1.0f, 1.0f});
 		shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), lights[i]->GetColor());
 		shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), { 3.0f, 3.0f, 3.0f });
+
 
 		shader->SetVec3(Concat("light[", i, "].position").c_str(), lights[i]->GetPosition());
 		shader->SetVec3(Concat("light[", i, "].direction").c_str(), lights[i]->GetLightDirection());
@@ -349,10 +354,9 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 
 		shader->SetFloat(Concat("light[", i, "].coneAngle").c_str(), glm::radians(15.0f));
 		shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 100);
+
 	}
 	
-
-	shader->SetFloat("material.specularStrength", 8.0f);
 	shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, textureDiffuse.GetTexture());
     shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, textureSpecular.GetTexture());
 	shader->SetTextureSampler("material.normalTexture", GL_TEXTURE2, 2, textureNormal.GetTexture());

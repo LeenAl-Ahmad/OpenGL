@@ -33,7 +33,7 @@ namespace OpenGL {
 	private: System::Windows::Forms::TrackBar^ bluetrackBar;
 
 	public:
-
+		float specularStrengthValue = 4.0f;
 
 	public:
 		static bool mCube;
@@ -44,6 +44,7 @@ namespace OpenGL {
 			cPosition = colorByPosition ->Checked;
 			mCube = moveCube ->Checked;
 			clicked = false;
+
 		}
 		
 	protected:
@@ -119,9 +120,12 @@ namespace OpenGL {
 			// SPStrength
 			// 
 			this->SPStrength->Location = System::Drawing::Point(129, 69);
+			this->SPStrength->Maximum = 128;
+			this->SPStrength->Minimum = 1;
 			this->SPStrength->Name = L"SPStrength";
-			this->SPStrength->Size = System::Drawing::Size(370, 56);
+			this->SPStrength->Size = System::Drawing::Size(325, 56);
 			this->SPStrength->TabIndex = 2;
+			this->SPStrength->Value = 4;
 			this->SPStrength->Scroll += gcnew System::EventHandler(this, &MyForm::SPStrength_Scroll);
 			// 
 			// SpecularStrength
@@ -195,25 +199,31 @@ namespace OpenGL {
 			// redtrackBar
 			// 
 			this->redtrackBar->Location = System::Drawing::Point(86, 119);
+			this->redtrackBar->Maximum = 300;
 			this->redtrackBar->Name = L"redtrackBar";
 			this->redtrackBar->Size = System::Drawing::Size(370, 56);
 			this->redtrackBar->TabIndex = 13;
+			this->redtrackBar->Value = 100;
 			this->redtrackBar->Scroll += gcnew System::EventHandler(this, &MyForm::redtrackBar_Scroll);
 			// 
 			// greentrackBar
 			// 
 			this->greentrackBar->Location = System::Drawing::Point(86, 168);
+			this->greentrackBar->Maximum = 300;
 			this->greentrackBar->Name = L"greentrackBar";
 			this->greentrackBar->Size = System::Drawing::Size(370, 56);
 			this->greentrackBar->TabIndex = 14;
+			this->greentrackBar->Value = 100;
 			this->greentrackBar->Scroll += gcnew System::EventHandler(this, &MyForm::greentrackBar_Scroll);
 			// 
 			// bluetrackBar
 			// 
 			this->bluetrackBar->Location = System::Drawing::Point(86, 213);
+			this->bluetrackBar->Maximum = 300;
 			this->bluetrackBar->Name = L"bluetrackBar";
 			this->bluetrackBar->Size = System::Drawing::Size(370, 56);
 			this->bluetrackBar->TabIndex = 15;
+			this->bluetrackBar->Value = 100;
 			this->bluetrackBar->Scroll += gcnew System::EventHandler(this, &MyForm::bluetrackBar_Scroll);
 			// 
 			// MyForm
@@ -257,7 +267,9 @@ private: System::Void ResetLight_Click(System::Object^ sender, System::EventArgs
 
 }
 private: System::Void SPStrength_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	float spValue = SPStrength->Value / 255.0f;  // Normalize the value between 0.0 and 1.0
+	float spValue = SPStrength->Value / 32.0f; // Map 0-128 to 0.0-4.0 // Normalize the value between 0.0 and 1.0
+	GameController::GetInstance().GetSuzanne()->SetSpecularStrength(spValue);
+
 }
 private: System::Void redBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	

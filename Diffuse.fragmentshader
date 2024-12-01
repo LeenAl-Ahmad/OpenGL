@@ -21,13 +21,14 @@ struct Light {
     vec3 ambientColor;                 // Ambient color
     vec3 diffuseColor;                 // Diffuse color
     vec3 specularColor;                // Specular color
+    float specularStrength;            // Light's specular strength
 };
 
-uniform Material material;
+uniform Material material;            // Material properties
 #define NUM_LIGHTS 1
-uniform Light light[NUM_LIGHTS];
+uniform Light light[NUM_LIGHTS];      // Light sources
 uniform vec3 AmbientLight;            // Ambient light color
-uniform bool EnableNormalMaps;        // Toggle normal maps
+uniform bool EnableNormalMaps;        // Toggle normal mapsunifrom vec3 specularColor;
 
 void main() {
     // Sample diffuse color from texture
