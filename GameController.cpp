@@ -101,11 +101,18 @@ void GameController::RunGame() {
             HandleMouseClick(win);
         }
 
-        // Mouse input and other UI updates (as before)
         if (moveLight) {  // moveLight flag is set from the checkbox in MyForm
             double mouseX, mouseY;
             glfwGetCursorPos(win, &mouseX, &mouseY);  // Get mouse position
             UpdateObjToMouse(mouseX, mouseY);  // Update light position based on mouse
+
+            std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
+            arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
+        }
+        if (colorPosition) {  // moveLight flag is set from the checkbox in MyForm
+            double mouseX, mouseY;
+            glfwGetCursorPos(win, &mouseX, &mouseY);  // Get mouse position
+            UpdateObj(mouseX, mouseY);  // Update light position based on mouse
 
             std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
@@ -122,11 +129,22 @@ void GameController::RunGame() {
                 mesh->Render(camera.GetProjection() * camera.GetView());
             }
         }
-        if (clicked)
+        if (clickL)
         {
-            ResetLightPos();
-            clicked = false;
+            if(light){
+                ResetLightPos();
+            }
+            
         }
+        if (clickO)
+        {
+            if (suzanne)
+            {
+                ResetObjPos();
+            }
+
+        }
+        
         // Continuous rotation for objects
         glm::vec3 rotationspeed = { 0.0f, 0.05f, 0.0f };  // Rotate 0.05 radians per frame around Y-axis
         for (auto mesh : meshes) 
@@ -143,6 +161,7 @@ void GameController::RunGame() {
                 mesh->Render(camera.GetProjection() * camera.GetView());
             }
         }
+
 
         glfwSwapBuffers(win);
         glfwPollEvents();
@@ -168,7 +187,7 @@ void GameController::RunGame() {
 }
 
 
-// GameController.cpp
+
 // Update the light position based on mouse movement
 void GameController::UpdateObjToMouse(double mX, double mY)
 {
@@ -201,21 +220,55 @@ void GameController::UpdateObjToMouse(double mX, double mY)
         light->SetPosition(targetPosition);
         lastLightPosition = targetPosition;  // Store the updated position
     }
+    
 }
 
+void GameController::UpdateObj(double mX, double mY) {
+    // Convert mouse position to NDC
+    float x = (2.0f * mX) / screenWidth - 1.0f;
+    float y = 1.0f - (2.0f * mY) / screenHeight;  // Flip Y-axis
 
+    glm::vec4 ndcCoords = glm::vec4(x, y, 0.0f, 1.0f);
 
-void GameController::ResetLightPos() {
-    // Ensure the lastLightPosition has the correct values
-    if (light) {
-        std::cout << "Resetting light position to: "
-            << lastLightPosition.x << ", "
-            << lastLightPosition.y << ", "
-            << lastLightPosition.z << std::endl; // Debug print
+    // Transform NDC to world space
+    glm::vec4 worldCoords = glm::inverse(projMatrix * viewMatrix) * ndcCoords;
+    worldCoords /= worldCoords.w;  // Normalize coordinates
 
-        light->SetPosition(lastLightPosition);  // Use the stored position
+    glm::vec3 cameraPos = camera.GetPosition();
+    glm::vec3 worldPos = glm::vec3(worldCoords);
+    glm::vec3 rayDir = glm::normalize(worldPos - cameraPos);
+
+    // Fixed depth to determine new position
+    float depth = 7.0f;  // Adjustable depth value
+    glm::vec3 targetPosition = cameraPos + rayDir * depth;
+
+    if (suzanne) {
+        suzanne->SetPosition(targetPosition);
+        lastObjPosition = targetPosition;  // Store updated position
     }
 }
+
+void GameController::UpdateScene()
+{
+
+}
+
+bool GameController::ResetObjPos() {
+    if (suzanne) {
+        suzanne->SetPosition({0,0,0}); 
+        return clickO = false;
+    }
+}
+
+
+bool GameController::ResetLightPos() {
+    // Ensure the lastLightPosition has the correct values
+    if (light) {
+        light->SetPosition({0,0,4});
+        return clickL = false;
+    }
+}
+
 
 void GameController::HandleMouseClick(GLFWwindow* window) {
     double mouseX, mouseY;
@@ -268,5 +321,47 @@ void GameController::HandleMouseClick(GLFWwindow* window) {
         << " Direction: (" << moveDirection.x << ", " << moveDirection.y << ", " << moveDirection.z << ")" << std::endl;
 }
 
+void GameController::HandleMouseClickForColorByPosition(GLFWwindow* window) {
+    if (!colorPosition) return;  // Exit if "Color By Position" mode is inactive
+
+    double mouseX, mouseY;
+    glfwGetCursorPos(window, &mouseX, &mouseY);
+
+    // Screen center and quadrant calculations
+    float screenWidth = static_cast<float>(WindowController::GetInstance().GetResolution().width);
+    float screenHeight = static_cast<float>(WindowController::GetInstance().GetResolution().height);
+    float centerX = screenWidth / 2.0f;
+    float centerY = screenHeight / 2.0f;
+
+    glm::vec3 moveDirection(0.0f, 0.0f, 0.0f);
+    float speed = 0.1f;
+
+    if (mouseX < centerX && mouseY < centerY) {
+        moveDirection = glm::vec3(-1.0f, 1.0f, 0.0f);  // Top-left quadrant
+    }
+    else if (mouseX >= centerX && mouseY < centerY) {
+        moveDirection = glm::vec3(1.0f, 1.0f, 0.0f);  // Top-right quadrant
+    }
+    else if (mouseX < centerX && mouseY >= centerY) {
+        moveDirection = glm::vec3(-1.0f, -1.0f, 0.0f);  // Bottom-left quadrant
+    }
+    else if (mouseX >= centerX && mouseY >= centerY) {
+        moveDirection = glm::vec3(1.0f, -1.0f, 0.0f);  // Bottom-right quadrant
+    }
+
+    float distanceFromCenter = glm::length(glm::vec2(mouseX - centerX, mouseY - centerY));
+    float maxDistance = glm::length(glm::vec2(centerX, centerY));
+    speed *= (distanceFromCenter / maxDistance);  // Scale speed by distance
+
+    moveDirection *= speed;
+    lastObjPosition += moveDirection;
+
+    if (suzanne) {
+        glm::vec3 newPosition = suzanne->GetPosition() + moveDirection;
+        suzanne->SetPosition(newPosition);
+
+        std::cout << "New Position: (" << newPosition.x << ", " << newPosition.y << ", " << newPosition.z << ")" << std::endl;
+    }
+}
 
 

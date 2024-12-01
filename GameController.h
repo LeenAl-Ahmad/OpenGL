@@ -20,14 +20,22 @@ public:
 
 	//Mouse
 	void UpdateObjToMouse(double mouseX, double mouseY);
-	void ResetLightPos();
+	void UpdateObj(double mouseX, double mouseY);
+	bool ResetLightPos();
+	bool ResetObjPos();
+	void UpdateScene();
 	void SetSpecularStrength(float strength){specularStrength = strength; }
 
 	std::vector<Mesh*>& GetLights() { return lights; }
 	const Camera& GetCamera() { return camera; }
 
 	bool moveLight = false;
+	bool colorPosition = false;
+	bool moveCube = false;
+	bool clickL = false;
+	bool clickO = false;
 	void HandleMouseClick(GLFWwindow* window);
+	void HandleMouseClickForColorByPosition(GLFWwindow* window);
 	Mesh* GetSuzanne() const { return suzanne; }
 private:
 	Camera camera = {};
@@ -51,9 +59,11 @@ private:
 	Mesh* light;
 	Mesh* suzanne;
 
-	bool clicked = false;
+	
 	glm::vec3 lastLightPosition;
+	glm::vec3 lastObjPosition;
 	float specularStrength = 4.0f;
+	
 };
 
 #endif // !GAME_CONTROLLER_H

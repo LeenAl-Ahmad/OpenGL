@@ -17,7 +17,8 @@ namespace OpenGL {
 	public:
 		static bool mlight;
 		static bool cPosition;
-		static bool clicked;
+		static bool clickedL;
+		static bool clickedO;
 	private: System::Windows::Forms::CheckBox^ MoveLight;
 	private: System::Windows::Forms::Button^ ResetLight;
 	private: System::Windows::Forms::TrackBar^ SPStrength;
@@ -43,7 +44,8 @@ namespace OpenGL {
 			mlight= MoveLight ->Checked;
 			cPosition = colorByPosition ->Checked;
 			mCube = moveCube ->Checked;
-			clicked = false;
+			clickedL = false;
+			clickedO = false;
 
 		}
 		
@@ -258,13 +260,12 @@ namespace OpenGL {
 		}
 #pragma endregion
 private: System::Void MoveLight_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-
 			mlight = MoveLight ->Checked;
 			GameController::GetInstance().moveLight = mlight;
 }
 private: System::Void ResetLight_Click(System::Object^ sender, System::EventArgs^ e) {
-	clicked = true;
-
+	clickedL = true;
+	GameController::GetInstance().clickL = clickedL;
 }
 private: System::Void SPStrength_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	float spValue = SPStrength->Value / 32.0f; // Map 0-128 to 0.0-4.0 // Normalize the value between 0.0 and 1.0
@@ -283,13 +284,15 @@ private: System::Void blueBar_Scroll(System::Object^ sender, System::EventArgs^ 
 private: System::Void colorByPosition_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 	
 	cPosition = colorByPosition->Checked;
-
+	GameController::GetInstance().colorPosition = cPosition;
 }
 private: System::Void resetObj_Click(System::Object^ sender, System::EventArgs^ e) {
+	clickedO = true;
+	GameController::GetInstance().clickO = clickedO;
 }
 private: System::Void moveCube_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-	
 	mCube = moveCube->Checked;
+	GameController::GetInstance().moveCube = mCube;
 }
 private: System::Void redtrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	float redValue = redtrackBar->Value / 255.0f;  // Normalize the value between 0.0 and 1.0
