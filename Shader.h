@@ -24,6 +24,11 @@ public:
 	GLuint GetAttrML() {
 		return MoveLight;
 	}
+
+	GLuint GetLightPos()
+	{
+		return lightPos;
+	}
 	GLuint GetAttrSPS() {
 		return spStrength;
 	}
@@ -81,7 +86,7 @@ private:
 	GLuint attrInstanceMatrix = 0;
 
 	GLuint MoveLight = 0;
-	GLuint setLightPos = 0;
+	GLuint lightPos = 0;
 	GLuint spStrength = 0;
 	GLuint redbar = 0;
 	GLuint greenBar = 0;

@@ -28,15 +28,22 @@ public:
 	void SetLightDirection(glm::vec3 _lD) { lightDirection = _lD; }
 	glm::vec3 GetLightDirection() { return lightDirection; }
 	void SetCameraPosition(glm::vec3 _camerPosition) { cameraPosition = _camerPosition; }
+	void SetSpecularStrength(float strength) {specularStrength = strength;}
 
 	void Create(Shader* _shader, std::string _file, int _instanceCount = 1);
 	void Cleanup();
 	void CalculateTransform();
 	void Render(glm::mat4 wvp);
 	void SetRotation(float x, float y);
+	void Update();
 
 	size_t GetVertexDataSize() const;
 	size_t GetIndexDataSize() const;
+
+	void SetClicked(bool invert)
+	{
+		clicked = invert;
+	}
 
 private:
 	void SetShaderVariable(glm::mat4 _pv);
@@ -72,6 +79,9 @@ private:
 	glm::vec3 cameraPosition{ 0.0f, 0.0f, 0.0f };
 
 	double mouseX, mouseY;
+
+	bool clicked;
+	float specularStrength = 1.0f;
 	
 };
 

@@ -1,5 +1,5 @@
 #pragma once
-
+#include "GameController.h"
 namespace OpenGL {
 
 	using namespace System;
@@ -17,6 +17,7 @@ namespace OpenGL {
 	public:
 		static bool mlight;
 		static bool cPosition;
+		static bool clicked;
 	private: System::Windows::Forms::CheckBox^ MoveLight;
 	private: System::Windows::Forms::Button^ ResetLight;
 	private: System::Windows::Forms::TrackBar^ SPStrength;
@@ -42,8 +43,9 @@ namespace OpenGL {
 			mlight= MoveLight ->Checked;
 			cPosition = colorByPosition ->Checked;
 			mCube = moveCube ->Checked;
+			clicked = false;
 		}
-
+		
 	protected:
 		/// <summary>
 		/// Clean up any resources being used.
@@ -248,8 +250,11 @@ namespace OpenGL {
 private: System::Void MoveLight_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 
 			mlight = MoveLight ->Checked;
+			GameController::GetInstance().moveLight = mlight;
 }
 private: System::Void ResetLight_Click(System::Object^ sender, System::EventArgs^ e) {
+	clicked = true;
+
 }
 private: System::Void SPStrength_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	float spValue = SPStrength->Value / 255.0f;  // Normalize the value between 0.0 and 1.0

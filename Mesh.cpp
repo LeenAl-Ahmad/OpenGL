@@ -310,6 +310,9 @@ void Mesh::Render(glm::mat4 _pv) {
 		glDisableVertexAttribArray(shader->GetAttrInstanceMatrix()+3);
 	}
 
+#pragma region Tools
+	glUniform1i(shader->GetLightPos(), clicked);
+
 }
 
 void Mesh::SetRotation(float rotationX, float rotationY) {
@@ -370,4 +373,9 @@ void Mesh::SetPositionM(const glm::vec3& newPos)
 glm::vec3 Mesh::GetPositionM() const
 {
 	return position;
+}
+
+void ResetLightPos(glm::vec3 dl, glm::vec3 lightPos)
+{
+	lightPos = dl;
 }

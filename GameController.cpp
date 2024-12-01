@@ -32,12 +32,14 @@ void GameController::Initialize() {
     projMatrix = camera.GetProjection();
     viewMatrix = camera.GetView();
 
+    lastLightPosition = glm::vec3(0.0f, 0.0f, 4.0f);
     // Light setup
     light = new Mesh();
     light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");  // Use sphere object for the light
     light->SetColor({ 3.0f, 1.0f, 1.0f });
-    light->SetPosition({ 0.0f, 0.0f, 4.0f });  // Light at {0, 0, 4}
+    light->SetPosition(lastLightPosition);  // Light at {0, 0, 4}
     light->SetScalo({ 0.1f, 0.1f, 0.1f });
+    light->SetSpecularStrength(4.0f);
     lights.push_back(light);
 
     // Suzanne with Hat Position (can use a custom model like "Monkey.obj" or another model)
@@ -46,8 +48,8 @@ void GameController::Initialize() {
     suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
     meshes.push_back(suzanne);
 
-    // Sphere with Specular Strength and Scale
-    Mesh* sphere = new Mesh();
+    // Cube with Specular Strength and Color
+    /*Mesh* sphere = new Mesh();
     sphere->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
     sphere->SetPosition({ 0.0f, 0.0f, 0.0f });
     sphere->SetScalo({ 0.5f, 0.5f, 0.5f });
@@ -55,9 +57,7 @@ void GameController::Initialize() {
     sphere->SetLightDirection({ 1.0f, 1.0f, 1.0f });
     //sphere->SetSpecularStrength(4.0f);
     meshes.push_back(sphere);
-
-    // Cube with Specular Strength and Color
-    /*Mesh* cube = new Mesh();
+    Mesh* cube = new Mesh();
     cube->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj");
     cube->SetPosition({ 0.0f, 0.0f, 0.0f });
     cube->SetScalo({ 1.0f, 1.0f, 1.0f });
@@ -96,12 +96,15 @@ void GameController::RunGame() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Mouse input and other UI updates (as before)
-        double mouseX, mouseY;
-        glfwGetCursorPos(win, &mouseX, &mouseY);
-        UpdateObjToMouse(mouseX, mouseY);
+        if (moveLight) {  // moveLight flag is set from the checkbox in MyForm
+            double mouseX, mouseY;
+            glfwGetCursorPos(win, &mouseX, &mouseY);  // Get mouse position
+            UpdateObjToMouse(mouseX, mouseY);  // Update light position based on mouse
 
-        std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
-        arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
+            std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
+            arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
+        }
+        
 
         // Render lights
         for (auto light : lights) {
@@ -113,13 +116,18 @@ void GameController::RunGame() {
                 mesh->Render(camera.GetProjection() * camera.GetView());
             }
         }
+        if (clicked)
+        {
+            ResetLightPos();
+            clicked = false;
+        }
         // Continuous rotation for objects
         glm::vec3 rotationspeed = { 0.0f, 0.05f, 0.0f };  // Rotate 0.05 radians per frame around Y-axis
         for (auto mesh : meshes) {
             mesh->SetRotation(rotationspeed);  // Apply rotation to each mesh
             mesh->Render(camera.GetProjection() * camera.GetView());
-        }
 
+        }
         glfwSwapBuffers(win);
         glfwPollEvents();
 
@@ -144,6 +152,8 @@ void GameController::RunGame() {
 }
 
 
+// GameController.cpp
+// Update the light position based on mouse movement
 void GameController::UpdateObjToMouse(double mX, double mY)
 {
     // Convert mouse position to Normalized Device Coordinates (NDC)
@@ -152,9 +162,9 @@ void GameController::UpdateObjToMouse(double mX, double mY)
 
     glm::vec4 ndcCoords = glm::vec4(x, y, 0.0f, 1.0f); // Z = 0 for the near plane
 
-    // Unproject NDC coordinates to world space
+    // Unproject NDC coordinates to world space using camera's projection and view matrix
     glm::vec4 worldCoords = glm::inverse(projMatrix * viewMatrix) * ndcCoords;
-    worldCoords /= worldCoords.w; // Divide by W for perspective correction
+    worldCoords /= worldCoords.w; // Perspective divide to normalize
 
     // Compute direction vector from camera to mouse position in world space
     glm::vec3 cameraPos = camera.GetPosition();
@@ -162,20 +172,33 @@ void GameController::UpdateObjToMouse(double mX, double mY)
     glm::vec3 rayDir = glm::normalize(worldPos - cameraPos);
 
     // Set a fixed depth (distance from camera)
-    float depth = 7.0f; // You can adjust this value to control distance
+    float depth = 7.0f; // You can adjust this value to control how far the light moves
     glm::vec3 targetPosition = cameraPos + rayDir * depth;
 
-    // Apply an offset to move the light slightly to the right
-    glm::vec3 offset = glm::vec3(0.3f, 0.0f, 0.0f); // Offset 3 units to the right
+    // Apply an offset to move the light slightly to the right of the mouse position
+    glm::vec3 offset = glm::vec3(0.3f, 0.0f, 0.0f); // Offset slightly to the right
     targetPosition += offset;
 
-    // Update the light object's position
+    // Update the light's position and store the new position
     if (light)
     {
         light->SetPosition(targetPosition);
+        lastLightPosition = targetPosition;  // Store the updated position
     }
 }
 
 
+
+void GameController::ResetLightPos() {
+    // Ensure the lastLightPosition has the correct values
+    if (light) {
+        std::cout << "Resetting light position to: "
+            << lastLightPosition.x << ", "
+            << lastLightPosition.y << ", "
+            << lastLightPosition.z << std::endl; // Debug print
+
+        light->SetPosition(lastLightPosition);  // Use the stored position
+    }
+}
 
 

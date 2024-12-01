@@ -20,10 +20,13 @@ public:
 
 	//Mouse
 	void UpdateObjToMouse(double mouseX, double mouseY);
+	void ResetLightPos();
 
 	std::vector<Mesh*>& GetLights() { return lights; }
 	const Camera& GetCamera() { return camera; }
 
+
+	bool moveLight = false;
 private:
 	Camera camera = {};
 
@@ -45,6 +48,8 @@ private:
 	glm::mat4 viewMatrix;
 	Mesh* light;
 
+	bool clicked = false;
+	glm::vec3 lastLightPosition;
 };
 
 #endif // !GAME_CONTROLLER_H
