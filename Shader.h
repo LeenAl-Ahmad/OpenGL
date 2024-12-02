@@ -35,7 +35,6 @@ public:
 		return lightPos;
 	}
 	
-	
 	GLuint GetAttrROP() {
 		return setObjPos;
 	}

@@ -23,7 +23,7 @@ public:
 	void UpdateObj(double mouseX, double mouseY);
 	bool ResetLightPos();
 	bool ResetObjPos();
-	void UpdateScene(GLFWwindow* window);
+	void UpdateScene(GLFWwindow* window, Mesh* newCube);
 	void SetSpecularStrength(float strength) { specularStrength = strength; }
 	float SetR(float r) {return red = r; }
 	float GetR() { return red; }

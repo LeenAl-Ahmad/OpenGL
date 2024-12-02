@@ -14,7 +14,7 @@ void GameController::Initialize() {
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     srand(time(0));
@@ -71,7 +71,7 @@ void GameController::Initialize() {
         );
         glm::vec3 cubePosition = sphere->GetPosition() + randomOffset;
         newCube = new Mesh();
-        newCube->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube1.obj");
+        newCube->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj");
         newCube->SetPosition(cubePosition);
         newCube->SetScalo({ 0.5f, 0.5f, 0.5f });
         newCube->SetLightDirection({ 1.0f, 1.0f, 1.0f });
@@ -146,7 +146,7 @@ void GameController::RunGame() {
         
         if (moveCube)
         {
-            UpdateScene(win);
+            UpdateScene(win, cube);
             if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
                 HandleMouseClick(win);
             }
@@ -223,8 +223,6 @@ void GameController::RunGame() {
     shaderDiffuse.Cleanup();
 }
 
-
-
 // Update the light position based on mouse movement
 void GameController::UpdateObjToMouse(double mX, double mY)
 {
@@ -285,7 +283,7 @@ void GameController::UpdateObj(double mX, double mY) {
     }
 }
 
-void GameController::UpdateScene(GLFWwindow* window) {
+void GameController::UpdateScene(GLFWwindow* window, Mesh* NewCube) {
     static bool isMousePressed = false; // Tracks the mouse button state
 
     // Update Suzanne and light positions
