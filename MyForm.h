@@ -35,6 +35,10 @@ namespace OpenGL {
 
 	public:
 		float specularStrengthValue = 4.0f;
+	private: System::Windows::Forms::TextBox^ textBox1;
+	private: System::Windows::Forms::TextBox^ textBox2;
+	private: System::Windows::Forms::TextBox^ textBox3;
+	public:
 
 	public:
 		static bool mCube;
@@ -46,9 +50,25 @@ namespace OpenGL {
 			mCube = moveCube ->Checked;
 			clickedL = false;
 			clickedO = false;
+			redtrackBar->Value = 300;
+			greentrackBar->Value = 300;
+			bluetrackBar->Value = 300;
+			SPStrength->Value = 128;
+			textBox1->Text = redtrackBar->Value.ToString() + "%";
+			textBox2->Text = greentrackBar->Value.ToString() + "%";
+			textBox3->Text = bluetrackBar->Value.ToString() + "%";
 
+			
 		}
-		
+		float GetR() {
+			return (redtrackBar->Value - 100.0f) / 100.0f; // Normalize to -1.0 to 1.0
+		}
+		float GetG() {
+			return (greentrackBar->Value - 100.0f) / 100.0f; // Normalize to -1.0 to 1.0
+		}
+		float GetB() {
+			return (bluetrackBar->Value - 100.0f) / 100.0f; // Normalize to -1.0 to 1.0
+		}
 	protected:
 		/// <summary>
 		/// Clean up any resources being used.
@@ -91,6 +111,9 @@ namespace OpenGL {
 			this->redtrackBar = (gcnew System::Windows::Forms::TrackBar());
 			this->greentrackBar = (gcnew System::Windows::Forms::TrackBar());
 			this->bluetrackBar = (gcnew System::Windows::Forms::TrackBar());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SPStrength))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->redtrackBar))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->greentrackBar))->BeginInit();
@@ -142,16 +165,17 @@ namespace OpenGL {
 			// red
 			// 
 			this->red->AutoSize = true;
-			this->red->Location = System::Drawing::Point(39, 130);
+			this->red->Location = System::Drawing::Point(10, 119);
 			this->red->Name = L"red";
 			this->red->Size = System::Drawing::Size(17, 16);
 			this->red->TabIndex = 7;
 			this->red->Text = L"R";
+			this->red->Click += gcnew System::EventHandler(this, &MyForm::red_Click);
 			// 
 			// GREEN
 			// 
 			this->GREEN->AutoSize = true;
-			this->GREEN->Location = System::Drawing::Point(39, 177);
+			this->GREEN->Location = System::Drawing::Point(9, 168);
 			this->GREEN->Name = L"GREEN";
 			this->GREEN->Size = System::Drawing::Size(17, 16);
 			this->GREEN->TabIndex = 8;
@@ -160,7 +184,7 @@ namespace OpenGL {
 			// blue
 			// 
 			this->blue->AutoSize = true;
-			this->blue->Location = System::Drawing::Point(39, 223);
+			this->blue->Location = System::Drawing::Point(9, 213);
 			this->blue->Name = L"blue";
 			this->blue->Size = System::Drawing::Size(16, 16);
 			this->blue->TabIndex = 9;
@@ -200,7 +224,7 @@ namespace OpenGL {
 			// 
 			// redtrackBar
 			// 
-			this->redtrackBar->Location = System::Drawing::Point(86, 119);
+			this->redtrackBar->Location = System::Drawing::Point(33, 106);
 			this->redtrackBar->Maximum = 300;
 			this->redtrackBar->Name = L"redtrackBar";
 			this->redtrackBar->Size = System::Drawing::Size(370, 56);
@@ -210,7 +234,7 @@ namespace OpenGL {
 			// 
 			// greentrackBar
 			// 
-			this->greentrackBar->Location = System::Drawing::Point(86, 168);
+			this->greentrackBar->Location = System::Drawing::Point(32, 151);
 			this->greentrackBar->Maximum = 300;
 			this->greentrackBar->Name = L"greentrackBar";
 			this->greentrackBar->Size = System::Drawing::Size(370, 56);
@@ -220,7 +244,7 @@ namespace OpenGL {
 			// 
 			// bluetrackBar
 			// 
-			this->bluetrackBar->Location = System::Drawing::Point(86, 213);
+			this->bluetrackBar->Location = System::Drawing::Point(31, 213);
 			this->bluetrackBar->Maximum = 300;
 			this->bluetrackBar->Name = L"bluetrackBar";
 			this->bluetrackBar->Size = System::Drawing::Size(370, 56);
@@ -228,11 +252,38 @@ namespace OpenGL {
 			this->bluetrackBar->Value = 100;
 			this->bluetrackBar->Scroll += gcnew System::EventHandler(this, &MyForm::bluetrackBar_Scroll);
 			// 
+			// textBox1
+			// 
+			this->textBox1->Location = System::Drawing::Point(401, 112);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(32, 22);
+			this->textBox1->TabIndex = 16;
+			this->textBox1->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox1_TextChanged);
+			// 
+			// textBox2
+			// 
+			this->textBox2->Location = System::Drawing::Point(401, 162);
+			this->textBox2->Name = L"textBox2";
+			this->textBox2->Size = System::Drawing::Size(32, 22);
+			this->textBox2->TabIndex = 17;
+			this->textBox2->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox2_TextChanged);
+			// 
+			// textBox3
+			// 
+			this->textBox3->Location = System::Drawing::Point(401, 213);
+			this->textBox3->Name = L"textBox3";
+			this->textBox3->Size = System::Drawing::Size(32, 22);
+			this->textBox3->TabIndex = 18;
+			this->textBox3->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox3_TextChanged);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(466, 410);
+			this->Controls->Add(this->textBox3);
+			this->Controls->Add(this->textBox2);
+			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->bluetrackBar);
 			this->Controls->Add(this->greentrackBar);
 			this->Controls->Add(this->redtrackBar);
@@ -268,8 +319,6 @@ private: System::Void ResetLight_Click(System::Object^ sender, System::EventArgs
 	GameController::GetInstance().clickL = clickedL;
 }
 private: System::Void SPStrength_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	float spValue = SPStrength->Value / 32.0f; // Map 0-128 to 0.0-4.0 // Normalize the value between 0.0 and 1.0
-	GameController::GetInstance().GetSuzanne()->SetSpecularStrength(spValue);
 
 }
 private: System::Void redBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
@@ -295,13 +344,21 @@ private: System::Void moveCube_CheckedChanged(System::Object^ sender, System::Ev
 	GameController::GetInstance().moveCube = mCube;
 }
 private: System::Void redtrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	float redValue = redtrackBar->Value / 255.0f;  // Normalize the value between 0.0 and 1.0
+	textBox1->Text = redtrackBar->Value.ToString() + "%";
 }
 private: System::Void greentrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	float greenValue = greentrackBar->Value / 255.0f;  // Normalize the value between 0.0 and 1.0
+	textBox2->Text = greentrackBar->Value.ToString() + "%";
 }
-private: System::Void bluetrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	float blueValue = bluetrackBar->Value / 255.0f;  // Normalize the value between 0.0 and 1.0
+	private: System::Void bluetrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
+		textBox3->Text = bluetrackBar->Value.ToString() + "%";
+	}
+private: System::Void red_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void textBox2_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void textBox3_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 };
 }

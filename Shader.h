@@ -20,7 +20,9 @@ public:
 	GLuint GetAttrTangents() { return attrTangents; }
 	GLuint GetAttrBitangents() { return attrBitangents; }
 	GLuint GetAttrInstanceMatrix() { return attrInstanceMatrix; }
-	
+	GLuint GetTracKBarR() { return trackBarR; }
+	GLuint GetTracKBarG() { return trackBarG; }
+	GLuint GetTracKBarB() { return trackBarB; }
 	GLuint GetAttrSPS() {return attrSpStrength;}
 
 	GLuint GetAttrML() {
@@ -32,15 +34,6 @@ public:
 		return lightPos;
 	}
 	
-	GLuint GetAttrR() {
-		return redbar;
-	}
-	GLuint GetAttrG() {
-		return greenBar;
-	}
-	GLuint GetAttrB() {
-		return blueBar;
-	}
 	GLuint GetAttrCP() {
 		return posColor;
 	}
@@ -88,9 +81,9 @@ private:
 
 	GLuint MoveLight = 0;
 	GLuint lightPos = 0;
-	GLuint redbar = 0;
-	GLuint greenBar = 0;
-	GLuint blueBar = 0;
+	GLuint trackBarR = 0;
+	GLuint trackBarG = 0;
+	GLuint trackBarB = 0;
 	GLuint posColor = 0;
 	GLuint setObjPos = 0;
 	GLuint moveCube = 0;

@@ -26,6 +26,9 @@ void Shader::LoadAttributes()
 	attrBitangents = glGetAttribLocation(programID, "bitangents");
 	attrInstanceMatrix = glGetAttribLocation(programID, "instanceMatrix");
 	attrSpStrength = glGetUniformLocation(programID, "SpecularStrength");
+	trackBarR = glGetUniformLocation(programID, "trackBarR");
+	trackBarG = glGetUniformLocation(programID, "trackBarG");
+	trackBarB = glGetUniformLocation(programID, "trackBarB");
 }
 
 void Shader::SetVec3(const char* _name, glm::vec3 _value)

@@ -12,7 +12,7 @@
 class GameController : public Singleton< GameController>
 {
 public:
-	GameController() = default;
+	GameController() : specularStrength(0.0f) {};
 	virtual ~GameController() = default;
 
 	void Initialize();
@@ -36,14 +36,17 @@ public:
 	bool clickO = false;
 	void HandleMouseClick(GLFWwindow* window);
 	void HandleMouseClickForColorByPosition(GLFWwindow* window);
+	void HandleMouseClickCube(GLFWwindow* window);
 	Mesh* GetSuzanne() const { return suzanne; }
+	float specularStrength ;
+
 private:
 	Camera camera = {};
 
 	Shader shaderColor = {};
 	Shader shaderDiffuse = {};
 	Shader shaderFont = {};
-	Shader shaderSkybox = {};
+	Shader shaderPixel = {};
 	Shader shader = {};
 
 	std::vector<Mesh*> meshes;
@@ -65,8 +68,8 @@ private:
 	
 	glm::vec3 lastLightPosition;
 	glm::vec3 lastObjPosition;
-	float specularStrength = 4.0f;
 	
+	glm::vec3 rotationSpeed = { 0, 0.2, 0 };
 	const float sphereRadius = 0.5f;           // Radius of the sphere
 	const float cubeSpeed = 1.0f;
 	int minCubesToSpawn = 10;                  // Minimum number of cubes to spawn

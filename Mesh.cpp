@@ -285,6 +285,10 @@ void Mesh::Render(glm::mat4 _pv) {
 
 	glUseProgram(shader->GetProgramID());
 	
+	glUniform1f(glGetUniformLocation(shader->GetProgramID(), "trackBarR"), red);
+	glUniform1f(glGetUniformLocation(shader->GetProgramID(), "trackBarG"), green);
+	glUniform1f(glGetUniformLocation(shader->GetProgramID(), "trackBarB"), blue);
+
 	CalculateTransform();
 	SetShaderVariable(_pv);
 
@@ -335,7 +339,6 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetVec3("CameraPosition", cameraPosition);
 	shader->SetInt("EnableNormalMaps", enableNormalMaps);
 	shader->SetInt("EnableInstancing", enableInstancing);
-	shader->SetFloat("material.specularStrength", 8.0f);
 
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)

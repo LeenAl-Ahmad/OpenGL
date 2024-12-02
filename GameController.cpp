@@ -49,6 +49,7 @@ void GameController::Initialize() {
     suzanne->SetRotationObj({ 0.0f, 0.0f, 0.0f });
     //suzanne->SetColor({});
     suzanne->SetSpecularStrength(4.0f);
+
     meshes.push_back(suzanne);
 
     sphere = new Mesh();
@@ -86,6 +87,8 @@ void GameController::RunGame() {
     shaderDiffuse.LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
     shaderFont = Shader();
     shaderFont.LoadShaders("Font.vertexshader", "Font.fragmentshader");
+    shaderPixel = Shader();
+    //shaderPixel.LoadShaders("pixel.vertexShader", "pixel.fragmentshader");
 
     Font* arialFont = new Font();
     arialFont->Create(&shaderFont, "C:/Users/leana/source/repos/OpenGL/Assets/Fonts/arial.ttf", 48);
@@ -106,6 +109,15 @@ void GameController::RunGame() {
         GameTime::GetInstance().Update();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        float currentTime = (float)glfwGetTime();
+
+        float red = window->GetR(); 
+        float green = window->GetG(); 
+        float blue = window->GetB();
+
+        // Set the offsets in the mesh
+        suzanne->SetRGB(red, green, blue);
+
         if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
             HandleMouseClick(win);
         }
@@ -119,17 +131,28 @@ void GameController::RunGame() {
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
         }
         if (colorPosition) {  // moveLight flag is set from the checkbox in MyForm
-            double mouseX, mouseY;
-            glfwGetCursorPos(win, &mouseX, &mouseY);  // Get mouse position
-            UpdateObj(mouseX, mouseY);  // Update light position based on mouse
+            glUseProgram(shaderPixel.GetProgramID());  // Activate the pixel shader
 
+            // Handle mouse click and update the object position
+            double mouseX, mouseY;
+            glfwGetCursorPos(win, &mouseX, &mouseY);
+            UpdateObj(mouseX, mouseY);
+
+            // Render text showing the mouse position (optional)
             std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
+        }
+        else {
+            // Normal rendering mode, use the default shader
+            glUseProgram(shaderDiffuse.GetProgramID());  // Use the default diffuse shader for regular rendering
         }
         
         if (moveCube)
         {
             UpdateScene(win);
+            if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+                HandleMouseClick(win);
+            }
         }
 
         // Render lights
@@ -138,9 +161,10 @@ void GameController::RunGame() {
         }
 
         for (auto mesh : meshes) {
-            if (mesh == light) {  // Exclude the light from being rendered again as a mesh
+            if (mesh == light) {
                 mesh->Render(camera.GetProjection() * camera.GetView());
             }
+            
         }
         if (clickL)
         {
@@ -268,12 +292,8 @@ void GameController::UpdateScene(GLFWwindow* window) {
         delete suzanne;
         suzanne = nullptr;
     }
-    
+
     sphere->Render(camera.GetProjection() * camera.GetView());
-    // Spawn cubes when the left mouse button is pressed
-    for (auto mesh : cubes) {
-        mesh->Render(camera.GetProjection() * camera.GetView());
-    }
 
     // Move cubes towards the sphere and remove them if they reach the sphere
     for (auto it = cubes.begin(); it != cubes.end();) {
@@ -283,7 +303,7 @@ void GameController::UpdateScene(GLFWwindow* window) {
         glm::vec3 newPosition = cube->GetPosition() + direction * cubeSpeed * deltaTime;
         cube->SetPosition(newPosition);
 
-        // Check if the cube reaches the sphere
+        // Check if the cube reaches the sphere (within a small threshold)
         if (glm::length(newPosition - sphere->GetPosition()) <= sphereRadius) {
             meshes.erase(std::remove(meshes.begin(), meshes.end(), cube), meshes.end());
             delete cube; // Clean memory
@@ -297,6 +317,7 @@ void GameController::UpdateScene(GLFWwindow* window) {
     // Print the number of currently spawned cubes
     std::cout << "Cubes: " << cubes.size() << std::endl;
 }
+
 
 
 bool GameController::ResetObjPos() {
@@ -320,94 +341,60 @@ void GameController::HandleMouseClick(GLFWwindow* window) {
     double mouseX, mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);  // Get mouse position
 
-    // Get screen width and height
-    float screenWidth = static_cast<float>(WindowController::GetInstance().GetResolution().width);
-    float screenHeight = static_cast<float>(WindowController::GetInstance().GetResolution().height);
+    // Convert mouse position to normalized device coordinates (NDC)
+    float x = (2.0f * mouseX) / screenWidth - 1.0f;
+    float y = 1.0f - (2.0f * mouseY) / screenHeight;  // Invert Y-axis
+    glm::vec4 ndcCoords = glm::vec4(x, y, 0.0f, 1.0f);
 
-    // Calculate the center of the screen
+    // Determine quadrant and adjust light position
     float centerX = screenWidth / 2.0f;
     float centerY = screenHeight / 2.0f;
+    glm::vec3 direction = glm::normalize(light->GetPosition() - glm::vec3(centerX, centerY, 0.0f));
+    float distance = glm::distance(glm::vec2(mouseX, mouseY), glm::vec2(centerX, centerY));
+    float maxDistance = glm::distance(glm::vec2(0, 0), glm::vec2(screenWidth, screenHeight));
+    float speedFactor = (distance / maxDistance);  // Calculate speed based on distance
 
-    // Determine which quadrant of the screen was clicked
-    glm::vec3 moveDirection(0.0f, 0.0f, 0.0f);
-    float speed = 0.1f;  // Base speed of light movement
-
-    // Determine which quadrant of the screen was clicked and move accordingly
-    if (mouseX < centerX && mouseY < centerY) {  // Top-left quadrant
-        moveDirection = glm::vec3(-1.0f, 1.0f, 0.0f);  // Move light up-left
+    if (mouseX < centerX && mouseY > centerY) {
+        // Top-left
+        light->SetPosition(light->GetPosition() + direction * speedFactor);
     }
-    else if (mouseX >= centerX && mouseY < centerY) {  // Top-right quadrant
-        moveDirection = glm::vec3(1.0f, 1.0f, 0.0f);  // Move light up-right
+    else if (mouseX >= centerX && mouseY > centerY) {
+        // Top-right
+        light->SetPosition(light->GetPosition() + direction * speedFactor);
     }
-    else if (mouseX < centerX && mouseY >= centerY) {  // Bottom-left quadrant
-        moveDirection = glm::vec3(-1.0f, -1.0f, 0.0f);  // Move light down-left
+    else if (mouseX < centerX && mouseY <= centerY) {
+        // Bottom-left
+        light->SetPosition(light->GetPosition() + direction * speedFactor);
     }
-    else if (mouseX >= centerX && mouseY >= centerY) {  // Bottom-right quadrant
-        moveDirection = glm::vec3(1.0f, -1.0f, 0.0f);  // Move light down-right
+    else {
+        // Bottom-right
+        light->SetPosition(light->GetPosition() + direction * speedFactor);
     }
-
-    // Calculate the distance from the center (in pixels)
-    float distanceFromCenter = glm::length(glm::vec2(mouseX - centerX, mouseY - centerY));
-
-    // Adjust speed based on distance from the center
-    float maxDistance = glm::length(glm::vec2(centerX, centerY)); // Max distance in any quadrant
-    speed *= (distanceFromCenter / maxDistance);  // Scale the movement speed
-
-    // Move the light in the direction of the clicked quadrant
-    moveDirection *= speed;
-
-    // Update the light's position based on the calculated direction and speed
-    lastLightPosition += moveDirection;
-
-    // Set the updated position for the light
-    light->SetPosition(lastLightPosition);
-
-    // Optional: Print out for debugging
-    std::cout << "Mouse Position: (" << mouseX << ", " << mouseY << ") Speed: " << speed
-        << " Direction: (" << moveDirection.x << ", " << moveDirection.y << ", " << moveDirection.z << ")" << std::endl;
 }
 
-void GameController::HandleMouseClickForColorByPosition(GLFWwindow* window) {
-    if (!colorPosition) return;  // Exit if "Color By Position" mode is inactive
 
+
+void GameController::HandleMouseClickCube(GLFWwindow* window) {
     double mouseX, mouseY;
-    glfwGetCursorPos(window, &mouseX, &mouseY);
+    glfwGetCursorPos(window, &mouseX, &mouseY);  // Get mouse position
 
-    // Screen center and quadrant calculations
-    float screenWidth = static_cast<float>(WindowController::GetInstance().GetResolution().width);
-    float screenHeight = static_cast<float>(WindowController::GetInstance().GetResolution().height);
-    float centerX = screenWidth / 2.0f;
-    float centerY = screenHeight / 2.0f;
+    // Spawn a new cube each time the left mouse button is clicked
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        // Spawn a cube with a random offset from the sphere
+        glm::vec3 randomOffset = glm::vec3(
+            glm::linearRand(-5.0f, 5.0f),
+            glm::linearRand(-5.0f, 5.0f),
+            glm::linearRand(-5.0f, 5.0f)
+        );
+        glm::vec3 cubePosition = sphere->GetPosition() + randomOffset;
 
-    glm::vec3 moveDirection(0.0f, 0.0f, 0.0f);
-    float speed = 0.1f;
-
-    if (mouseX < centerX && mouseY < centerY) {
-        moveDirection = glm::vec3(-1.0f, 1.0f, 0.0f);  // Top-left quadrant
-    }
-    else if (mouseX >= centerX && mouseY < centerY) {
-        moveDirection = glm::vec3(1.0f, 1.0f, 0.0f);  // Top-right quadrant
-    }
-    else if (mouseX < centerX && mouseY >= centerY) {
-        moveDirection = glm::vec3(-1.0f, -1.0f, 0.0f);  // Bottom-left quadrant
-    }
-    else if (mouseX >= centerX && mouseY >= centerY) {
-        moveDirection = glm::vec3(1.0f, -1.0f, 0.0f);  // Bottom-right quadrant
-    }
-
-    float distanceFromCenter = glm::length(glm::vec2(mouseX - centerX, mouseY - centerY));
-    float maxDistance = glm::length(glm::vec2(centerX, centerY));
-    speed *= (distanceFromCenter / maxDistance);  // Scale speed by distance
-
-    moveDirection *= speed;
-    lastObjPosition += moveDirection;
-
-    if (suzanne) {
-        glm::vec3 newPosition = suzanne->GetPosition() + moveDirection;
-        suzanne->SetPosition(newPosition);
-
-        std::cout << "New Position: (" << newPosition.x << ", " << newPosition.y << ", " << newPosition.z << ")" << std::endl;
+        newCube = new Mesh();
+        newCube->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube1.obj");
+        newCube->SetPosition(cubePosition);
+        newCube->SetScalo({ 0.5f, 0.5f, 0.5f });
+        newCube->SetLightDirection({ 1.0f, 1.0f, 1.0f });
+        meshes.push_back(newCube);
+        cubes.push_back(newCube); // Track cubes
     }
 }
-
 

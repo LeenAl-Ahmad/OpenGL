@@ -206,6 +206,8 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <None Include="External\freetype-2.10.4\release dll\win32\freetype.dll" />
     <None Include="Font.fragmentshader" />
     <None Include="Font.vertexshader" />
+    <None Include="pixel.fragmentShader" />
+    <None Include="pixel.vertexshader" />
     <None Include="Skybox.fragmentshader" />
     <None Include="Skybox.vertexshader" />
   </ItemGroup>

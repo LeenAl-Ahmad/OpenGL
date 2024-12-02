@@ -173,6 +173,12 @@
     <None Include="Font.fragmentshader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="pixel.fragmentShader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="pixel.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Library Include="External\freetype-2.10.4\release dll\win32\freetype.lib" />

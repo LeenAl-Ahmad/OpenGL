@@ -10,7 +10,7 @@ class Shader;
 class Mesh
 {
 public:
-	Mesh() = default;
+	Mesh(float specStrength = 0.5f) : specularStrength(specStrength) {};
 	virtual ~Mesh();
 
 	//mouse obj
@@ -29,7 +29,7 @@ public:
 	glm::vec3 GetLightDirection() { return lightDirection; }
 	void SetCameraPosition(glm::vec3 _camerPosition) { cameraPosition = _camerPosition; }
 	void SetSpecularStrength(float strength) { specularStrength = strength; }
-	float GetSpecularStrength() { return specularStrength; }
+	glm::float32 GetSpecularStrength() { return specularStrength; }
 	void SetSpecularColor(const glm::vec3& color) { specularColor = color; }
 	glm::vec3 GetSpecularColor() const { return specularColor; }
 
@@ -54,6 +54,13 @@ public:
 		world = glm::rotate(world, rotation.y, glm::vec3(0, 1, 0));  // Apply rotation Y
 		world = glm::rotate(world, rotation.z, glm::vec3(0, 0, 1));  // Apply rotation Z
 		world = glm::scale(world, scale);
+	}
+	float specularStrength = 1.0f;
+	 
+	void SetRGB(float r, float g, float b) {
+		red = r;
+		green = g;
+		blue = b;
 	}
 
 private:
@@ -92,8 +99,11 @@ private:
 	double mouseX, mouseY;
 
 	bool clicked;
-	float specularStrength = 1.0f;
+	
 	glm::vec3 specularColor;
+	float red;
+	float green;
+	float blue;
 };
 
 #endif // ! MESH_H
