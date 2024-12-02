@@ -26,9 +26,10 @@ void Shader::LoadAttributes()
 	attrBitangents = glGetAttribLocation(programID, "bitangents");
 	attrInstanceMatrix = glGetAttribLocation(programID, "instanceMatrix");
 	attrSpStrength = glGetUniformLocation(programID, "uSpecularStrength");
-	trackBarR = glGetUniformLocation(programID, "trackBarR");
-	trackBarG = glGetUniformLocation(programID, "trackBarG");
-	trackBarB = glGetUniformLocation(programID, "trackBarB");
+	attrColorByPos = glGetUniformLocation(programID, "colorByPosition");
+	trackBarR = glGetUniformLocation(programID, "red");
+	trackBarG = glGetUniformLocation(programID, "green");
+	trackBarB = glGetUniformLocation(programID, "blue");
 }
 
 void Shader::SetVec3(const char* _name, glm::vec3 _value)
@@ -57,6 +58,16 @@ void Shader::SetFloat(const char* _name, float _v)
 		glUniform1f(loc, _v);
 	}
 }
+
+void Shader::SetBool(const char* _name, bool _value)
+{
+	GLuint loc = glGetUniformLocation(programID, _name);
+	if (loc != -1)
+	{
+		glUniform1i(loc, _value ? 1 : 0); // OpenGL expects booleans as integers
+	}
+}
+
 
 void Shader::SetTextureSampler(const char* _name, GLuint _texUint, int _texUintId, int _v)
 {
@@ -161,8 +172,3 @@ void Shader::SetUniform(const std::string& name, float value) {
 	glUniform1f(location, value);
 }
 
-void Shader::SetSpecularStrength(float strength)
-{
-	GLint specularLocation = glGetUniformLocation(this->GetProgramID(), "specularStrength");
-	glUniform1f(specularLocation, strength);
-}

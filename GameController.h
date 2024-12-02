@@ -24,19 +24,30 @@ public:
 	bool ResetLightPos();
 	bool ResetObjPos();
 	void UpdateScene(GLFWwindow* window);
-	void SetSpecularStrength(float strength){specularStrength = strength; }
-
+	void SetSpecularStrength(float strength) { specularStrength = strength; }
+	float SetR(float r) {return red = r; }
+	float GetR() { return red; }
+	float SetG(float g) {return green = g; }
+	float GetG() { return green; }
+	float SetB(float b) {return blue = b; }
+	float GetB() { return blue; }
+	
 	std::vector<Mesh*>& GetLights() { return lights; }
 	const Camera& GetCamera() { return camera; }
 
 	bool moveLight = false;
 	bool colorPosition = false;
+	bool UpdatedRed = false;
+	bool UpdatedGreen = false;
+	bool UpdatedBlue = false;
 	bool moveCube = false;
 	bool clickL = false;
 	bool clickO = false;
+	float red =0;
+	float green =0;
+	float blue=0;
+	glm::vec3 lightColor = {red, green , blue};
 	void HandleMouseClick(GLFWwindow* window);
-	void HandleMouseClickForColorByPosition(GLFWwindow* window);
-	void HandleMouseClickCube(GLFWwindow* window);
 	Mesh* GetSuzanne() const { return suzanne; }
 	float specularStrength ;
 

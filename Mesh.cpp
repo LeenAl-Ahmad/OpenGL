@@ -315,9 +315,11 @@ void Mesh::Render(glm::mat4 _pv) {
 	}
 
 #pragma region Tools
-	glUniform1i(shader->GetLightPos(), clicked);
+	
 	glUniform1i(shader->GetAttrSPS(), specularStrength);
-
+	glUniform1i(shader->GetTracKBarR(), red);
+	glUniform1i(shader->GetTracKBarG(), green);
+	glUniform1i(shader->GetTracKBarB(), blue);
 }
 
 void Mesh::SetRotation(float rotationX, float rotationY) {
@@ -338,6 +340,10 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetInt("EnableNormalMaps", enableNormalMaps);
 	shader->SetInt("EnableInstancing", enableInstancing);
 	shader->SetFloat("uSpecularStrength", specularStrength);
+	shader->SetBool("colorByPosition", coloredByPos);
+	shader->SetFloat("red", red);
+	shader->SetFloat("green",green);
+	shader->SetFloat("blue", blue);
 
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)

@@ -34,6 +34,12 @@ public:
 	glm::float32 GetSpecularStrength() { return specularStrength; }
 	void SetSpecularColor(const glm::vec3& color) { specularColor = color; }
 	glm::vec3 GetSpecularColor() const { return specularColor; }
+	void SetRed(float r) { red = r; }
+	glm::float32 GetRed() { return red; }
+	void SetGreen(float g) { green = g; }
+	glm::float32 GetGreen() { return green; }
+	void SetBlue(float b) { blue = b; }
+	glm::float32 GetBlue() { return blue; }
 
 	void Create(Shader* _shader, std::string _file, int _instanceCount = 1);
 	void Cleanup();
@@ -43,11 +49,12 @@ public:
 
 	size_t GetVertexDataSize() const;
 	size_t GetIndexDataSize() const;
-
-	void SetClicked(bool invert)
+	
+	void SetcolorPos(bool invert)
 	{
-		clicked = invert;
+		coloredByPos = invert;
 	}
+	bool getColorPos() { return coloredByPos; }
 	
 	void Mesh::UpdateWorldMatrix() {
 		world = glm::mat4(1.0f);
@@ -58,7 +65,9 @@ public:
 		world = glm::scale(world, scale);
 	}
 	float specularStrength = 0.0f;
-	 
+	float red = 0.0f;
+	float green = 0.0f;
+	float blue = 0.0f;
 
 private:
 	void SetShaderVariable(glm::mat4 _pv);
@@ -95,7 +104,7 @@ private:
 
 	double mouseX, mouseY;
 
-	bool clicked;
+	bool coloredByPos;
 	
 	glm::vec3 specularColor;
 };

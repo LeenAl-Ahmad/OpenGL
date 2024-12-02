@@ -24,8 +24,7 @@ public:
 	GLuint GetTracKBarG() { return trackBarG; }
 	GLuint GetTracKBarB() { return trackBarB; }
 	GLuint GetAttrSPS() {return attrSpStrength;}
-
-	void SetSpecularStrength(float strength);
+	GLuint GetAttrCP() {return attrColorByPos;}
 
 	GLuint GetAttrML() {
 		return MoveLight;
@@ -36,9 +35,7 @@ public:
 		return lightPos;
 	}
 	
-	GLuint GetAttrCP() {
-		return posColor;
-	}
+	
 	GLuint GetAttrROP() {
 		return setObjPos;
 	}
@@ -55,6 +52,7 @@ public:
 	void SetTextureSampler(const char* _name, GLuint _texUint, int _texYintId, int _v);
 	void SetInt(const char* _name, int _v);
 	void SetUniform(const std::string& name, float value);
+	void SetBool(const char* _name, bool _value);
 
 private:
 	// Methods
@@ -72,6 +70,10 @@ private:
 	GLuint attrNormals = 0;
 	GLuint attrTexCoords = 0;
 	GLuint attrSpStrength = 0;
+	GLuint attrColorByPos = 0;
+	GLuint trackBarR = 0;
+	GLuint trackBarG = 0;
+	GLuint trackBarB = 0;
 
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;
@@ -83,10 +85,7 @@ private:
 
 	GLuint MoveLight = 0;
 	GLuint lightPos = 0;
-	GLuint trackBarR = 0;
-	GLuint trackBarG = 0;
-	GLuint trackBarB = 0;
-	GLuint posColor = 0;
+	
 	GLuint setObjPos = 0;
 	GLuint moveCube = 0;
 };

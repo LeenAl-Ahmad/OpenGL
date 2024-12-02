@@ -28,9 +28,9 @@ uniform Material material;            // Material properties
 #define NUM_LIGHTS 1
 uniform Light light[NUM_LIGHTS];      // Light sources
 uniform vec3 AmbientLight;            // Ambient light color
-uniform bool EnableNormalMaps = false;        // Toggle normal mapsunifrom 
-vec3 specularColor;
+uniform bool EnableNormalMaps = false; // Toggle normal maps
 uniform float uSpecularStrength;
+uniform bool colorByPosition;
 
 void main() {
     // Sample diffuse color from texture
@@ -49,7 +49,7 @@ void main() {
 
         // Use normal map if enabled, otherwise use the original normal
         vec3 normal = retNormal;
-        if (EnableNormalMaps == true) 
+        if (EnableNormalMaps) 
         {
             normal = texture(material.normalTexture, retTexCoord).rgb;
             normal = normal * 2.0 - 1.0;
@@ -57,19 +57,31 @@ void main() {
         }
 
         // Lambertian shading: diffuse lighting component
-        float lambertianStrength = dot(lightDir, normal);
+        float lambertianStrength = max(dot(lightDir, normal), 0.0);
 
         // Reflection vector for specular lighting calculation
         vec3 refl = reflect(-lightDir, normal);
         float specularStrength = pow(max(dot(retViewDirection, refl), 0.0), material.specularStrength);
 
         // Calculate the different lighting components
-        vec3 ambient = diffColor.rgb * light[i].ambientColor ;
+        vec3 ambient = diffColor.rgb * light[i].ambientColor;
         vec3 diffuse = lambertianStrength * light[i].diffuseColor * diffColor.rgb;
         vec3 specular = specularStrength * texture(material.specularTexture, retTexCoord).rgb * light[i].specularColor * uSpecularStrength;
 
         // Sum the ambient, diffuse, and specular components
         finalColor += vec4(ambient + diffuse + specular, 1.0f);
+    }
+
+    // Add position-based tint if enabled
+    if (colorByPosition) {
+        vec3 positionTint = vec3(
+            clamp(retFragPos.x / 10.0, 0.0, 1.0), // Red tint based on X position
+            clamp(retFragPos.y / 10.0, 0.0, 1.0), // Green tint based on Y position
+            clamp(retFragPos.z / 10.0, 0.0, 1.0)  // Blue tint based on Z position
+        );
+
+        // Blend the tint with the calculated color
+        finalColor.rgb = mix(finalColor.rgb, positionTint * 2, 0.5); // Adjust blending factor (0.5 for equal blend)
     }
 
     // Output the final fragment color

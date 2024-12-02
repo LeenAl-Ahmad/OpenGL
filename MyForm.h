@@ -364,13 +364,49 @@ private: System::Void moveCube_CheckedChanged(System::Object^ sender, System::Ev
 	GameController::GetInstance().moveCube = mCube;
 }
 private: System::Void redtrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	textBox1->Text = redtrackBar->Value.ToString() + "%";
+	float redBar = redtrackBar->Value;
+	// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
+	float val = redBar / 100.0f;
+
+	// Check if the new value differs from the previous value
+	if (GameController::GetInstance().GetR() != val) {
+		// Update the GameController and set UpdatedRed to true
+		GameController::GetInstance().SetR(val);
+		GameController::GetInstance().UpdatedRed = true;
+	}
+
+	// Update the text label
+	textBox1->Text = val.ToString("F2");
 }
 private: System::Void greentrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	textBox2->Text = greentrackBar->Value.ToString() + "%";
+	float greenBar = greentrackBar->Value;
+	// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
+	float val = greenBar / 100.0f;
+
+	// Check if the new value differs from the previous value
+	if (GameController::GetInstance().GetG() != val) {
+		// Update the GameController and set UpdatedGreen to true
+		GameController::GetInstance().SetG(val);
+		GameController::GetInstance().UpdatedGreen = true;
+	}
+
+	// Update the text label
+	textBox2->Text = val.ToString("F2");
 }
-	private: System::Void bluetrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
-		textBox3->Text = bluetrackBar->Value.ToString() + "%";
+private: System::Void bluetrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
+		float blueBar = bluetrackBar->Value;
+		// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
+		float val = blueBar / 100.0f;
+
+		// Check if the new value differs from the previous value
+		if (GameController::GetInstance().GetB() != val) {
+			// Update the GameController and set UpdatedBlue to true
+			GameController::GetInstance().SetB(val);
+			GameController::GetInstance().UpdatedBlue = true;
+		}
+
+		// Update the text label
+		textBox3->Text = val.ToString("F2");
 	}
 private: System::Void red_Click(System::Object^ sender, System::EventArgs^ e) {
 }

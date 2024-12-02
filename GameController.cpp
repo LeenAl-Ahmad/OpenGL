@@ -36,7 +36,10 @@ void GameController::Initialize() {
     // Light setup
     light = new Mesh();
     light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");  // Use sphere object for the light
-    light->SetColor({ 3.0f, 1.0f, 1.0f });
+    light->SetColor({ red,green,blue });
+    light->SetRed(red);
+    light->SetGreen(green);
+    light->SetBlue(blue);
     light->SetPosition(lastLightPosition);  // Light at {0, 0, 4}
     light->SetScalo({ 0.1f, 0.1f, 0.1f });
     light->SetSpecularStrength(4.0f);
@@ -124,7 +127,7 @@ void GameController::RunGame() {
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
         }
         if (colorPosition) {  // moveLight flag is set from the checkbox in MyForm
-            glUseProgram(shaderPixel.GetProgramID());  // Activate the pixel shader
+            suzanne->SetcolorPos(colorPosition);
 
             // Handle mouse click and update the object position
             double mouseX, mouseY;
@@ -134,6 +137,7 @@ void GameController::RunGame() {
             // Render text showing the mouse position (optional)
             std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
+            
         }
         else {
             // Normal rendering mode, use the default shader
@@ -147,7 +151,9 @@ void GameController::RunGame() {
                 HandleMouseClick(win);
             }
         }
-
+        if (UpdatedRed || UpdatedGreen || UpdatedBlue) {
+            light->SetColor({ red, green, blue });
+        }
         // Render lights
         for (auto light : lights) {
             light->Render(camera.GetProjection() * camera.GetView());
