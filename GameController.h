@@ -12,7 +12,7 @@
 class GameController : public Singleton< GameController>
 {
 public:
-	GameController() : specularStrength(0.0f) {};
+	GameController() = default;
 	virtual ~GameController() = default;
 
 	void Initialize();

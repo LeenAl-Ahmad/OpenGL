@@ -15,7 +15,7 @@ void GameController::Initialize() {
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    glCullFace(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     srand(time(0));
 
@@ -49,7 +49,6 @@ void GameController::Initialize() {
     suzanne->SetRotationObj({ 0.0f, 0.0f, 0.0f });
     //suzanne->SetColor({});
     suzanne->SetSpecularStrength(4.0f);
-
     meshes.push_back(suzanne);
 
     sphere = new Mesh();
@@ -111,12 +110,6 @@ void GameController::RunGame() {
 
         float currentTime = (float)glfwGetTime();
 
-        float red = window->GetR(); 
-        float green = window->GetG(); 
-        float blue = window->GetB();
-
-        // Set the offsets in the mesh
-        suzanne->SetRGB(red, green, blue);
 
         if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
             HandleMouseClick(win);
@@ -287,35 +280,62 @@ void GameController::UpdateObj(double mX, double mY) {
 }
 
 void GameController::UpdateScene(GLFWwindow* window) {
-    if (suzanne) {
-        meshes.erase(std::remove(meshes.begin(), meshes.end(), suzanne), meshes.end());
-        delete suzanne;
-        suzanne = nullptr;
+    static bool isMousePressed = false; // Tracks the mouse button state
+
+    // Update Suzanne and light positions
+    if (suzanne) suzanne->SetPosition({ 5, 5, 5 });
+    if (light) light->SetPosition({ 4, 4, 4 });
+
+    // Render the sphere
+    if (sphere) {
+        sphere->Render(camera.GetProjection() * camera.GetView());
     }
 
-    sphere->Render(camera.GetProjection() * camera.GetView());
+    // Check for left mouse button click
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        if (!isMousePressed) { // Only trigger on a fresh press
+            isMousePressed = true;
 
-    // Move cubes towards the sphere and remove them if they reach the sphere
-    for (auto it = cubes.begin(); it != cubes.end();) {
+            glm::vec3 randomOffset = glm::vec3(
+                glm::linearRand(-5.0f, 5.0f),
+                glm::linearRand(-5.0f, 5.0f),
+                glm::linearRand(-5.0f, 5.0f)
+            );
+
+            // Spawn a new cube
+            glm::vec3 cubePosition = sphere->GetPosition() + randomOffset;
+            newCube = new Mesh(); // Create a new cube instance
+            newCube->SetPosition(cubePosition);
+            cubes.push_back(newCube); // Add new cube to the list
+        }
+    }
+    else {
+        isMousePressed = false; // Reset when the button is released
+    }
+
+    // Update and render all cubes
+    auto it = cubes.begin();
+    while (it != cubes.end()) {
         Mesh* cube = *it;
 
+        // Move the cube toward the sphere
         glm::vec3 direction = glm::normalize(sphere->GetPosition() - cube->GetPosition());
         glm::vec3 newPosition = cube->GetPosition() + direction * cubeSpeed * deltaTime;
         cube->SetPosition(newPosition);
+        cube->Render(camera.GetProjection() * camera.GetView());
 
-        // Check if the cube reaches the sphere (within a small threshold)
+        // Check if the cube reaches the sphere's center
         if (glm::length(newPosition - sphere->GetPosition()) <= sphereRadius) {
-            meshes.erase(std::remove(meshes.begin(), meshes.end(), cube), meshes.end());
-            delete cube; // Clean memory
-            it = cubes.erase(it); // Remove cube from list
+            delete cube;  // Clean up memory
+            it = cubes.erase(it); // Remove cube from the list
         }
         else {
             ++it;
         }
     }
 
-    // Print the number of currently spawned cubes
-    std::cout << "Cubes: " << cubes.size() << std::endl;
+    // Optional: Display the current number of cubes
+    std::cout << "Cubes remaining: " << cubes.size() << std::endl;
 }
 
 
@@ -371,30 +391,3 @@ void GameController::HandleMouseClick(GLFWwindow* window) {
         light->SetPosition(light->GetPosition() + direction * speedFactor);
     }
 }
-
-
-
-void GameController::HandleMouseClickCube(GLFWwindow* window) {
-    double mouseX, mouseY;
-    glfwGetCursorPos(window, &mouseX, &mouseY);  // Get mouse position
-
-    // Spawn a new cube each time the left mouse button is clicked
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        // Spawn a cube with a random offset from the sphere
-        glm::vec3 randomOffset = glm::vec3(
-            glm::linearRand(-5.0f, 5.0f),
-            glm::linearRand(-5.0f, 5.0f),
-            glm::linearRand(-5.0f, 5.0f)
-        );
-        glm::vec3 cubePosition = sphere->GetPosition() + randomOffset;
-
-        newCube = new Mesh();
-        newCube->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube1.obj");
-        newCube->SetPosition(cubePosition);
-        newCube->SetScalo({ 0.5f, 0.5f, 0.5f });
-        newCube->SetLightDirection({ 1.0f, 1.0f, 1.0f });
-        meshes.push_back(newCube);
-        cubes.push_back(newCube); // Track cubes
-    }
-}
-

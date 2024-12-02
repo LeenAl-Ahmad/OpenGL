@@ -10,7 +10,7 @@ class Shader;
 class Mesh
 {
 public:
-	Mesh(float specStrength = 0.5f) : specularStrength(specStrength) {};
+	Mesh() = default;
 	virtual ~Mesh();
 
 	//mouse obj
@@ -57,11 +57,6 @@ public:
 	}
 	float specularStrength = 1.0f;
 	 
-	void SetRGB(float r, float g, float b) {
-		red = r;
-		green = g;
-		blue = b;
-	}
 
 private:
 	void SetShaderVariable(glm::mat4 _pv);
@@ -101,9 +96,6 @@ private:
 	bool clicked;
 	
 	glm::vec3 specularColor;
-	float red;
-	float green;
-	float blue;
 };
 
 #endif // ! MESH_H
