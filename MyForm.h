@@ -1,5 +1,6 @@
 #pragma once
 #include "GameController.h"
+#include "Shader.h"
 namespace OpenGL {
 
 	using namespace System;
@@ -19,6 +20,7 @@ namespace OpenGL {
 		static bool cPosition;
 		static bool clickedL;
 		static bool clickedO;
+		static float sps;
 	private: System::Windows::Forms::CheckBox^ MoveLight;
 	private: System::Windows::Forms::Button^ ResetLight;
 	private: System::Windows::Forms::TrackBar^ SPStrength;
@@ -38,6 +40,7 @@ namespace OpenGL {
 	private: System::Windows::Forms::TextBox^ textBox1;
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::TextBox^ textBox3;
+	private: System::Windows::Forms::TextBox^ textBox4;
 	public:
 
 	public:
@@ -53,15 +56,15 @@ namespace OpenGL {
 			redtrackBar->Value = 300;
 			greentrackBar->Value = 300;
 			bluetrackBar->Value = 300;
-			SPStrength->Value = 128;
+			
 			textBox1->Text = redtrackBar->Value.ToString() + "%";
 			textBox2->Text = greentrackBar->Value.ToString() + "%";
 			textBox3->Text = bluetrackBar->Value.ToString() + "%";
-
+			float sps = SPStrength->Value;
 			
 		}
-		float GetR() {
-			return (redtrackBar->Value - 100.0f) / 100.0f; // Normalize to -1.0 to 1.0
+		float Getsps() {
+			return  sps = SPStrength->Value; // Normalize to -1.0 to 1.0
 		}
 		float GetG() {
 			return (greentrackBar->Value - 100.0f) / 100.0f; // Normalize to -1.0 to 1.0
@@ -114,6 +117,7 @@ namespace OpenGL {
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SPStrength))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->redtrackBar))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->greentrackBar))->BeginInit();
@@ -148,8 +152,9 @@ namespace OpenGL {
 			this->SPStrength->Maximum = 128;
 			this->SPStrength->Minimum = 1;
 			this->SPStrength->Name = L"SPStrength";
-			this->SPStrength->Size = System::Drawing::Size(325, 56);
+			this->SPStrength->Size = System::Drawing::Size(266, 56);
 			this->SPStrength->TabIndex = 2;
+			this->SPStrength->TickFrequency = 4;
 			this->SPStrength->Value = 4;
 			this->SPStrength->Scroll += gcnew System::EventHandler(this, &MyForm::SPStrength_Scroll);
 			// 
@@ -276,11 +281,20 @@ namespace OpenGL {
 			this->textBox3->TabIndex = 18;
 			this->textBox3->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox3_TextChanged);
 			// 
+			// textBox4
+			// 
+			this->textBox4->Location = System::Drawing::Point(401, 79);
+			this->textBox4->Name = L"textBox4";
+			this->textBox4->Size = System::Drawing::Size(32, 22);
+			this->textBox4->TabIndex = 19;
+			this->textBox4->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox4_TextChanged);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(466, 410);
+			this->Controls->Add(this->textBox4);
 			this->Controls->Add(this->textBox3);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->textBox1);
@@ -319,7 +333,13 @@ private: System::Void ResetLight_Click(System::Object^ sender, System::EventArgs
 	GameController::GetInstance().clickL = clickedL;
 }
 private: System::Void SPStrength_Scroll(System::Object^ sender, System::EventArgs^ e) {
-
+	int trackBarValue = SPStrength->Value;
+	
+	// Map the trackbar value (1-128) to the specular strength (0.00-3.00)
+	float specularStrength = (trackBarValue - 1) / 42.33f * 0.5f; // (128-1) maps to (0-3), 0.5 to make it less intense
+	GameController::GetInstance().SetSpecularStrength(specularStrength);
+	// Update the label to display the mapped value (0.00 to 3.00)
+	textBox4->Text = specularStrength.ToString("F2");
 }
 private: System::Void redBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	
@@ -359,6 +379,8 @@ private: System::Void textBox1_TextChanged(System::Object^ sender, System::Event
 private: System::Void textBox2_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void textBox3_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void textBox4_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 };
 }

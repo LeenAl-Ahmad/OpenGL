@@ -316,6 +316,7 @@ void Mesh::Render(glm::mat4 _pv) {
 
 #pragma region Tools
 	glUniform1i(shader->GetLightPos(), clicked);
+	glUniform1i(shader->GetAttrSPS(), specularStrength);
 
 }
 
@@ -336,6 +337,7 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetVec3("CameraPosition", cameraPosition);
 	shader->SetInt("EnableNormalMaps", enableNormalMaps);
 	shader->SetInt("EnableInstancing", enableInstancing);
+	shader->SetFloat("uSpecularStrength", specularStrength);
 
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)

@@ -15,7 +15,7 @@ void GameController::Initialize() {
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_BLEND);
+    glCullFace(GL_BACK);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     srand(time(0));
 
@@ -48,7 +48,7 @@ void GameController::Initialize() {
     suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
     suzanne->SetRotationObj({ 0.0f, 0.0f, 0.0f });
     //suzanne->SetColor({});
-    suzanne->SetSpecularStrength(4.0f);
+    suzanne->SetSpecularStrength(specularStrength);
     meshes.push_back(suzanne);
 
     sphere = new Mesh();
@@ -242,7 +242,7 @@ void GameController::UpdateObjToMouse(double mX, double mY)
     glm::vec3 targetPosition = cameraPos + rayDir * depth;
 
     // Apply an offset to move the light slightly to the right of the mouse position
-    glm::vec3 offset = glm::vec3(0.3f, 0.0f, 0.0f); // Offset slightly to the right
+    glm::vec3 offset = glm::vec3(0.3f, 0.0f, 3.0f); // Offset slightly to the right
     targetPosition += offset;
 
     // Update the light's position and store the new position

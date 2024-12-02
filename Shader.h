@@ -25,6 +25,8 @@ public:
 	GLuint GetTracKBarB() { return trackBarB; }
 	GLuint GetAttrSPS() {return attrSpStrength;}
 
+	void SetSpecularStrength(float strength);
+
 	GLuint GetAttrML() {
 		return MoveLight;
 	}

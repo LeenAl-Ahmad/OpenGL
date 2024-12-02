@@ -3,12 +3,14 @@
 
 #include "StandardInclude.h"
 #include "Texture.h"
+
 #include "OBJ_Loader.h"
 
 class Shader;
 
 class Mesh
 {
+	
 public:
 	Mesh() = default;
 	virtual ~Mesh();
@@ -46,7 +48,7 @@ public:
 	{
 		clicked = invert;
 	}
-
+	
 	void Mesh::UpdateWorldMatrix() {
 		world = glm::mat4(1.0f);
 		world = glm::translate(world, position);                     // Apply translation
@@ -55,7 +57,7 @@ public:
 		world = glm::rotate(world, rotation.z, glm::vec3(0, 0, 1));  // Apply rotation Z
 		world = glm::scale(world, scale);
 	}
-	float specularStrength = 1.0f;
+	float specularStrength = 0.0f;
 	 
 
 private:

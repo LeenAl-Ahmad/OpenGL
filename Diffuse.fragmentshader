@@ -30,6 +30,7 @@ uniform Light light[NUM_LIGHTS];      // Light sources
 uniform vec3 AmbientLight;            // Ambient light color
 uniform bool EnableNormalMaps = false;        // Toggle normal mapsunifrom 
 vec3 specularColor;
+uniform float uSpecularStrength;
 
 void main() {
     // Sample diffuse color from texture
@@ -51,7 +52,7 @@ void main() {
         if (EnableNormalMaps == true) 
         {
             normal = texture(material.normalTexture, retTexCoord).rgb;
-            normal = normal * 2.0 - 1.0; // Transform to range [-1, 1]
+            normal = normal * 2.0 - 1.0;
             normal = normalize(retTBN * normal); // Apply TBN transformation
         }
 
@@ -63,14 +64,14 @@ void main() {
         float specularStrength = pow(max(dot(retViewDirection, refl), 0.0), material.specularStrength);
 
         // Calculate the different lighting components
-        vec3 ambient = diffColor.rgb * light[i].ambientColor;
+        vec3 ambient = diffColor.rgb * light[i].ambientColor ;
         vec3 diffuse = lambertianStrength * light[i].diffuseColor * diffColor.rgb;
-        vec3 specular = specularStrength * texture(material.specularTexture, retTexCoord).rgb * light[i].specularColor;
+        vec3 specular = specularStrength * texture(material.specularTexture, retTexCoord).rgb * light[i].specularColor * uSpecularStrength;
 
         // Sum the ambient, diffuse, and specular components
         finalColor += vec4(ambient + diffuse + specular, 1.0f);
     }
 
     // Output the final fragment color
-    FragColor = vec4(finalColor.rgb, diffColor.a);
+    FragColor = finalColor;
 }

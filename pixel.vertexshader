@@ -9,15 +9,11 @@ in vec2 inTexCoord;    // Texture coordinates
 out vec3 fragPos;      // World position of the fragment
 out vec3 fragNormal;   // Normal vector in world space
 out vec2 fragTexCoord; // Texture coordinates
-out vec3 fragTrackBarColor; // To pass trackBar color values to fragment shader
 
 // Uniforms
 uniform mat4 model;    // Model matrix (transforms object coordinates to world space)
 uniform mat4 view;     // View matrix (camera space)
 uniform mat4 projection; // Projection matrix (for perspective)
-uniform float trackBarR;  // Uniform for red component
-uniform float trackBarG;  // Uniform for green component
-uniform float trackBarB;  // Uniform for blue component
 
 void main() {
     // Calculate the world position of the vertex
@@ -28,9 +24,6 @@ void main() {
 
     // Pass the texture coordinates unchanged
     fragTexCoord = inTexCoord;
-
-    // Pass the trackBar color values to the fragment shader
-    fragTrackBarColor = vec3(trackBarR, trackBarG, trackBarB);
 
     // Apply the model-view-projection transformation to the vertex position
     gl_Position = projection * view * vec4(fragPos, 1.0);

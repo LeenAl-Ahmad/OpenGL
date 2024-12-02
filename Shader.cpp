@@ -25,7 +25,7 @@ void Shader::LoadAttributes()
 	attrTangents = glGetAttribLocation(programID, "tangents");
 	attrBitangents = glGetAttribLocation(programID, "bitangents");
 	attrInstanceMatrix = glGetAttribLocation(programID, "instanceMatrix");
-	attrSpStrength = glGetUniformLocation(programID, "SpecularStrength");
+	attrSpStrength = glGetUniformLocation(programID, "uSpecularStrength");
 	trackBarR = glGetUniformLocation(programID, "trackBarR");
 	trackBarG = glGetUniformLocation(programID, "trackBarG");
 	trackBarB = glGetUniformLocation(programID, "trackBarB");
@@ -159,4 +159,10 @@ void Shader::SetUniform(const std::string& name, float value) {
 		return;
 	}
 	glUniform1f(location, value);
+}
+
+void Shader::SetSpecularStrength(float strength)
+{
+	GLint specularLocation = glGetUniformLocation(this->GetProgramID(), "specularStrength");
+	glUniform1f(specularLocation, strength);
 }

@@ -4,7 +4,6 @@
 in vec3 fragPos;      // World position of the fragment
 in vec3 fragNormal;   // Normal vector in world space
 in vec2 fragTexCoord; // Texture coordinates
-in vec3 fragTrackBarColor; // Color passed from vertex shader
 
 // Output
 out vec4 FragColor;   // Final color of the fragment (pixel)
@@ -38,11 +37,8 @@ void main() {
     // Texture color
     vec4 texColor = texture(diffuseTexture, fragTexCoord);
 
-    // Color by trackBar value: You can modulate the final color based on the trackBar values
+    // Final color (ambient + diffuse + specular)
     vec3 finalColor = ambient + diffuse + specular;
-    
-    // Adjust the color based on the trackBar values
-    finalColor *= fragTrackBarColor; // Modulate color with trackBar RGB values
 
     // Combine with the texture color
     FragColor = vec4(finalColor, 1.0) * texColor;
