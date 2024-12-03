@@ -212,6 +212,9 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetVec3("light.specularColor", { 3.0f, 3.0f, 3.0f });
 	shader->SetVec3("light.position", lightPosition);
 	shader->SetVec3("light.color", lightColor);
+	shader->SetFloat("light.constant", 1.0f);
+	shader->SetFloat("light.linear", 0.09f);
+	shader->SetFloat("light.quad", 0.032f);
 
 	shader->SetFloat("material.specularStrength", 8.0f);
 	shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, texture.GetTexture());

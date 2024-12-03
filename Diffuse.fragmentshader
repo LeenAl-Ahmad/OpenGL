@@ -16,12 +16,16 @@ struct Material
 
 struct Light
 {
-    //vec3 position;
+    vec3 position;
     vec3 direction;
     vec3 color;
     vec3 ambientColor;
     vec3 diffuseColor;
     vec3 specularColor;
+
+    float constant;
+    float linear;
+    float quad;
 };
 
 uniform Material material;
@@ -45,6 +49,8 @@ void main()
     // Specular lighting calculation
     vec3 refl = reflect(-lightDir, retNormal);
     float specularStrength = pow(max(dot(refl, retViewDirection), 0.0), material.specularStrength);
+    float distance = length(light.position - retFragPos);
+    float att = 1.0f / (light.constant + light.linear * distance + light.quad * (distance * distance));
 
     vec3 ambient = texture(material.diffuseTexture, retTexCoord).rgb * light.ambientColor; // Fixed 'reTexCoord' to 'retTexCoord'
     vec3 lambertian = lambertianStrength * texture(material.diffuseTexture, retTexCoord).rgb * light.diffuseColor;  
