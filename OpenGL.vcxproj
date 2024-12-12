@@ -184,6 +184,7 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
   <ItemGroup>
     <Image Include="Assets\MetalFrame.jpg" />
     <Image Include="Assets\MetalFrameWood.jpg" />
+    <Image Include="Assets\Models\Tacos.jpg" />
     <Image Include="Assets\Pattern.png" />
     <Image Include="Assets\Tacos.jpg" />
     <Image Include="Assets\Textures\Skybox\back.jpg" />
@@ -210,6 +211,7 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
   <ItemGroup>
     <Library Include="External\freetype-2.10.4\release dll\win32\freetype.lib" />
     <Library Include="External\freetype-2.10.4\release static\win32\freetype.lib" />
+    <Library Include="External\freetype-2.10.4\release static\win64\freetype.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

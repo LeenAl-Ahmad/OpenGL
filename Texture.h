@@ -17,7 +17,7 @@ public:
 
 private:
 
-	bool EndsWith(const std::string& _str, const std::string& _suffix);
+	//bool EndsWith(const std::string& _str, const std::string& _suffix);
 	int width = -1;
 	int height = -1;
 	int channels = -1;

@@ -7,8 +7,6 @@
 #include "SKYBOX.h"
 #include "Camera.h"
 
-
-
 class GameController : public Singleton< GameController>
 {
 public:

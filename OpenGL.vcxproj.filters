@@ -138,6 +138,9 @@
     <Image Include="Assets\Textures\Skybox\top.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Assets\Models\Tacos.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Diffuse.fragmentshader">
@@ -171,5 +174,6 @@
   <ItemGroup>
     <Library Include="External\freetype-2.10.4\release dll\win32\freetype.lib" />
     <Library Include="External\freetype-2.10.4\release static\win32\freetype.lib" />
+    <Library Include="External\freetype-2.10.4\release static\win64\freetype.lib" />
   </ItemGroup>
 </Project>

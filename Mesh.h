@@ -14,8 +14,8 @@ public:
 
 	void SetPosition(glm::vec3 _p) { position = _p; }
 	glm::vec3 GetPosition() { return position; }
-	void SetRotation1(glm::vec3 _rotation1) { rotation1 = _rotation1; }
-	glm::vec3 GetRotation1() { return rotation1; }
+	void SetRotation(glm::vec3 _r) { rotation = _r; }
+	glm::vec3 GetRotation() { return rotation; }
 	void SetScalo(glm::vec3 _s) { scale = _s; }
 	void SetColor(glm::vec3 _color) { color = _color; }
 	glm::vec3 GetColor() { return color; }
@@ -37,7 +37,8 @@ private:
 	void BindAttributes();
 	std::string Concat(const std::string& _s1, int _index, const std::string& _s2);
 
-	Shader* shader;
+private:
+	Shader* shader =nullptr;
 	Texture texture{};
 	Texture texture2{};
 	GLuint vertexBuffer = 0;
@@ -47,11 +48,11 @@ private:
 
 	glm::mat4 world = glm::mat4(1);
 	glm::vec3 position{ 0.0f, 0.0f, 0.0f };
-	glm::vec3 lightDirection{ 0.0f, 0.0f, 0.0f };
-	glm::vec3 rotation1{ 0.0f, 0.0f, 0.0f };
-	glm::vec3 rotate{ 0.0f, 0.0f, 0.0f };
+	glm::vec3 rotation{ 0.0f, 0.0f, 0.0f };
 	glm::vec3 scale{ 1.0f, 1.0f, 1.0f };
 	glm::vec3 color{ 1.0f, 1.0f, 1.0f };
+
+	glm::vec3 lightDirection{ 0.0f, 0.0f, 0.0f };
 	glm::vec3 cameraPosition{ 0.0f, 0.0f, 0.0f };
 };
 

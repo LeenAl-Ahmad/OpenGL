@@ -56,10 +56,10 @@ void Mesh::Create(Shader* _shader, std::string _file)
 	}
 
 	texture = Texture();
-	texture.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/" + diffuseMap);
+	texture.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Models/" + diffuseMap);
 
 	texture2 = Texture();
-	texture2.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/" + diffuseMap);
+	texture2.LoadTexture("C:/Users/leana/source/repos/OpenGL/Assets/Models/" + diffuseMap);
 
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -125,17 +125,20 @@ void Mesh::Render(glm::mat4 _pv) {
 	glUseProgram(shader->GetProgramID());
 
 
-	rotate.y += 0.005f;
+	rotation.y += 0.005f;
 	
 	CalculateTransform();
 	SetShaderVariable(_pv);
 	BindAttributes();
 
-
-	glGenBuffers(1, &indexBuffer);
+	glDrawArrays(GL_TRIANGLES, 0, vertexData.size() / 8);
+	glDisableVertexAttribArray(shader->GetAttrVertices());
+	glDisableVertexAttribArray(shader->GetAttrNormals());
+	glDisableVertexAttribArray(shader->GetAttrTexCoords());
+	/*glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size() * sizeof(unsigned int), indexData.data(), GL_STATIC_DRAW);
-	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_INT, 0);*/
 
 }
 
@@ -146,9 +149,9 @@ void Mesh::SetRotation(float rotationX, float rotationY) {
 
 void Mesh::CalculateTransform() {
 	world = glm::translate(glm::mat4(1.0f), position);
-	//world = glm::rotate(world, rotate.y, glm::vec3(0, 1, 0));
-	//world = glm::rotate(world, rotate.x, glm::vec3(1, 0, 0));
-	//world = glm::rotate(world, rotate.z, glm::vec3(0, 0, 1));
+	//world = glm::rotate(world, rotation.y, glm::vec3(0, 1, 0));
+	//world = glm::rotate(world, rotation.x, glm::vec3(1, 0, 0));
+	//world = glm::rotate(world, rotation.z, glm::vec3(0, 0, 1));
 	world = glm::scale(world, scale);
 }
 
@@ -161,7 +164,7 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)
 	{
-		shader->SetVec3(Concat("light[", i,"].ambientColor").c_str(), {1.0f, 1.0f, 1.0f});
+		shader->SetVec3(Concat("light[", i,"].ambientColor").c_str(), {0.1f, 0.1f, 0.1f});
 		shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), lights[i]->GetColor());
 		shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), { 3.0f, 3.0f, 3.0f });
 
@@ -172,12 +175,12 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 		shader->SetFloat(Concat("light[", i, "].linear").c_str(), 0.09f);
 		shader->SetFloat(Concat("light[", i, "].quadratic").c_str(), 0.032f);
 
-		shader->SetFloat(Concat("light[", i, "].coneAngle").c_str(), glm::radians(15.0f));
-		shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 100);
+		shader->SetFloat(Concat("light[", i, "].coneAngle").c_str(), glm::radians(5.0f));
+		shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 200);
 	}
 	
 
-	shader->SetFloat("material.specularStrength", 8.0f);
+	shader->SetFloat("material.specularStrength", 8);
 	shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, texture.GetTexture());
 	shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, texture2.GetTexture());
 }
