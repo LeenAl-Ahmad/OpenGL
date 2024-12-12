@@ -14,9 +14,9 @@ void GameController::Initialize() {
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
     glEnable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_CULL_FACE);
     srand(time(0));
 
     glGenVertexArrays(1, &vao);
@@ -91,6 +91,13 @@ void GameController::RunGame() {
     shaderFont.LoadShaders("Font.vertexshader", "Font.fragmentshader");
     shaderPixel = Shader();
     //shaderPixel.LoadShaders("pixel.vertexShader", "pixel.fragmentshader");
+    shaderPost = Shader();
+    shaderPost.LoadShaders("pp.vertexshader", "pp.fragmentshader");
+
+#pragma region Post processor
+    pP = PostProcessor();
+    pP.Create(&shaderPost);
+#pragma endregion
 
     Font* arialFont = new Font();
     arialFont->Create(&shaderFont, "C:/Users/leana/source/repos/OpenGL/Assets/Fonts/arial.ttf", 48);
@@ -110,6 +117,8 @@ void GameController::RunGame() {
 
         GameTime::GetInstance().Update();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        pP.Start();
 
         float currentTime = (float)glfwGetTime();
 
@@ -198,13 +207,13 @@ void GameController::RunGame() {
                 mesh->Render(camera.GetProjection() * camera.GetView());
             }
         }
-
+        pP.End();
 
         glfwSwapBuffers(win);
         glfwPollEvents();
 
     } while (glfwGetKey(win, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(win) == 0);
-
+    pP.Cleanup();
     // Cleanup
     for (auto light : lights) {
         light->Cleanup();
@@ -218,6 +227,7 @@ void GameController::RunGame() {
     }
     meshes.clear();
 
+    shaderPost.Cleanup();
     shaderFont.Cleanup();
     shaderColor.Cleanup();
     shaderDiffuse.Cleanup();

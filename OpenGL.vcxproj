@@ -143,6 +143,7 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MyForm.cpp" />
+    <ClCompile Include="PostProcessor.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SKYBOX.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -159,6 +160,7 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="PostProcessor.h" />
     <ClInclude Include="Resolution.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Singleton.h" />
@@ -168,6 +170,8 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <ClInclude Include="WindowController.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="pp.fragmentshader" />
+    <Text Include="pp.vertexshader" />
     <Text Include="SimpleFragmentShader.fragmentshader" />
     <Text Include="SimpleVertexShader.vertexshader" />
   </ItemGroup>

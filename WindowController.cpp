@@ -16,17 +16,29 @@ WindowController::~WindowController()
 
 void WindowController::NewWindow()
 {
-	M_ASSERT(glfwInit(), "Failed to initialize GLFW.");
+	M_ASSERT(glfwInit(), "Failed to initialize GLFW."); // Initialise GLFW
 
+	// Open a window and create its OpenGL context
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	M_ASSERT((window = glfwCreateWindow(1024, 768, "PROG31068", NULL, NULL)) != nullptr, "Failed to openGLFW window.");
+
+	Resolution r = WindowController::GetResolution();
+	M_ASSERT((window = glfwCreateWindow(r.width, r.height, "PROG3160", NULL, NULL)) != nullptr,
+		"Failed to create GLFW window.");
+
 	glfwMakeContextCurrent(window);
 }
 
-Resolution WindowController::GetResolution()
+void WindowController::Create(int _width, int _height)
 {
-	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	return Resolution(mode->width, mode->height, 45.0f);
+	if (_width == -1 || _height == -1)
+	{
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		resolution = Resolution(mode->width, mode->height);
+	}
+	else
+	{
+		resolution = Resolution(_width, _height);
+	}
 }

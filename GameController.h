@@ -6,8 +6,8 @@
 #include "Mesh.h"
 #include "SKYBOX.h"
 #include "Camera.h"
-
-
+#include "PostProcessor.h"
+#include "StandardInclude.h"
 
 class GameController : public Singleton< GameController>
 {
@@ -53,11 +53,13 @@ public:
 
 private:
 	Camera camera = {};
+	PostProcessor pP = { };
 
 	Shader shaderColor = {};
 	Shader shaderDiffuse = {};
 	Shader shaderFont = {};
 	Shader shaderPixel = {};
+	Shader shaderPost = {};
 	Shader shader = {};
 
 	std::vector<Mesh*> meshes;

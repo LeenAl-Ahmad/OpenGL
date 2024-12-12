@@ -7,11 +7,10 @@ struct Resolution
 	int height = 768;
 	float FoV = 45.0f;
 
-	Resolution(int _width, int _height, float foV)
+	Resolution(int _width, int _height)
 	{
 		width = _width;
 		height = _height;
-		FoV = foV;
 	}
 };
 
