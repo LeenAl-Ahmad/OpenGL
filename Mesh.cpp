@@ -13,8 +13,6 @@ Mesh::~Mesh()
 	{
 		glDeleteBuffers(1, &indexBuffer);
 	}
-	texture.Cleanup();
-	texture2.Cleanup();
 }
 
 size_t Mesh::GetVertexDataSize() const {
