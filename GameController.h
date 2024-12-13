@@ -19,8 +19,7 @@ public:
 	void RunGame();
 
 	//Mouse
-	void UpdateObjToMouse(double mouseX, double mouseY);
-	void UpdateObj(double mouseX, double mouseY);
+	void UpdateObjToMouse(double mouseX, double mouseY, GLFWwindow* window, Mesh* mesh);
 	bool ResetLightPos();
 	bool ResetObjPos();
 	void UpdateScene(GLFWwindow* window, Mesh* newCube);

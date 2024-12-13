@@ -77,8 +77,9 @@ void GameController::Initialize() {
         newCube->SetLightDirection({ 1.0f, 1.0f, 1.0f });
         meshes.push_back(newCube);
         cubes.push_back(newCube); // Track cubes
+
     }
-    
+
 }
 
 void GameController::RunGame() {
@@ -98,6 +99,8 @@ void GameController::RunGame() {
     pP = PostProcessor();
     pP.Create(&shaderPost);
 #pragma endregion
+
+    
 
     Font* arialFont = new Font();
     arialFont->Create(&shaderFont, "C:/Users/leana/source/repos/OpenGL/Assets/Fonts/arial.ttf", 48);
@@ -122,15 +125,10 @@ void GameController::RunGame() {
 
         float currentTime = (float)glfwGetTime();
 
-
-        if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-            HandleMouseClick(win);
-        }
-
-        if (moveLight) {  // moveLight flag is set from the checkbox in MyForm
+        if (moveLight == true) {  // moveLight flag is set from the checkbox in MyForm
             double mouseX, mouseY;
             glfwGetCursorPos(win, &mouseX, &mouseY);  // Get mouse position
-            UpdateObjToMouse(mouseX, mouseY);  // Update light position based on mouse
+            UpdateObjToMouse(mouseX, mouseY, win, light);  // Update light position based on mouse
 
             std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
@@ -141,7 +139,7 @@ void GameController::RunGame() {
             // Handle mouse click and update the object position
             double mouseX, mouseY;
             glfwGetCursorPos(win, &mouseX, &mouseY);
-            UpdateObj(mouseX, mouseY);
+            UpdateObjToMouse(mouseX, mouseY, win, suzanne);
 
             // Render text showing the mouse position (optional)
             std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
@@ -193,7 +191,7 @@ void GameController::RunGame() {
 
         // Continuous rotation for objects
         glm::vec3 rotationspeed = { 0.0f, 0.05f, 0.0f };  // Rotate 0.05 radians per frame around Y-axis
-        for (auto mesh : meshes) 
+        for (auto mesh : meshes)
         {
             if (mesh == suzanne) {
                 // Accumulate rotation
@@ -207,6 +205,7 @@ void GameController::RunGame() {
                 mesh->Render(camera.GetProjection() * camera.GetView());
             }
         }
+        
         pP.End();
 
         glfwSwapBuffers(win);
@@ -233,65 +232,51 @@ void GameController::RunGame() {
     shaderDiffuse.Cleanup();
 }
 
-// Update the light position based on mouse movement
-void GameController::UpdateObjToMouse(double mX, double mY)
+void GameController::UpdateObjToMouse(double mX, double mY, GLFWwindow* window, Mesh* mesh)
 {
-    // Convert mouse position to Normalized Device Coordinates (NDC)
-    float x = (2.0f * mX) / screenWidth - 1.0f;
-    float y = 1.0f - (2.0f * mY) / screenHeight; // Invert Y-axis
+    static bool mouseWasPressed = false; // Track the state of the mouse click
 
-    glm::vec4 ndcCoords = glm::vec4(x, y, 0.0f, 1.0f); // Z = 0 for the near plane
+    // Check if the left mouse button is clicked (pressed)
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+   
+            mouseWasPressed = true; // Mark the mouse as pressed
 
-    // Unproject NDC coordinates to world space using camera's projection and view matrix
-    glm::vec4 worldCoords = glm::inverse(projMatrix * viewMatrix) * ndcCoords;
-    worldCoords /= worldCoords.w; // Perspective divide to normalize
+            // Convert mouse position to NDC
+            float x = (2.0f * mX) / screenWidth - 1.0f;
+            float y = 1.0f - (2.0f * mY) / screenHeight; // Flip Y-axis
+            glm::vec4 ndcCoords = glm::vec4(x, y, 0.0f, 1.0f);
 
-    // Compute direction vector from camera to mouse position in world space
-    glm::vec3 cameraPos = camera.GetPosition();
-    glm::vec3 worldPos = glm::vec3(worldCoords);
-    glm::vec3 rayDir = glm::normalize(worldPos - cameraPos);
+            // Transform NDC to world space
+            glm::vec4 worldCoords = glm::inverse(projMatrix * viewMatrix) * ndcCoords;
+            worldCoords /= worldCoords.w; // Normalize coordinates
 
-    // Set a fixed depth (distance from camera)
-    float depth = 7.0f; // You can adjust this value to control how far the light moves
-    glm::vec3 targetPosition = cameraPos + rayDir * depth;
+            glm::vec3 cameraPos = camera.GetPosition();
+            glm::vec3 worldPos = glm::vec3(worldCoords.x, worldCoords.y, 4.0f);
+            glm::vec3 rayDir = glm::normalize(worldPos - cameraPos);
 
-    // Apply an offset to move the light slightly to the right of the mouse position
-    glm::vec3 offset = glm::vec3(0.3f, 0.0f, 3.0f); // Offset slightly to the right
-    targetPosition += offset;
+            // Fixed depth to determine new position
+            float depth = 5.0f;  // Adjustable depth value
+            glm::vec3 targetPosition = cameraPos + rayDir * depth;
+            targetPosition.z = 4.0f;
 
-    // Update the light's position and store the new position
-    if (light)
-    {
-        light->SetPosition(targetPosition);
-        lastLightPosition = targetPosition;  // Store the updated position
+            // Update the position of the mesh
+            if (mesh == light) {
+                glm::vec3 location = targetPosition;
+                light->SetPosition(location); // Store the updated position
+            }
+            if (mesh == suzanne) {
+                suzanne->SetPosition(targetPosition);
+                lastObjPosition = targetPosition; // Store the updated position
+            }
+        
     }
-    
-}
-
-void GameController::UpdateObj(double mX, double mY) {
-    // Convert mouse position to NDC
-    float x = (2.0f * mX) / screenWidth - 1.0f;
-    float y = 1.0f - (2.0f * mY) / screenHeight;  // Flip Y-axis
-
-    glm::vec4 ndcCoords = glm::vec4(x, y, 0.0f, 1.0f);
-
-    // Transform NDC to world space
-    glm::vec4 worldCoords = glm::inverse(projMatrix * viewMatrix) * ndcCoords;
-    worldCoords /= worldCoords.w;  // Normalize coordinates
-
-    glm::vec3 cameraPos = camera.GetPosition();
-    glm::vec3 worldPos = glm::vec3(worldCoords);
-    glm::vec3 rayDir = glm::normalize(worldPos - cameraPos);
-
-    // Fixed depth to determine new position
-    float depth = 7.0f;  // Adjustable depth value
-    glm::vec3 targetPosition = cameraPos + rayDir * depth;
-
-    if (suzanne) {
-        suzanne->SetPosition(targetPosition);
-        lastObjPosition = targetPosition;  // Store updated position
+    else {
+        mouseWasPressed = false; // Reset the flag when the mouse button is released
     }
 }
+
+
+
 
 void GameController::UpdateScene(GLFWwindow* window, Mesh* NewCube) {
     static bool isMousePressed = false; // Tracks the mouse button state

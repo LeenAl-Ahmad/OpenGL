@@ -3,6 +3,7 @@
 
 #include "StandardInclude.h"
 #include "Texture.h"
+#include "ASEReader.h"
 
 #include "OBJ_Loader.h"
 
@@ -70,11 +71,15 @@ public:
 	float blue = 0.0f;
 
 private:
+	void LoadOBJ(std::string& _file);
+	void LoadASE(std::string& _file);
+
 	void SetShaderVariable(glm::mat4 _pv);
 	void BindAttributes();
 	std::string Concat(const std::string& _s1, int _index, const std::string& _s2);
 	std::string RemoveFolder(std::string& _map);
 	void CalculateTangents(std::vector<objl::Vertex> _vertices, objl::Vector3& _tang, objl::Vector3& _bitang);
+	bool EndsWith(const std::string& _str, const std::string& _suffix);
 
 	Shader* shader = nullptr;
 	Texture textureDiffuse{};
@@ -107,6 +112,9 @@ private:
 	bool coloredByPos;
 	
 	glm::vec3 specularColor;
+
+private:
+	bool ResetObj(Mesh* mesh);
 };
 
 #endif // ! MESH_H

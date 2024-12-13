@@ -12,6 +12,8 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <algorithm>
 
 #ifdef  _WIN32
 #include <Windows.h>

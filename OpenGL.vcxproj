@@ -136,6 +136,7 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ASEReader.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameClass.cpp" />
@@ -150,6 +151,7 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <ClCompile Include="WindowController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ASEReader.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="External\obj_loader\OBJ_Loader.h" />
     <ClInclude Include="External\stb\stb_image.h" />
@@ -203,6 +205,7 @@ copy /Y "$(SolutionDir)\External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
+    <None Include="Assets\Models\fight.ase" />
     <None Include="Color.fragmentshader" />
     <None Include="Color.vertexshader" />
     <None Include="Diffuse.fragmentshader" />

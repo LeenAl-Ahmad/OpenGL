@@ -21,15 +21,15 @@ namespace OpenGL {
 		static bool clickedL;
 		static bool clickedO;
 		static float sps;
-	private: System::Windows::Forms::CheckBox^ MoveLight;
+
 	private: System::Windows::Forms::Button^ ResetLight;
 	private: System::Windows::Forms::TrackBar^ SPStrength;
 	private: System::Windows::Forms::Label^ SpecularStrength;
 	private: System::Windows::Forms::Label^ red;
 	private: System::Windows::Forms::Label^ GREEN;
 	private: System::Windows::Forms::Label^ blue;
-	private: System::Windows::Forms::CheckBox^ colorByPosition;
-	private: System::Windows::Forms::CheckBox^ moveCube;
+
+
 	private: System::Windows::Forms::Button^ resetObj;
 	private: System::Windows::Forms::TrackBar^ redtrackBar;
 	private: System::Windows::Forms::TrackBar^ greentrackBar;
@@ -41,16 +41,36 @@ namespace OpenGL {
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::TextBox^ textBox3;
 	private: System::Windows::Forms::TextBox^ textBox4;
+	private: System::Windows::Forms::RadioButton^ check1;
+	private: System::Windows::Forms::RadioButton^ check2;
+	private: System::Windows::Forms::CheckBox^ Box1;
+	private: System::Windows::Forms::CheckBox^ Box2;
+	private: System::Windows::Forms::CheckBox^ Box3;
+	private: System::Windows::Forms::RadioButton^ check3;
+	private: System::Windows::Forms::TrackBar^ trackBar1;
+	private: System::Windows::Forms::TrackBar^ trackBar2;
+	private: System::Windows::Forms::CheckBox^ Box4;
+	private: System::Windows::Forms::CheckBox^ Box5;
+	private: System::Windows::Forms::RadioButton^ check4;
+	private: System::Windows::Forms::TextBox^ textBox5;
+	private: System::Windows::Forms::TextBox^ textBox6;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Label^ label2;
+
+
+
+
 	public:
 
 	public:
 		static bool mCube;
+
 		MyForm(void)
 		{
 			InitializeComponent();
-			mlight= MoveLight ->Checked;
-			cPosition = colorByPosition ->Checked;
-			mCube = moveCube ->Checked;
+			mlight= check1 ->Checked;
+			//cPosition = colorByPosition ->Checked;
+			//mCube = moveCube ->Checked;
 			clickedL = false;
 			clickedO = false;
 			redtrackBar->Value = 300;
@@ -101,15 +121,12 @@ namespace OpenGL {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->MoveLight = (gcnew System::Windows::Forms::CheckBox());
 			this->ResetLight = (gcnew System::Windows::Forms::Button());
 			this->SPStrength = (gcnew System::Windows::Forms::TrackBar());
 			this->SpecularStrength = (gcnew System::Windows::Forms::Label());
 			this->red = (gcnew System::Windows::Forms::Label());
 			this->GREEN = (gcnew System::Windows::Forms::Label());
 			this->blue = (gcnew System::Windows::Forms::Label());
-			this->colorByPosition = (gcnew System::Windows::Forms::CheckBox());
-			this->moveCube = (gcnew System::Windows::Forms::CheckBox());
 			this->resetObj = (gcnew System::Windows::Forms::Button());
 			this->redtrackBar = (gcnew System::Windows::Forms::TrackBar());
 			this->greentrackBar = (gcnew System::Windows::Forms::TrackBar());
@@ -118,23 +135,28 @@ namespace OpenGL {
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
+			this->check1 = (gcnew System::Windows::Forms::RadioButton());
+			this->check2 = (gcnew System::Windows::Forms::RadioButton());
+			this->Box1 = (gcnew System::Windows::Forms::CheckBox());
+			this->Box2 = (gcnew System::Windows::Forms::CheckBox());
+			this->Box3 = (gcnew System::Windows::Forms::CheckBox());
+			this->check3 = (gcnew System::Windows::Forms::RadioButton());
+			this->trackBar1 = (gcnew System::Windows::Forms::TrackBar());
+			this->trackBar2 = (gcnew System::Windows::Forms::TrackBar());
+			this->Box4 = (gcnew System::Windows::Forms::CheckBox());
+			this->Box5 = (gcnew System::Windows::Forms::CheckBox());
+			this->check4 = (gcnew System::Windows::Forms::RadioButton());
+			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox6 = (gcnew System::Windows::Forms::TextBox());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->label2 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SPStrength))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->redtrackBar))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->greentrackBar))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bluetrackBar))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar2))->BeginInit();
 			this->SuspendLayout();
-			// 
-			// MoveLight
-			// 
-			this->MoveLight->AutoSize = true;
-			this->MoveLight->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Zoom;
-			this->MoveLight->Location = System::Drawing::Point(13, 13);
-			this->MoveLight->Name = L"MoveLight";
-			this->MoveLight->Size = System::Drawing::Size(94, 20);
-			this->MoveLight->TabIndex = 0;
-			this->MoveLight->Text = L"Move Light";
-			this->MoveLight->UseVisualStyleBackColor = true;
-			this->MoveLight->CheckedChanged += gcnew System::EventHandler(this, &MyForm::MoveLight_CheckedChanged);
 			// 
 			// ResetLight
 			// 
@@ -195,35 +217,13 @@ namespace OpenGL {
 			this->blue->TabIndex = 9;
 			this->blue->Text = L"B";
 			// 
-			// colorByPosition
-			// 
-			this->colorByPosition->AutoSize = true;
-			this->colorByPosition->Location = System::Drawing::Point(13, 285);
-			this->colorByPosition->Name = L"colorByPosition";
-			this->colorByPosition->Size = System::Drawing::Size(131, 20);
-			this->colorByPosition->TabIndex = 10;
-			this->colorByPosition->Text = L"Color By Position";
-			this->colorByPosition->UseVisualStyleBackColor = true;
-			this->colorByPosition->CheckedChanged += gcnew System::EventHandler(this, &MyForm::colorByPosition_CheckedChanged);
-			// 
-			// moveCube
-			// 
-			this->moveCube->AutoSize = true;
-			this->moveCube->Location = System::Drawing::Point(12, 365);
-			this->moveCube->Name = L"moveCube";
-			this->moveCube->Size = System::Drawing::Size(172, 20);
-			this->moveCube->TabIndex = 11;
-			this->moveCube->Text = L"Move Cubes To Sphere";
-			this->moveCube->UseVisualStyleBackColor = true;
-			this->moveCube->CheckedChanged += gcnew System::EventHandler(this, &MyForm::moveCube_CheckedChanged);
-			// 
 			// resetObj
 			// 
-			this->resetObj->Location = System::Drawing::Point(32, 326);
+			this->resetObj->Location = System::Drawing::Point(42, 289);
 			this->resetObj->Name = L"resetObj";
 			this->resetObj->Size = System::Drawing::Size(172, 23);
 			this->resetObj->TabIndex = 12;
-			this->resetObj->Text = L"Reset Suzzane Position";
+			this->resetObj->Text = L"Reset Transform";
 			this->resetObj->UseVisualStyleBackColor = true;
 			this->resetObj->Click += gcnew System::EventHandler(this, &MyForm::resetObj_Click);
 			// 
@@ -289,11 +289,179 @@ namespace OpenGL {
 			this->textBox4->TabIndex = 19;
 			this->textBox4->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox4_TextChanged);
 			// 
+			// check1
+			// 
+			this->check1->AutoSize = true;
+			this->check1->Location = System::Drawing::Point(12, 12);
+			this->check1->Name = L"check1";
+			this->check1->Size = System::Drawing::Size(93, 20);
+			this->check1->TabIndex = 20;
+			this->check1->TabStop = true;
+			this->check1->Text = L"Move Light";
+			this->check1->UseVisualStyleBackColor = true;
+			this->check1->CheckedChanged += gcnew System::EventHandler(this, &MyForm::check1_CheckedChanged);
+			// 
+			// check2
+			// 
+			this->check2->AutoSize = true;
+			this->check2->Location = System::Drawing::Point(13, 263);
+			this->check2->Name = L"check2";
+			this->check2->Size = System::Drawing::Size(89, 20);
+			this->check2->TabIndex = 21;
+			this->check2->TabStop = true;
+			this->check2->Text = L"Transform";
+			this->check2->UseVisualStyleBackColor = true;
+			this->check2->CheckedChanged += gcnew System::EventHandler(this, &MyForm::check2_CheckedChanged);
+			// 
+			// Box1
+			// 
+			this->Box1->AutoSize = true;
+			this->Box1->Location = System::Drawing::Point(13, 318);
+			this->Box1->Name = L"Box1";
+			this->Box1->Size = System::Drawing::Size(86, 20);
+			this->Box1->TabIndex = 22;
+			this->Box1->Text = L"Translate";
+			this->Box1->UseVisualStyleBackColor = true;
+			this->Box1->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Box1_CheckedChanged);
+			// 
+			// Box2
+			// 
+			this->Box2->AutoSize = true;
+			this->Box2->Location = System::Drawing::Point(174, 318);
+			this->Box2->Name = L"Box2";
+			this->Box2->Size = System::Drawing::Size(69, 20);
+			this->Box2->TabIndex = 23;
+			this->Box2->Text = L"Rotate";
+			this->Box2->UseVisualStyleBackColor = true;
+			this->Box2->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Box2_CheckedChanged);
+			// 
+			// Box3
+			// 
+			this->Box3->AutoSize = true;
+			this->Box3->Location = System::Drawing::Point(338, 318);
+			this->Box3->Name = L"Box3";
+			this->Box3->Size = System::Drawing::Size(64, 20);
+			this->Box3->TabIndex = 24;
+			this->Box3->Text = L"Scale";
+			this->Box3->UseVisualStyleBackColor = true;
+			this->Box3->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Box3_CheckedChanged);
+			// 
+			// check3
+			// 
+			this->check3->AutoSize = true;
+			this->check3->Location = System::Drawing::Point(12, 344);
+			this->check3->Name = L"check3";
+			this->check3->Size = System::Drawing::Size(106, 20);
+			this->check3->TabIndex = 25;
+			this->check3->TabStop = true;
+			this->check3->Text = L"Water Scene";
+			this->check3->UseVisualStyleBackColor = true;
+			this->check3->CheckedChanged += gcnew System::EventHandler(this, &MyForm::check3_CheckedChanged);
+			// 
+			// trackBar1
+			// 
+			this->trackBar1->Location = System::Drawing::Point(13, 392);
+			this->trackBar1->Name = L"trackBar1";
+			this->trackBar1->Size = System::Drawing::Size(404, 56);
+			this->trackBar1->TabIndex = 26;
+			this->trackBar1->Scroll += gcnew System::EventHandler(this, &MyForm::trackBar1_Scroll);
+			// 
+			// trackBar2
+			// 
+			this->trackBar2->Location = System::Drawing::Point(13, 454);
+			this->trackBar2->Name = L"trackBar2";
+			this->trackBar2->Size = System::Drawing::Size(404, 56);
+			this->trackBar2->TabIndex = 27;
+			this->trackBar2->Scroll += gcnew System::EventHandler(this, &MyForm::trackBar2_Scroll);
+			// 
+			// Box4
+			// 
+			this->Box4->AutoSize = true;
+			this->Box4->Location = System::Drawing::Point(54, 505);
+			this->Box4->Name = L"Box4";
+			this->Box4->Size = System::Drawing::Size(139, 20);
+			this->Box4->TabIndex = 28;
+			this->Box4->Text = L"Wireframe Render";
+			this->Box4->UseVisualStyleBackColor = true;
+			this->Box4->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Box4_CheckedChanged);
+			// 
+			// Box5
+			// 
+			this->Box5->AutoSize = true;
+			this->Box5->Location = System::Drawing::Point(248, 505);
+			this->Box5->Name = L"Box5";
+			this->Box5->Size = System::Drawing::Size(81, 20);
+			this->Box5->TabIndex = 29;
+			this->Box5->Text = L"Tint Blue";
+			this->Box5->UseVisualStyleBackColor = true;
+			this->Box5->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Box5_CheckedChanged);
+			// 
+			// check4
+			// 
+			this->check4->AutoSize = true;
+			this->check4->Location = System::Drawing::Point(17, 531);
+			this->check4->Name = L"check4";
+			this->check4->Size = System::Drawing::Size(110, 20);
+			this->check4->TabIndex = 30;
+			this->check4->TabStop = true;
+			this->check4->Text = L"Space Scene";
+			this->check4->UseVisualStyleBackColor = true;
+			this->check4->CheckedChanged += gcnew System::EventHandler(this, &MyForm::check4_CheckedChanged);
+			// 
+			// textBox5
+			// 
+			this->textBox5->Location = System::Drawing::Point(422, 383);
+			this->textBox5->Name = L"textBox5";
+			this->textBox5->Size = System::Drawing::Size(32, 22);
+			this->textBox5->TabIndex = 31;
+			this->textBox5->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox5_TextChanged);
+			// 
+			// textBox6
+			// 
+			this->textBox6->Location = System::Drawing::Point(423, 445);
+			this->textBox6->Name = L"textBox6";
+			this->textBox6->Size = System::Drawing::Size(32, 22);
+			this->textBox6->TabIndex = 32;
+			this->textBox6->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox6_TextChanged);
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(39, 373);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(71, 16);
+			this->label1->TabIndex = 33;
+			this->label1->Text = L"Frequency";
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(39, 432);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(67, 16);
+			this->label2->TabIndex = 34;
+			this->label2->Text = L"Amplitude";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(466, 410);
+			this->ClientSize = System::Drawing::Size(466, 567);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->label1);
+			this->Controls->Add(this->textBox6);
+			this->Controls->Add(this->textBox5);
+			this->Controls->Add(this->check4);
+			this->Controls->Add(this->Box5);
+			this->Controls->Add(this->Box4);
+			this->Controls->Add(this->trackBar2);
+			this->Controls->Add(this->trackBar1);
+			this->Controls->Add(this->check3);
+			this->Controls->Add(this->Box3);
+			this->Controls->Add(this->Box2);
+			this->Controls->Add(this->Box1);
+			this->Controls->Add(this->check2);
+			this->Controls->Add(this->check1);
 			this->Controls->Add(this->textBox4);
 			this->Controls->Add(this->textBox3);
 			this->Controls->Add(this->textBox2);
@@ -302,15 +470,12 @@ namespace OpenGL {
 			this->Controls->Add(this->greentrackBar);
 			this->Controls->Add(this->redtrackBar);
 			this->Controls->Add(this->resetObj);
-			this->Controls->Add(this->moveCube);
-			this->Controls->Add(this->colorByPosition);
 			this->Controls->Add(this->blue);
 			this->Controls->Add(this->GREEN);
 			this->Controls->Add(this->red);
 			this->Controls->Add(this->SpecularStrength);
 			this->Controls->Add(this->SPStrength);
 			this->Controls->Add(this->ResetLight);
-			this->Controls->Add(this->MoveLight);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedToolWindow;
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
@@ -319,15 +484,14 @@ namespace OpenGL {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->redtrackBar))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->greentrackBar))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->bluetrackBar))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar2))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
-private: System::Void MoveLight_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-			mlight = MoveLight ->Checked;
-			GameController::GetInstance().moveLight = mlight;
-}
+
 private: System::Void ResetLight_Click(System::Object^ sender, System::EventArgs^ e) {
 	clickedL = true;
 	GameController::GetInstance().clickL = clickedL;
@@ -350,19 +514,19 @@ private: System::Void greenBar_Scroll(System::Object^ sender, System::EventArgs^
 private: System::Void blueBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	
 }
-private: System::Void colorByPosition_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+/*private: System::Void colorByPosition_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 	
 	cPosition = colorByPosition->Checked;
 	GameController::GetInstance().colorPosition = cPosition;
-}
+}*/
 private: System::Void resetObj_Click(System::Object^ sender, System::EventArgs^ e) {
 	clickedO = true;
 	GameController::GetInstance().clickO = clickedO;
 }
-private: System::Void moveCube_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+/*private: System::Void moveCube_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 	mCube = moveCube->Checked;
 	GameController::GetInstance().moveCube = mCube;
-}
+}*/
 private: System::Void redtrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	float redBar = redtrackBar->Value;
 	// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
@@ -417,6 +581,35 @@ private: System::Void textBox2_TextChanged(System::Object^ sender, System::Event
 private: System::Void textBox3_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void textBox4_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void check1_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	mlight = check1->Checked;
+	GameController::GetInstance().moveLight = mlight;
+}
+private: System::Void check2_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+
+}
+private: System::Void Box1_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void Box2_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void Box3_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void check3_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void trackBar1_Scroll(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void textBox5_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void trackBar2_Scroll(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void textBox6_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void Box4_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void Box5_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void check4_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 };
 }

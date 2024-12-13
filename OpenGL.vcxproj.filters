@@ -54,6 +54,12 @@
     <ClCompile Include="GameClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ASEReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -101,6 +107,12 @@
     <ClInclude Include="GameClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ASEReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SimpleFragmentShader.fragmentshader">
@@ -109,6 +121,8 @@
     <Text Include="SimpleVertexShader.vertexshader">
       <Filter>Shaders</Filter>
     </Text>
+    <Text Include="pp.fragmentshader" />
+    <Text Include="pp.vertexshader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Pattern.png">
@@ -179,6 +193,7 @@
     <None Include="pixel.vertexshader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Assets\Models\fight.ase" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="External\freetype-2.10.4\release dll\win32\freetype.lib" />
