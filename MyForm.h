@@ -17,7 +17,7 @@ namespace OpenGL {
 	{
 	public:
 		static bool mlight;
-		static bool cPosition;
+		static bool translate;
 		static bool clickedL;
 		static bool clickedO;
 		static float sps;
@@ -69,6 +69,7 @@ namespace OpenGL {
 		{
 			InitializeComponent();
 			mlight= check1 ->Checked;
+			translate = check2->Checked;
 			//cPosition = colorByPosition ->Checked;
 			//mCube = moveCube ->Checked;
 			clickedL = false;
@@ -587,7 +588,8 @@ private: System::Void check1_CheckedChanged(System::Object^ sender, System::Even
 	GameController::GetInstance().moveLight = mlight;
 }
 private: System::Void check2_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-
+	translate = check2->Checked;
+	GameController::GetInstance().Transform = translate;
 }
 private: System::Void Box1_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 }

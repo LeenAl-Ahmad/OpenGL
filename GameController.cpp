@@ -133,7 +133,17 @@ void GameController::RunGame() {
             std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
         }
-        if (colorPosition) {  // moveLight flag is set from the checkbox in MyForm
+        if (Transform)
+        {
+            double mouseX, mouseY;
+            glfwGetCursorPos(win, &mouseX, &mouseY);
+            UpdateObjToMouse(mouseX, mouseY, win, suzanne);  // Update light position based on mouse
+
+            std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
+            arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
+
+        }
+        /*if (colorPosition) {  // moveLight flag is set from the checkbox in MyForm
             suzanne->SetcolorPos(colorPosition);
 
             // Handle mouse click and update the object position
@@ -145,19 +155,12 @@ void GameController::RunGame() {
             std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
             
-        }
+        }*/
         else {
             // Normal rendering mode, use the default shader
             glUseProgram(shaderDiffuse.GetProgramID());  // Use the default diffuse shader for regular rendering
         }
         
-        if (moveCube)
-        {
-            UpdateScene(win, cube);
-            if (glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-                HandleMouseClick(win);
-            }
-        }
         if (UpdatedRed || UpdatedGreen || UpdatedBlue) {
             light->SetColor({ red, green, blue });
         }
@@ -174,17 +177,10 @@ void GameController::RunGame() {
         }
         if (clickL)
         {
-            if(light){
-                ResetLightPos();
-            }
-            
+            ResetLightPos();
         }
-        if (clickO)
+        if (clickT)
         {
-            if (suzanne)
-            {
-                ResetObjPos();
-            }
 
         }
         
@@ -234,11 +230,13 @@ void GameController::RunGame() {
 
 void GameController::UpdateObjToMouse(double mX, double mY, GLFWwindow* window, Mesh* mesh)
 {
-    static bool mouseWasPressed = false; // Track the state of the mouse click
+    if (moveLight)
+    {
+        static bool mouseWasPressed = false; // Track the state of the mouse click
 
-    // Check if the left mouse button is clicked (pressed)
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-   
+        // Check if the left mouse button is clicked (pressed)
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+
             mouseWasPressed = true; // Mark the mouse as pressed
 
             // Convert mouse position to NDC
@@ -268,12 +266,29 @@ void GameController::UpdateObjToMouse(double mX, double mY, GLFWwindow* window, 
                 suzanne->SetPosition(targetPosition);
                 lastObjPosition = targetPosition; // Store the updated position
             }
-        
+
+        }
+        else {
+            mouseWasPressed = false; // Reset the flag when the mouse button is released
+        }
     }
-    else {
-        mouseWasPressed = false; // Reset the flag when the mouse button is released
+
+    if (Transform)
+    {
+        static double prevMouseX = mX, prevMouseY = mY; // Track previous mouse position
+
+        // Calculate mouse deltas
+        double deltaX = mX - prevMouseX;
+        double deltaY = mY - prevMouseY;
+
+        // Update previous mouse position
+        prevMouseX = mX;
+        prevMouseY = mY;
+
+       
     }
 }
+
 
 
 
@@ -355,38 +370,3 @@ bool GameController::ResetLightPos() {
     }
 }
 
-
-void GameController::HandleMouseClick(GLFWwindow* window) {
-    double mouseX, mouseY;
-    glfwGetCursorPos(window, &mouseX, &mouseY);  // Get mouse position
-
-    // Convert mouse position to normalized device coordinates (NDC)
-    float x = (2.0f * mouseX) / screenWidth - 1.0f;
-    float y = 1.0f - (2.0f * mouseY) / screenHeight;  // Invert Y-axis
-    glm::vec4 ndcCoords = glm::vec4(x, y, 0.0f, 1.0f);
-
-    // Determine quadrant and adjust light position
-    float centerX = screenWidth / 2.0f;
-    float centerY = screenHeight / 2.0f;
-    glm::vec3 direction = glm::normalize(light->GetPosition() - glm::vec3(centerX, centerY, 0.0f));
-    float distance = glm::distance(glm::vec2(mouseX, mouseY), glm::vec2(centerX, centerY));
-    float maxDistance = glm::distance(glm::vec2(0, 0), glm::vec2(screenWidth, screenHeight));
-    float speedFactor = (distance / maxDistance);  // Calculate speed based on distance
-
-    if (mouseX < centerX && mouseY > centerY) {
-        // Top-left
-        light->SetPosition(light->GetPosition() + direction * speedFactor);
-    }
-    else if (mouseX >= centerX && mouseY > centerY) {
-        // Top-right
-        light->SetPosition(light->GetPosition() + direction * speedFactor);
-    }
-    else if (mouseX < centerX && mouseY <= centerY) {
-        // Bottom-left
-        light->SetPosition(light->GetPosition() + direction * speedFactor);
-    }
-    else {
-        // Bottom-right
-        light->SetPosition(light->GetPosition() + direction * speedFactor);
-    }
-}
