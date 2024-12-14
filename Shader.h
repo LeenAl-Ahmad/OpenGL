@@ -73,6 +73,9 @@ private:
 	GLuint trackBarR = 0;
 	GLuint trackBarG = 0;
 	GLuint trackBarB = 0;
+	GLuint attrModel = 0;
+	GLuint attrView = 0;
+	GLuint attrProjection = 0;
 
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;

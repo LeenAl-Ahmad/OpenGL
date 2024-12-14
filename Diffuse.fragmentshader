@@ -1,12 +1,12 @@
 #version 330 core
 
-in vec3 retFragPos;
-in vec3 retNormal;
-in vec2 retTexCoord;
-in vec3 retViewDirection;
-in mat3 retTBN;
+in vec3 retFragPos;       // Input: Fragment position in object space
+in vec3 retNormal;        // Input: Normal vector in object space
+in vec2 retTexCoord;      // Input: Texture coordinates
+in vec3 retViewDirection; // Input: View direction in object space
+in mat3 retTBN;           // Input: Tangent-Bitangent-Normal matrix
 
-out vec4 FragColor;
+out vec4 FragColor;       // Output: Final fragment color
 
 struct Material {
     float specularStrength;            // Specular strength
@@ -27,12 +27,24 @@ struct Light {
 uniform Material material;            // Material properties
 #define NUM_LIGHTS 1
 uniform Light light[NUM_LIGHTS];      // Light sources
+
+// New transformation matrices
+uniform mat4 model;                   // Model matrix
+uniform mat4 view;                    // View matrix
+uniform mat4 projection;              // Projection matrix
+
 uniform vec3 AmbientLight;            // Ambient light color
 uniform bool EnableNormalMaps = false; // Toggle normal maps
 uniform float uSpecularStrength;
 uniform bool colorByPosition;
 
 void main() {
+    // Transform fragment position into world space
+    vec4 worldPosition = model * vec4(retFragPos, 1.0);
+
+    // Transform normal vector into world space
+    vec3 worldNormal = normalize(mat3(transpose(inverse(model))) * retNormal);
+
     // Sample diffuse color from texture
     vec4 diffColor = texture(material.diffuseTexture, retTexCoord);
     if (diffColor.a == 0) {
@@ -44,11 +56,11 @@ void main() {
     // Loop through lights (currently only one light)
     for (int i = 0; i < NUM_LIGHTS; i++) 
     {
-        // Calculate the light direction
-        vec3 lightDir = normalize(light[i].position - retFragPos);
+        // Calculate the light direction in world space
+        vec3 lightDir = normalize(light[i].position - worldPosition.xyz);
 
-        // Use normal map if enabled, otherwise use the original normal
-        vec3 normal = retNormal;
+        // Use normal map if enabled, otherwise use the transformed normal
+        vec3 normal = worldNormal;
         if (EnableNormalMaps) 
         {
             normal = texture(material.normalTexture, retTexCoord).rgb;
@@ -75,9 +87,9 @@ void main() {
     // Add position-based tint if enabled
     if (colorByPosition) {
         vec3 positionTint = vec3(
-            clamp(retFragPos.x / 10.0, 0.0, 1.0), // Red tint based on X position
-            clamp(retFragPos.y / 10.0, 0.0, 1.0), // Green tint based on Y position
-            clamp(retFragPos.z / 10.0, 0.0, 1.0)  // Blue tint based on Z position
+            clamp(worldPosition.x / 10.0, 0.0, 1.0), // Red tint based on X position
+            clamp(worldPosition.y / 10.0, 0.0, 1.0), // Green tint based on Y position
+            clamp(worldPosition.z / 10.0, 0.0, 1.0)  // Blue tint based on Z position
         );
 
         // Blend the tint with the calculated color
