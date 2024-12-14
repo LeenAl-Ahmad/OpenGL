@@ -23,7 +23,8 @@ void ASEReader::ReadFile(const char* _fileName, std::vector<std::string>& _file)
 void ASEReader::ParseMaterials(std::vector<std::string>& _file)
 {
     std::vector<std::string> _materials;
-    GetBlock("MATERIAL_LIST", _file, _materials);
+    GetBlock("MATERIAL_LIST ", _file, _materials);
+    
     int Materialcount = std::stoi(ExtractValue(_materials, "*MATERIAL_COUNT"));
 
     for (int i = 0; i < Materialcount; i++)
@@ -54,7 +55,8 @@ void ASEReader::ParseMaterials(std::vector<std::string>& _file)
     }
 }
 
-void ASEReader::ParseGeoObjects(std::vector<std::string>& _file) {
+void ASEReader::ParseGeoObjects(std::vector<std::string>& _file) 
+{
     std::vector<std::string> _geomObject;
     int index = GetBlock("*GEOMOBJECT ", _file, _geomObject);
 
@@ -136,13 +138,13 @@ std::string ASEReader::ExtractValue(std::vector<std::string>& _lines, const char
             // replace all the tabs with spaces
             std::replace(line.begin(), line.end(), '\t', ' ');
             // Remove the leading spaces
-            line.erase(0, line.find_first_not_of("\n\r\t"));
+            line.erase(0, line.find_first_not_of(" \n\r\t"));
             // remove the tag, we can search for the next whitespace
             line.erase(0, line.find(" ") + 1);
             // remove end quotes since they are not part of the value
-            line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
+            line.erase(std::remove(line.begin(), line.end(), '\"'), line.end());
             // Remove the leading spaces
-            line.erase(0, line.find_first_not_of("\n\r\t"));
+            line.erase(0, line.find_first_not_of(" \n\r\t"));
 
             return line;
         }

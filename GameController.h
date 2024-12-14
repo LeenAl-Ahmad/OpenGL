@@ -82,7 +82,7 @@ private:
 	glm::mat4 projMatrix;
 	glm::mat4 viewMatrix;
 	Mesh* light;
-	Mesh* suzanne;
+	Mesh* suzanne = nullptr;
 	Mesh* cube;
 	Mesh* sphere;
 	Mesh* newCube;

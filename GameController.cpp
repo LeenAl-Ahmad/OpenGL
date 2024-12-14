@@ -24,7 +24,7 @@ void GameController::Initialize() {
 
     // Camera setup
     camera = Camera(WindowController::GetInstance().GetResolution());
-    camera.LookAt({ 0, 0, 5 }, { 0, 0, 0 }, { 0, 1, 0 }); // Camera at {0, 0, 5}
+    camera.LookAt({ 0, 0, 50 }, { 0, 0, 0 }, { 0, 1, 0 }); // Camera at {0, 0, 5}
 
     screenWidth = WindowController::GetInstance().GetResolution().width;
     screenHeight = WindowController::GetInstance().GetResolution().height;
@@ -47,14 +47,14 @@ void GameController::Initialize() {
 
     // Suzanne with Hat Position (can use a custom model like "Monkey.obj" or another model)
     suzanne = new Mesh();
-    suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj");
+    suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/fish.ase");
     suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
     suzanne->SetRotationObj({ 0.0f, 0.0f, 0.0f });
-    
+    suzanne->SetScalo({1,1,1});
     suzanne->SetSpecularStrength(specularStrength);
     meshes.push_back(suzanne);
 
-    sphere = new Mesh();
+    /*sphere = new Mesh();
     sphere->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
     sphere->SetPosition({ 0.0f, 0.0f, 0.0f });
     sphere->SetScalo({ 0.5f, 0.5f, 0.5f });
@@ -78,8 +78,7 @@ void GameController::Initialize() {
         meshes.push_back(newCube);
         cubes.push_back(newCube); // Track cubes
 
-    }
-
+    }*/
 }
 
 void GameController::RunGame() {
