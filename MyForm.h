@@ -17,7 +17,11 @@ namespace OpenGL {
 	{
 	public:
 		static bool mlight;
-		static bool translate;
+		static bool transform;
+		static bool Translate;
+		static bool Rotate;
+		static bool Scale;
+		static bool waterS;
 		static bool clickedL;
 		static bool clickedO;
 		static float sps;
@@ -69,7 +73,11 @@ namespace OpenGL {
 		{
 			InitializeComponent();
 			mlight= check1 ->Checked;
-			translate = check2->Checked;
+			transform = check2->Checked;
+			Translate = Box1->Checked;
+			Rotate = Box2->Checked;
+			Scale = Box3->Checked;
+			waterS = check3->Checked;
 			//cPosition = colorByPosition ->Checked;
 			//mCube = moveCube ->Checked;
 			clickedL = false;
@@ -190,16 +198,7 @@ namespace OpenGL {
 			this->SpecularStrength->TabIndex = 6;
 			this->SpecularStrength->Text = L"Specular Strength";
 			// 
-			// red
-			// 
-			this->red->AutoSize = true;
-			this->red->Location = System::Drawing::Point(10, 119);
-			this->red->Name = L"red";
-			this->red->Size = System::Drawing::Size(17, 16);
-			this->red->TabIndex = 7;
-			this->red->Text = L"R";
-			this->red->Click += gcnew System::EventHandler(this, &MyForm::red_Click);
-			// 
+		
 			// GREEN
 			// 
 			this->GREEN->AutoSize = true;
@@ -506,28 +505,10 @@ private: System::Void SPStrength_Scroll(System::Object^ sender, System::EventArg
 	// Update the label to display the mapped value (0.00 to 3.00)
 	textBox4->Text = specularStrength.ToString("F2");
 }
-private: System::Void redBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	
-}
-private: System::Void greenBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	
-}
-private: System::Void blueBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	
-}
-/*private: System::Void colorByPosition_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-	
-	cPosition = colorByPosition->Checked;
-	GameController::GetInstance().colorPosition = cPosition;
-}*/
 private: System::Void resetObj_Click(System::Object^ sender, System::EventArgs^ e) {
 	clickedO = true;
-	GameController::GetInstance().clickO = clickedO;
+	GameController::GetInstance().clickT = clickedO;
 }
-/*private: System::Void moveCube_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-	mCube = moveCube->Checked;
-	GameController::GetInstance().moveCube = mCube;
-}*/
 private: System::Void redtrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	float redBar = redtrackBar->Value;
 	// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
@@ -573,8 +554,6 @@ private: System::Void bluetrackBar_Scroll(System::Object^ sender, System::EventA
 		// Update the text label
 		textBox3->Text = val.ToString("F2");
 	}
-private: System::Void red_Click(System::Object^ sender, System::EventArgs^ e) {
-}
 private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void textBox2_TextChanged(System::Object^ sender, System::EventArgs^ e) {
@@ -588,30 +567,52 @@ private: System::Void check1_CheckedChanged(System::Object^ sender, System::Even
 	GameController::GetInstance().moveLight = mlight;
 }
 private: System::Void check2_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-	translate = check2->Checked;
-	GameController::GetInstance().Transform = translate;
+	transform = check2->Checked;
+	GameController::GetInstance().Transform = transform;
 }
 private: System::Void Box1_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	Translate = Box1->Checked;
+	GameController::GetInstance().translate = Translate;
 }
 private: System::Void Box2_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	Rotate = Box2->Checked;
+	GameController::GetInstance().rotate = Rotate;
 }
 private: System::Void Box3_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	Scale = Box3->Checked;
+	GameController::GetInstance().scale = Scale;
 }
 private: System::Void check3_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	waterS = check3->Checked;
+	GameController::GetInstance().waterScene = waterS;
 }
 private: System::Void trackBar1_Scroll(System::Object^ sender, System::EventArgs^ e) {
+	float frequency = trackBar1->Value;
+	// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
+	float val = frequency / 100.0f;
+	textBox5->Text = val.ToString("F2");
 }
 private: System::Void textBox5_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void trackBar2_Scroll(System::Object^ sender, System::EventArgs^ e) {
+	float Amplitude = trackBar2->Value;
+	// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
+	float val = Amplitude / 100.0f;
+	textBox6->Text = val.ToString("F2");
 }
 private: System::Void textBox6_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void Box4_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	static bool wireFrame = Box4->Checked;
+	GameController::GetInstance().wireFrame = wireFrame;
 }
 private: System::Void Box5_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	static bool Tint = Box5->Checked;
+	GameController::GetInstance().tint = Tint;
 }
 private: System::Void check4_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	static bool space = check4->Checked;
+	GameController::GetInstance().space = space;
 }
 };
 }

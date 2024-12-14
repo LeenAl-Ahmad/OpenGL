@@ -50,7 +50,7 @@ void GameController::Initialize() {
     suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj");
     suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
     suzanne->SetRotationObj({ 0.0f, 0.0f, 0.0f });
-    suzanne->CalculateTransform();
+    
     suzanne->SetSpecularStrength(specularStrength);
     meshes.push_back(suzanne);
 
@@ -181,7 +181,7 @@ void GameController::RunGame() {
         }
         if (clickT)
         {
-
+            ResetObjPos();
         }
         
 
@@ -273,8 +273,7 @@ void GameController::UpdateObjToMouse(double mX, double mY, GLFWwindow* window, 
         }
     }
 
-    if (Transform)
-    {
+    if (Transform) {
         static double prevMouseX = mX, prevMouseY = mY; // Track previous mouse position
 
         // Calculate mouse deltas
@@ -285,13 +284,54 @@ void GameController::UpdateObjToMouse(double mX, double mY, GLFWwindow* window, 
         prevMouseX = mX;
         prevMouseY = mY;
 
-        
+        // Check which mouse button is pressed
+        bool isLeftButtonPressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+        bool isMiddleButtonPressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS;
+
+        // Modify transformation based on input
+        if (isLeftButtonPressed) {
+            // Manipulate translation, rotation, and scale on the XY axes
+            if (translate) {
+                glm::vec3 currentPosition = suzanne->GetPosition();
+                glm::vec3 translation = glm::vec3(deltaX * 0.01f, -deltaY * 0.01f, 0.0f); // Adjust translation speed
+                suzanne->SetPosition(currentPosition + translation);
+            }
+            if (rotate) {
+                glm::vec3 currentRotation = suzanne->GetRotation1();
+                glm::vec3 rotation = glm::vec3(-deltaY * 0.1f, deltaX * 0.1f, 0.0f); // Rotate on XY
+                suzanne->SetRotationObj(currentRotation + rotation);
+            }
+            if (scale) {
+                glm::vec3 currentScale = suzanne->GetScale();
+                float scaleChange = deltaY * 0.01f; // Scale on Y
+                glm::vec3 newScale = currentScale + glm::vec3(scaleChange, scaleChange, 0.0f); // XY scaling
+                newScale = glm::clamp(newScale, glm::vec3(0.1f), glm::vec3(10.0f)); // Clamp scale
+                suzanne->SetScalo(newScale);
+            }
+        }
+
+        if (isMiddleButtonPressed) {
+            // Manipulate translation, rotation, and scale on the Z axis
+            if (translate) {
+                glm::vec3 currentPosition = suzanne->GetPosition();
+                glm::vec3 translation = glm::vec3(0.0f, 0.0f, deltaY * 0.01f); // Adjust Z-axis translation speed
+                suzanne->SetPosition(currentPosition + translation);
+            }
+            if (rotate) {
+                glm::vec3 currentRotation = suzanne->GetRotation1();
+                glm::vec3 rotation = glm::vec3(0.0f, 0.0f, deltaY * 0.1f); // Rotate on Z
+                suzanne->SetRotationObj(currentRotation + rotation);
+            }
+            if (scale) {
+                glm::vec3 currentScale = suzanne->GetScale();
+                float scaleChange = deltaY * 0.01f; // Scale on Z
+                glm::vec3 newScale = currentScale + glm::vec3(0.0f, 0.0f, scaleChange); // Z scaling
+                newScale = glm::clamp(newScale, glm::vec3(0.1f), glm::vec3(10.0f)); // Clamp scale
+                suzanne->SetScalo(newScale);
+            }
+        }
     }
 }
-
-
-
-
 
 void GameController::UpdateScene(GLFWwindow* window, Mesh* NewCube) {
     static bool isMousePressed = false; // Tracks the mouse button state
@@ -357,6 +397,7 @@ void GameController::UpdateScene(GLFWwindow* window, Mesh* NewCube) {
 bool GameController::ResetObjPos() {
     if (suzanne) {
         suzanne->SetPosition({0,0,0}); 
+        suzanne->SetScalo({ 1,1,1 });
         return clickO = false;
     }
 }

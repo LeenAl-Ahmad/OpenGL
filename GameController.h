@@ -36,6 +36,13 @@ public:
 
 	bool moveLight = false;
 	bool Transform = false;
+	bool translate = false;
+	bool rotate = false;
+	bool scale = false;
+	bool waterScene = false;
+	bool wireFrame = false;
+	bool tint = false;
+	bool space = false;
 
 	bool colorPosition = false;
 	bool UpdatedRed = false;

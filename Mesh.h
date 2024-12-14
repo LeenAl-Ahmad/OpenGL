@@ -26,6 +26,7 @@ public:
 	void SetRotationObj(const glm::vec3& rot) { rotation = rot; UpdateWorldMatrix(); }
 	glm::vec3 GetRotation1() { return rotation; }
 	void SetScalo(glm::vec3 _s) { scale = _s; UpdateWorldMatrix(); }
+	glm::vec3 GetScale() { return scale; }
 	void SetColor(glm::vec3 _color) { color = _color; }
 	glm::vec3 GetColor() { return color; }
 	void SetLightDirection(glm::vec3 _lD) { lightDirection = _lD; }
@@ -59,10 +60,7 @@ public:
 	
 	void Mesh::UpdateWorldMatrix() {
 		world = glm::mat4(1.0f);
-		world = glm::translate(world, position);                     // Apply translation
-		world = glm::rotate(world, rotation.x, glm::vec3(1, 0, 0));  // Apply rotation X
-		world = glm::rotate(world, rotation.y, glm::vec3(0, 1, 0));  // Apply rotation Y
-		world = glm::rotate(world, rotation.z, glm::vec3(0, 0, 1));  // Apply rotation Z
+		world = glm::translate(world, position);                    
 		world = glm::scale(world, scale);
 	}
 
@@ -70,6 +68,10 @@ public:
 	float red = 0.0f;
 	float green = 0.0f;
 	float blue = 0.0f;
+
+public:
+	
+	
 
 private:
 	void LoadOBJ(std::string& _file);
