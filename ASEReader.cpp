@@ -23,7 +23,7 @@ void ASEReader::ReadFile(const char* _fileName, std::vector<std::string>& _file)
 void ASEReader::ParseMaterials(std::vector<std::string>& _file)
 {
     std::vector<std::string> _materials;
-    GetBlock("*MATERIAL_LIST", _file, _materials);
+    GetBlock("MATERIAL_LIST", _file, _materials);
     int Materialcount = std::stoi(ExtractValue(_materials, "*MATERIAL_COUNT"));
 
     for (int i = 0; i < Materialcount; i++)

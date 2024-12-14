@@ -50,7 +50,7 @@ void GameController::Initialize() {
     suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj");
     suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
     suzanne->SetRotationObj({ 0.0f, 0.0f, 0.0f });
-    //suzanne->SetColor({});
+    suzanne->CalculateTransform();
     suzanne->SetSpecularStrength(specularStrength);
     meshes.push_back(suzanne);
 

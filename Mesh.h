@@ -65,6 +65,7 @@ public:
 		world = glm::rotate(world, rotation.z, glm::vec3(0, 0, 1));  // Apply rotation Z
 		world = glm::scale(world, scale);
 	}
+
 	float specularStrength = 0.0f;
 	float red = 0.0f;
 	float green = 0.0f;

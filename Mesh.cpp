@@ -214,7 +214,6 @@ void Mesh::Render(glm::mat4 _pv) {
 	glUseProgram(shader->GetProgramID());
 	
 	
-	CalculateTransform();
 	SetShaderVariable(_pv);
 
 	BindAttributes();
@@ -256,7 +255,11 @@ void Mesh::SetRotation(float rotationX, float rotationY) {
 }
 
 void Mesh::CalculateTransform() {
-	world = glm::translate(glm::mat4(1.0f), position);
+	world = glm::mat4(1.0f);
+	world = glm::translate(world, position);
+	world = glm::rotate(world, rotation.x, glm::vec3(1, 0, 0));  // Apply rotation X
+	world = glm::rotate(world, rotation.y, glm::vec3(0, 1, 0));  // Apply rotation Y
+	world = glm::rotate(world, rotation.z, glm::vec3(0, 0, 1));
 	world = glm::scale(world, scale);
 }
 
@@ -272,6 +275,7 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetFloat("red", red);
 	shader->SetFloat("green",green);
 	shader->SetFloat("blue", blue);
+	
 
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)

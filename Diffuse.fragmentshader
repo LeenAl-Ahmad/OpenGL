@@ -3,8 +3,6 @@
 in vec3 retFragPos;       // Input: Fragment position in object space
 in vec3 retNormal;        // Input: Normal vector in object space
 in vec2 retTexCoord;      // Input: Texture coordinates
-in vec3 retViewDirection; // Input: View direction in object space
-in mat3 retTBN;           // Input: Tangent-Bitangent-Normal matrix
 
 out vec4 FragColor;       // Output: Final fragment color
 
@@ -26,76 +24,58 @@ struct Light {
 
 uniform Material material;            // Material properties
 #define NUM_LIGHTS 1
-uniform Light light[NUM_LIGHTS];      // Light sources
+uniform Light light[NUM_LIGHTS];      // Array of light sources
 
-// New transformation matrices
-uniform mat4 model;                   // Model matrix
-uniform mat4 view;                    // View matrix
-uniform mat4 projection;              // Projection matrix
-
-uniform vec3 AmbientLight;            // Ambient light color
-uniform bool EnableNormalMaps = false; // Toggle normal maps
-uniform float uSpecularStrength;
-uniform bool colorByPosition;
+uniform mat4 WVP;                     // Combined World-View-Projection matrix
+uniform mat4 World;                   // World (model) matrix
+uniform vec3 CameraPosition;          // Camera position in world space
+uniform vec3 AmbientLight;            // Global ambient light
+uniform bool EnableNormalMaps = false; // Toggle for normal mapping
+uniform float uSpecularStrength;      // Specular strength control
 
 void main() {
-    // Transform fragment position into world space
-    vec4 worldPosition = model * vec4(retFragPos, 1.0);
-
-    // Transform normal vector into world space
-    vec3 worldNormal = normalize(mat3(transpose(inverse(model))) * retNormal);
+    // Transform fragment position and normal to world space
+    vec4 worldPosition = World * vec4(retFragPos, 1.0);
+    vec3 worldNormal = normalize(mat3(transpose(inverse(World))) * retNormal);
 
     // Sample diffuse color from texture
     vec4 diffColor = texture(material.diffuseTexture, retTexCoord);
-    if (diffColor.a == 0) {
-        discard;  // If the texture is fully transparent, discard the fragment
+    if (diffColor.a == 0.0) {
+        discard; // Skip fully transparent fragments
     }
 
-    vec4 finalColor = vec4(0);
+    vec3 finalColor = vec3(0.0);
 
-    // Loop through lights (currently only one light)
-    for (int i = 0; i < NUM_LIGHTS; i++) 
-    {
-        // Calculate the light direction in world space
+    // Loop through each light source (currently only one light is defined)
+    for (int i = 0; i < NUM_LIGHTS; i++) {
+        // Calculate light direction and normalize
         vec3 lightDir = normalize(light[i].position - worldPosition.xyz);
 
-        // Use normal map if enabled, otherwise use the transformed normal
+        // Use normal map if enabled, otherwise use transformed normal
         vec3 normal = worldNormal;
-        if (EnableNormalMaps) 
-        {
+        if (EnableNormalMaps) {
             normal = texture(material.normalTexture, retTexCoord).rgb;
-            normal = normal * 2.0 - 1.0;
-            normal = normalize(retTBN * normal); // Apply TBN transformation
+            normal = normal * 2.0 - 1.0; // Convert from [0, 1] to [-1, 1]
+            normal = normalize(normal); // Normalize the result
         }
 
-        // Lambertian shading: diffuse lighting component
-        float lambertianStrength = max(dot(lightDir, normal), 0.0);
+        // Diffuse lighting (Lambertian reflection)
+        float lambertian = max(dot(normal, lightDir), 0.0);
+        vec3 diffuse = lambertian * light[i].diffuseColor * diffColor.rgb;
 
-        // Reflection vector for specular lighting calculation
-        vec3 refl = reflect(-lightDir, normal);
-        float specularStrength = pow(max(dot(retViewDirection, refl), 0.0), material.specularStrength);
+        // Ambient lighting
+        vec3 ambient = diffColor.rgb * light[i].ambientColor * AmbientLight;
 
-        // Calculate the different lighting components
-        vec3 ambient = diffColor.rgb * light[i].ambientColor;
-        vec3 diffuse = lambertianStrength * light[i].diffuseColor * diffColor.rgb;
-        vec3 specular = specularStrength * texture(material.specularTexture, retTexCoord).rgb * light[i].specularColor * uSpecularStrength;
+        // Specular lighting (Blinn-Phong model)
+        vec3 viewDir = normalize(CameraPosition - worldPosition.xyz);
+        vec3 halfDir = normalize(lightDir + viewDir);
+        float spec = pow(max(dot(normal, halfDir), 0.0), uSpecularStrength);
+        vec3 specular = spec * light[i].specularColor * diffColor.rgb;
 
-        // Sum the ambient, diffuse, and specular components
-        finalColor += vec4(ambient + diffuse + specular, 1.0f);
+        // Accumulate the color contributions
+        finalColor += ambient + diffuse + specular;
     }
 
-    // Add position-based tint if enabled
-    if (colorByPosition) {
-        vec3 positionTint = vec3(
-            clamp(worldPosition.x / 10.0, 0.0, 1.0), // Red tint based on X position
-            clamp(worldPosition.y / 10.0, 0.0, 1.0), // Green tint based on Y position
-            clamp(worldPosition.z / 10.0, 0.0, 1.0)  // Blue tint based on Z position
-        );
-
-        // Blend the tint with the calculated color
-        finalColor.rgb = mix(finalColor.rgb, positionTint * 2, 0.5); // Adjust blending factor (0.5 for equal blend)
-    }
-
-    // Output the final fragment color
-    FragColor = finalColor;
+    // Output the calculated color
+    FragColor = vec4(finalColor, diffColor.a);
 }
