@@ -1,12 +1,34 @@
 #version 330
 
-in vec2 retTexCoords;
-out vec4 FragColor;
+in vec2 retTexCoords;  // Texture coordinates passed from vertex shader
+out vec4 FragColor;    // Final color output
 
-uniform sampler2D screenTexture;
+uniform sampler2D screenTexture;  // Screen texture for post-processing
+uniform bool UseTint;             // Flag to enable water tint
+uniform bool answer;              // Flag to enable water scene effects
+uniform float Frequency;          // Frequency of the sine wave
+uniform float Amplitude;          // Amplitude of the sine wave
+uniform float Time;               // Game time passed from the application
+uniform vec3 WaterColor;          // Color tint for the water effect
 
 void main()
 {
-    vec3 col = texture(screenTexture, retTexCoords).rgb;
-    FragColor = vec4(col, 1.0);
+    vec2 distortedTexCoords = retTexCoords;          // Default texture coordinates
+    vec3 col = texture(screenTexture, retTexCoords).rgb; // Default texture color
+
+    if (answer)  // If WaterScene is enabled
+    {
+        // Apply sine wave ripple distortion
+        float ripple = sin(retTexCoords.x * Frequency + Time) * Amplitude;
+        distortedTexCoords += vec2(ripple, ripple * 0.5); // Apply ripple distortion
+        col = texture(screenTexture, distortedTexCoords).rgb; // Sample distorted texture color
+
+        // Apply water tint if enabled
+        if (UseTint)
+        {
+            col = mix(col, WaterColor, 0.3); // Mix original color with water tint
+        }
+    }
+
+    FragColor = vec4(col, 1.0); // Output the final color
 }

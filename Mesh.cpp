@@ -247,6 +247,11 @@ void Mesh::Render(glm::mat4 _pv) {
 	glUniform1i(shader->GetTracKBarR(), red);
 	glUniform1i(shader->GetTracKBarG(), green);
 	glUniform1i(shader->GetTracKBarB(), blue);
+	glUniform1f(shader->GetAttrFrequency(), frequency);
+	glUniform1f(shader->GetAttrAmplitude(), amplitude);
+	glUniform1f(shader->GetAttrTime(), time);
+	glUniform1f(shader->GetIfTrue(), answer);
+
 }
 
 void Mesh::SetRotation(float rotationX, float rotationY) {
@@ -275,7 +280,10 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetFloat("red", red);
 	shader->SetFloat("green",green);
 	shader->SetFloat("blue", blue);
-	
+	shader->SetFloat("Frequency", frequency);
+	shader->SetFloat("Amplitude", amplitude);
+	shader->SetFloat("Time", time);
+	shader->SetBool("answer", answer);
 
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)

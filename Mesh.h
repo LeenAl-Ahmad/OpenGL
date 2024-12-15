@@ -37,11 +37,13 @@ public:
 	void SetSpecularColor(const glm::vec3& color) { specularColor = color; }
 	glm::vec3 GetSpecularColor() const { return specularColor; }
 	void SetRed(float r) { red = r; }
-	glm::float32 GetRed() { return red; }
 	void SetGreen(float g) { green = g; }
-	glm::float32 GetGreen() { return green; }
 	void SetBlue(float b) { blue = b; }
-	glm::float32 GetBlue() { return blue; }
+
+	void Setfrequency(float f) { frequency = f; }
+	void setAmplitude(float a) { amplitude = a; }
+	void Setanswer(bool ans) { answer = ans; }
+	bool GetAnswer() { return answer; }
 
 	void Create(Shader* _shader, std::string _file, int _instanceCount = 1);
 	void Cleanup();
@@ -69,6 +71,13 @@ public:
 	float green = 0.0f;
 	float blue = 0.0f;
 
+	float frequency = 0.0f;
+	float amplitude = 0.0f;
+	float time = 0;
+	void SetTime(float newTime) { time = newTime; }
+	float GetTime() const { return time; }
+	bool answer = false;
+	
 public:
 	
 	

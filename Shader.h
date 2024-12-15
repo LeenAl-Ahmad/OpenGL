@@ -26,6 +26,12 @@ public:
 	GLuint GetAttrSPS() {return attrSpStrength;}
 	GLuint GetAttrCP() {return attrColorByPos;}
 
+	GLuint GetAttrFrequency() { return frequency; }
+	GLuint GetAttrAmplitude() { return amplitude; }
+	GLuint GetAttrTime() { return time; }
+
+	GLuint GetIfTrue() { return answer; }
+
 	GLuint GetAttrML() {
 		return MoveLight;
 	}
@@ -76,6 +82,11 @@ private:
 	GLuint attrModel = 0;
 	GLuint attrView = 0;
 	GLuint attrProjection = 0;
+	GLuint screenTexture = 0;
+	GLuint frequency = 0;
+	GLuint amplitude = 0;
+	GLuint time = 0;
+	GLuint answer = 0;
 
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;

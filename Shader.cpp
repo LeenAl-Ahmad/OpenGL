@@ -30,6 +30,10 @@ void Shader::LoadAttributes()
 	trackBarR = glGetUniformLocation(programID, "red");
 	trackBarG = glGetUniformLocation(programID, "green");
 	trackBarB = glGetUniformLocation(programID, "blue");
+	frequency = glGetUniformLocation(programID, "Frequency");
+	amplitude = glGetUniformLocation(programID, "Amplitude");
+	time = glGetUniformLocation(programID, "Time");
+	answer = glGetUniformLocation(programID, "answer");
 }
 
 void Shader::SetVec3(const char* _name, glm::vec3 _value)

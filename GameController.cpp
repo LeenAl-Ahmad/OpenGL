@@ -23,8 +23,7 @@ void GameController::Initialize() {
     glBindVertexArray(vao);
 
     // Camera setup
-    camera = Camera(WindowController::GetInstance().GetResolution());
-    camera.LookAt({ 0, 0, 50 }, { 0, 0, 0 }, { 0, 1, 0 }); // Camera at {0, 0, 5}
+    camera.LookAt({ 0, 0, 5 }, { 0, 0, 0 }, { 0, 1, 0 }); // Camera at {0, 0, 5}
 
     screenWidth = WindowController::GetInstance().GetResolution().width;
     screenHeight = WindowController::GetInstance().GetResolution().height;
@@ -47,12 +46,16 @@ void GameController::Initialize() {
 
     // Suzanne with Hat Position (can use a custom model like "Monkey.obj" or another model)
     suzanne = new Mesh();
-    suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/fish.ase");
+    suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj");
     suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
     suzanne->SetRotationObj({ 0.0f, 0.0f, 0.0f });
     suzanne->SetScalo({1,1,1});
     suzanne->SetSpecularStrength(specularStrength);
     meshes.push_back(suzanne);
+
+    float currentTime = static_cast<float>(glfwGetTime());
+   // mesh->SetTime(currentTime);
+
 
     /*sphere = new Mesh();
     sphere->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
@@ -99,8 +102,6 @@ void GameController::RunGame() {
     pP.Create(&shaderPost);
 #pragma endregion
 
-    
-
     Font* arialFont = new Font();
     arialFont->Create(&shaderFont, "C:/Users/leana/source/repos/OpenGL/Assets/Fonts/arial.ttf", 48);
 
@@ -140,6 +141,28 @@ void GameController::RunGame() {
 
             std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
             arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
+
+        }
+        if (waterScene)
+        {
+            // Update Suzanne and light positions
+            if (suzanne) suzanne->SetPosition({ 5, 5, 5 });
+            if (light) light->SetPosition({ 4, 4, 4 });
+            camera.LookAt({ 0, 0, 50 }, { 0, 0, 0 }, { 0, 1, 0 }); // Camera at {0, 0, 5}
+
+
+            Mesh* fish = new Mesh();
+            fish->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/fish.ase");
+            fish->Setanswer(waterScene);
+            fish->Setfrequency(frequency);
+            fish->setAmplitude(amplitude);
+            fish->SetPosition({ 0.0f, 0.0f, 0.0f });
+            fish->SetRotationObj({ 0.0f, 0.0f, 0.0f });
+            fish->SetScalo({ 1,1,1 });
+            fish->SetSpecularStrength(specularStrength);
+            meshes.push_back(fish);
+
+            fish->Render(camera.GetProjection() * camera.GetView());
 
         }
         /*if (colorPosition) {  // moveLight flag is set from the checkbox in MyForm
@@ -332,7 +355,7 @@ void GameController::UpdateObjToMouse(double mX, double mY, GLFWwindow* window, 
     }
 }
 
-void GameController::UpdateScene(GLFWwindow* window, Mesh* NewCube) {
+void GameController::UpdateScene(GLFWwindow* window, Mesh* New) {
     static bool isMousePressed = false; // Tracks the mouse button state
 
     // Update Suzanne and light positions

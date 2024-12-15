@@ -30,7 +30,12 @@ public:
 	float GetG() { return green; }
 	float SetB(float b) {return blue = b; }
 	float GetB() { return blue; }
-	
+
+	float setf(float f) { return frequency = f; }
+	float Getf() { return frequency; }
+	float setA(float a) { return amplitude = a; }
+	float GetA() { return amplitude; }
+
 	std::vector<Mesh*>& GetLights() { return lights; }
 	const Camera& GetCamera() { return camera; }
 
@@ -48,19 +53,23 @@ public:
 	bool UpdatedRed = false;
 	bool UpdatedGreen = false;
 	bool UpdatedBlue = false;
+	bool UpdateFrequency = false;
+	bool UpdateAmplitude = false;
 	bool clickL = false;
 	bool clickT = false;
 	bool clickO = false;
 	float red =0;
 	float green =0;
 	float blue=0;
+	float frequency = 0;
+	float amplitude = 0;
 	glm::vec3 lightColor = {red, green , blue};
 	
 	Mesh* GetSuzanne() const { return suzanne; }
 	float specularStrength ;
 
 private:
-	Camera camera = {};
+	Camera camera = Camera(WindowController::GetInstance().GetResolution());
 	PostProcessor pP = { };
 
 	Shader shaderColor = {};

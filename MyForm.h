@@ -590,6 +590,11 @@ private: System::Void trackBar1_Scroll(System::Object^ sender, System::EventArgs
 	float frequency = trackBar1->Value;
 	// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
 	float val = frequency / 100.0f;
+	if (GameController::GetInstance().Getf() != val) {
+		// Update the GameController and set UpdatedBlue to true
+		GameController::GetInstance().setf(val);
+		GameController::GetInstance().UpdateFrequency = true;
+	}
 	textBox5->Text = val.ToString("F2");
 }
 private: System::Void textBox5_TextChanged(System::Object^ sender, System::EventArgs^ e) {
@@ -598,6 +603,11 @@ private: System::Void trackBar2_Scroll(System::Object^ sender, System::EventArgs
 	float Amplitude = trackBar2->Value;
 	// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
 	float val = Amplitude / 100.0f;
+	if (GameController::GetInstance().GetA() != val) {
+		// Update the GameController and set UpdatedBlue to true
+		GameController::GetInstance().setA(val);
+		GameController::GetInstance().UpdateAmplitude = true;
+	}
 	textBox6->Text = val.ToString("F2");
 }
 private: System::Void textBox6_TextChanged(System::Object^ sender, System::EventArgs^ e) {
