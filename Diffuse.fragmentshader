@@ -61,20 +61,23 @@ void main() {
 
         // Diffuse lighting (Lambertian reflection)
         float lambertian = max(dot(normal, lightDir), 0.0);
-        vec3 diffuse = lambertian * light[i].diffuseColor * diffColor.rgb;
+        vec3 diffuse = lambertian * light[i].diffuseColor * diffColor.rgb * vec3(0.8); // Scale down intensity
 
         // Ambient lighting
-        vec3 ambient = diffColor.rgb * light[i].ambientColor * AmbientLight;
+        vec3 ambient = diffColor.rgb * light[i].ambientColor * AmbientLight * vec3(0.5); // Slightly reduce intensity
 
         // Specular lighting (Blinn-Phong model)
         vec3 viewDir = normalize(CameraPosition - worldPosition.xyz);
         vec3 halfDir = normalize(lightDir + viewDir);
         float spec = pow(max(dot(normal, halfDir), 0.0), uSpecularStrength);
-        vec3 specular = spec * light[i].specularColor * diffColor.rgb;
+        vec3 specular = spec * light[i].specularColor * diffColor.rgb * vec3(0.6); // Scale down specular intensity
 
         // Accumulate the color contributions
         finalColor += ambient + diffuse + specular;
     }
+
+    // Ensure final color is clamped to valid range
+    finalColor = clamp(finalColor, 0.0, 1.0);
 
     // Output the calculated color
     FragColor = vec4(finalColor, diffColor.a);

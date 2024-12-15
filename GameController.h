@@ -20,9 +20,6 @@ public:
 
 	//Mouse
 	void UpdateObjToMouse(double mouseX, double mouseY, GLFWwindow* window, Mesh* mesh);
-	bool ResetLightPos();
-	bool ResetObjPos();
-	void UpdateScene(GLFWwindow* window, Mesh* newCube);
 	void SetSpecularStrength(float strength) { specularStrength = strength; }
 	float SetR(float r) {return red = r; }
 	float GetR() { return red; }
@@ -75,6 +72,7 @@ private:
 	Shader shaderColor = {};
 	Shader shaderDiffuse = {};
 	Shader shaderFont = {};
+	Shader shaderSkyBox = {};
 	Shader shaderPixel = {};
 	Shader shaderPost = {};
 	Shader shader = {};

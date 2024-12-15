@@ -18,10 +18,7 @@ public:
 	glm::mat4 GetProjection() { return projection; }
 	glm::mat4 GetView() { return view; }
 	glm::vec3 GetPosition() { return position; }
-	//glm::vec3 GetLookAtTarget() const { return target; }
 	void Rotate();
-	//void SetPosition(const glm::vec3& _pos);
-	//void UpdateProjection(const Resolution& _res);
 
 private:
 	glm::mat4 projection = glm::mat4(1.0f);

@@ -103,7 +103,7 @@ void Mesh::Create(Shader* _shader, std::string _file, int _instanceCount)
 	{
 		vertexStride += 6;
 	}
-	UpdateWorldMatrix();
+	CalculateTransform();
 }
 
 
@@ -209,7 +209,7 @@ void Mesh::BindAttributes()
 }
 
 void Mesh::Render(glm::mat4 _pv) {
-	UpdateWorldMatrix();
+	CalculateTransform();
 
 	glUseProgram(shader->GetProgramID());
 	
@@ -497,11 +497,19 @@ bool Mesh::EndsWith(const std::string& _str, const std::string& _suffix)
 	return _str.size() >= _suffix.size() && 0 == _str.compare(_str.size() - _suffix.size(), _suffix.size(), _suffix);
 }
 
-bool Mesh::ResetObj(Mesh* mesh)
-{
-	if (mesh)
-	{
-		mesh->SetPosition({ 0,0,0 });
+bool Mesh::ResetObjPos(Mesh* obj) {
+	if (obj) {
+		obj->SetPosition({ 0,0,0 });
+		obj->SetScalo({ 1,1,1 });
+		return false;
+	}
+}
+
+
+bool Mesh::ResetLightPos(Mesh* obj) {
+	// Ensure the lastLightPosition has the correct values
+	if (obj) {
+		obj->SetPosition({ 0,0,4 });
 		return false;
 	}
 }

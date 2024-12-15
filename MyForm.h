@@ -498,9 +498,8 @@ private: System::Void ResetLight_Click(System::Object^ sender, System::EventArgs
 }
 private: System::Void SPStrength_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	int trackBarValue = SPStrength->Value;
-	
 	// Map the trackbar value (1-128) to the specular strength (0.00-3.00)
-	float specularStrength = (trackBarValue - 1) / 42.33f * 0.5f; // (128-1) maps to (0-3), 0.5 to make it less intense
+	float specularStrength = (trackBarValue - 1) / 75.33f * 0.5f; // (128-1) maps to (0-3), 0.5 to make it less intense
 	GameController::GetInstance().SetSpecularStrength(specularStrength);
 	// Update the label to display the mapped value (0.00 to 3.00)
 	textBox4->Text = specularStrength.ToString("F2");

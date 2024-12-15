@@ -11,7 +11,7 @@ class Shader;
 
 class Mesh
 {
-	
+
 public:
 	Mesh() = default;
 	virtual ~Mesh();
@@ -19,13 +19,13 @@ public:
 	//mouse obj
 	void SetPositionM(const glm::vec3& newPos);
 	glm::vec3 GetPositionM() const;
-	void SetRotationObj(const glm::mat4& rotationMatrix) { world = rotationMatrix * world; }
-	glm::mat4 GetWorld() const { return world; }
-	void SetPosition(glm::vec3 _p) { position = _p; UpdateWorldMatrix(); }
+	void SetRotation(glm::vec3 _rotation) { rotation = _rotation; }
+	glm::vec3 GetRotation() { return rotation; }
+	void SetPosition(glm::vec3 _p) { position = _p; CalculateTransform(); }
 	glm::vec3 GetPosition() { return position; }
-	void SetRotationObj(const glm::vec3& rot) { rotation = rot; UpdateWorldMatrix(); }
+	void SetRotationObj(const glm::vec3& rot) { rotation = rot; CalculateTransform(); }
 	glm::vec3 GetRotation1() { return rotation; }
-	void SetScalo(glm::vec3 _s) { scale = _s; UpdateWorldMatrix(); }
+	void SetScalo(glm::vec3 _s) { scale = _s; CalculateTransform(); }
 	glm::vec3 GetScale() { return scale; }
 	void SetColor(glm::vec3 _color) { color = _color; }
 	glm::vec3 GetColor() { return color; }
@@ -59,12 +59,6 @@ public:
 		coloredByPos = invert;
 	}
 	bool getColorPos() { return coloredByPos; }
-	
-	void Mesh::UpdateWorldMatrix() {
-		world = glm::mat4(1.0f);
-		world = glm::translate(world, position);                    
-		world = glm::scale(world, scale);
-	}
 
 	float specularStrength = 0.0f;
 	float red = 0.0f;
@@ -80,7 +74,8 @@ public:
 	
 public:
 	
-	
+	bool  ResetLightPos(Mesh* obj);
+	bool ResetObjPos(Mesh* obj);
 
 private:
 	void LoadOBJ(std::string& _file);
@@ -112,7 +107,7 @@ private:
 
 	glm::mat4 world = glm::mat4(1);
 	glm::vec3 position{ 0.0f, 0.0f, 0.0f };
-	glm::vec3 rotation{ 0.0f, 0.0f, 0.0f };
+	glm::vec3 rotation{ 0.0f, 1.0f, 0.0f };
 	glm::vec3 scale{ 1.0f, 1.0f, 1.0f };
 	glm::vec3 color{ 1.0f, 1.0f, 1.0f };
 
@@ -124,9 +119,6 @@ private:
 	bool coloredByPos;
 	
 	glm::vec3 specularColor;
-
-private:
-	bool ResetObj(Mesh* mesh);
 };
 
 #endif // ! MESH_H

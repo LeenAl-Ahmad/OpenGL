@@ -16,7 +16,7 @@ void GameController::Initialize() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_CULL_FACE);
+    
     srand(time(0));
 
     glGenVertexArrays(1, &vao);
@@ -30,58 +30,6 @@ void GameController::Initialize() {
 
     projMatrix = camera.GetProjection();
     viewMatrix = camera.GetView();
-
-    lastLightPosition = glm::vec3(0.0f, 0.0f, 4.0f);
-    // Light setup
-    light = new Mesh();
-    light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");  // Use sphere object for the light
-    light->SetColor({ red,green,blue });
-    light->SetRed(red);
-    light->SetGreen(green);
-    light->SetBlue(blue);
-    light->SetPosition(lastLightPosition);  // Light at {0, 0, 4}
-    light->SetScalo({ 0.1f, 0.1f, 0.1f });
-    light->SetSpecularStrength(4.0f);
-    lights.push_back(light);
-
-    // Suzanne with Hat Position (can use a custom model like "Monkey.obj" or another model)
-    suzanne = new Mesh();
-    suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj");
-    suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
-    suzanne->SetRotationObj({ 0.0f, 0.0f, 0.0f });
-    suzanne->SetScalo({1,1,1});
-    suzanne->SetSpecularStrength(specularStrength);
-    meshes.push_back(suzanne);
-
-    float currentTime = static_cast<float>(glfwGetTime());
-   // mesh->SetTime(currentTime);
-
-
-    /*sphere = new Mesh();
-    sphere->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");
-    sphere->SetPosition({ 0.0f, 0.0f, 0.0f });
-    sphere->SetScalo({ 0.5f, 0.5f, 0.5f });
-    sphere->SetColor({ 1.0f, 0.5f, 0.0f }); // Example color
-    sphere->SetLightDirection({ 1.0f, 1.0f, 1.0f });
-    meshes.push_back(sphere);
-
-    int cubeCount = glm::linearRand(10, 20); // Random number of cubes
-    for (int i = 0; i < cubeCount; ++i) {
-        glm::vec3 randomOffset = glm::vec3(
-            glm::linearRand(-5.0f, 5.0f),
-            glm::linearRand(-5.0f, 5.0f),
-            glm::linearRand(-5.0f, 5.0f)
-        );
-        glm::vec3 cubePosition = sphere->GetPosition() + randomOffset;
-        newCube = new Mesh();
-        newCube->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Cube.obj");
-        newCube->SetPosition(cubePosition);
-        newCube->SetScalo({ 0.5f, 0.5f, 0.5f });
-        newCube->SetLightDirection({ 1.0f, 1.0f, 1.0f });
-        meshes.push_back(newCube);
-        cubes.push_back(newCube); // Track cubes
-
-    }*/
 }
 
 void GameController::RunGame() {
@@ -100,6 +48,44 @@ void GameController::RunGame() {
 #pragma region Post processor
     pP = PostProcessor();
     pP.Create(&shaderPost);
+#pragma endregion
+
+#pragma region create
+    lastLightPosition = glm::vec3(0.0f, 0.0f, 4.0f);
+    // Light setup
+    light = new Mesh();
+    light->Create(&shaderColor, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Sphere1.obj");  // Use sphere object for the light
+    light->SetColor({ red,green,blue });
+    light->SetRed(red);
+    light->SetGreen(green);
+    light->SetBlue(blue);
+    light->SetPosition(lastLightPosition);  // Light at {0, 0, 4}
+    light->SetScalo({ 0.1f, 0.1f, 0.1f });
+    light->SetSpecularStrength(4.0f);
+    lights.push_back(light);
+
+    // Suzanne with Hat Position (can use a custom model like "Monkey.obj" or another model)
+    suzanne = new Mesh();
+    suzanne->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/Monkey.obj");
+    suzanne->SetPosition({ 0.0f, 0.0f, 0.0f });
+    suzanne->SetRotation({ 0.0f, 0.0f, 0.0f });
+    suzanne->SetScalo({ 1,1,1 });
+    suzanne->SetSpecularStrength(specularStrength);
+    meshes.push_back(suzanne);
+
+
+    Mesh* fish = new Mesh();
+    fish->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/fish.ase");
+    fish->Setanswer(waterScene);
+    fish->Setfrequency(frequency);
+    fish->setAmplitude(amplitude);
+    fish->SetPosition({ 0.0f, 0.0f, 0.0f });
+    fish->SetScalo({ 1,1,1 });
+    fish->SetSpecularStrength(specularStrength);
+    meshes.push_back(fish);
+
+    float currentTime = static_cast<float>(glfwGetTime());
+    // mesh->SetTime(currentTime);
 #pragma endregion
 
     Font* arialFont = new Font();
@@ -150,34 +136,16 @@ void GameController::RunGame() {
             if (light) light->SetPosition({ 4, 4, 4 });
             camera.LookAt({ 0, 0, 50 }, { 0, 0, 0 }, { 0, 1, 0 }); // Camera at {0, 0, 5}
 
-
-            Mesh* fish = new Mesh();
-            fish->Create(&shaderDiffuse, "C:/Users/leana/source/repos/OpenGL/Assets/Models/fish.ase");
-            fish->Setanswer(waterScene);
-            fish->Setfrequency(frequency);
-            fish->setAmplitude(amplitude);
-            fish->SetPosition({ 0.0f, 0.0f, 0.0f });
-            fish->SetRotationObj({ 0.0f, 0.0f, 0.0f });
-            fish->SetScalo({ 1,1,1 });
-            fish->SetSpecularStrength(specularStrength);
-            meshes.push_back(fish);
-
-            fish->Render(camera.GetProjection() * camera.GetView());
+            glm::vec3 rotationSpeed = { 0,1,0 };
+            for (auto fish : meshes) 
+            {
+                fish->Render(camera.GetProjection() * camera.GetView());
+            }
 
         }
-        /*if (colorPosition) {  // moveLight flag is set from the checkbox in MyForm
-            suzanne->SetcolorPos(colorPosition);
+        if (space) {
 
-            // Handle mouse click and update the object position
-            double mouseX, mouseY;
-            glfwGetCursorPos(win, &mouseX, &mouseY);
-            UpdateObjToMouse(mouseX, mouseY, win, suzanne);
-
-            // Render text showing the mouse position (optional)
-            std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
-            arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
-            
-        }*/
+        }
         else {
             // Normal rendering mode, use the default shader
             glUseProgram(shaderDiffuse.GetProgramID());  // Use the default diffuse shader for regular rendering
@@ -199,22 +167,24 @@ void GameController::RunGame() {
         }
         if (clickL)
         {
-            ResetLightPos();
+            light->ResetLightPos(light);
         }
         if (clickT)
         {
-            ResetObjPos();
+            suzanne->ResetObjPos(suzanne);
         }
         
 
         // Continuous rotation for objects
-        glm::vec3 rotationspeed = { 0.0f, 0.05f, 0.0f };  // Rotate 0.05 radians per frame around Y-axis
+        glm::vec3 rotationspeed  { 0.0f, 5.0f, 0.0f };
+
+        double t = GameTime::GetInstance().DeltaTime();
         for (auto mesh : meshes)
         {
             if (mesh == suzanne) {
                 // Accumulate rotation
-                glm::vec3 currentRotation = mesh->GetRotation1();
-                mesh->SetRotationObj(currentRotation + rotationspeed);
+                
+                mesh->SetRotation(mesh -> GetRotation() + (rotationspeed * (float)t));
 
                 // Update specular strength from trackbar (already assumed you have dynamic `specularStrength` value)
                 mesh->SetSpecularStrength(specularStrength);
@@ -319,9 +289,9 @@ void GameController::UpdateObjToMouse(double mX, double mY, GLFWwindow* window, 
                 suzanne->SetPosition(currentPosition + translation);
             }
             if (rotate) {
-                glm::vec3 currentRotation = suzanne->GetRotation1();
+                glm::vec3 currentRotation = suzanne->GetRotation();
                 glm::vec3 rotation = glm::vec3(-deltaY * 0.1f, deltaX * 0.1f, 0.0f); // Rotate on XY
-                suzanne->SetRotationObj(currentRotation + rotation);
+                suzanne->SetRotation(currentRotation + rotation);
             }
             if (scale) {
                 glm::vec3 currentScale = suzanne->GetScale();
@@ -340,7 +310,7 @@ void GameController::UpdateObjToMouse(double mX, double mY, GLFWwindow* window, 
                 suzanne->SetPosition(currentPosition + translation);
             }
             if (rotate) {
-                glm::vec3 currentRotation = suzanne->GetRotation1();
+                glm::vec3 currentRotation = suzanne->GetRotation();
                 glm::vec3 rotation = glm::vec3(0.0f, 0.0f, deltaY * 0.1f); // Rotate on Z
                 suzanne->SetRotationObj(currentRotation + rotation);
             }
@@ -355,81 +325,4 @@ void GameController::UpdateObjToMouse(double mX, double mY, GLFWwindow* window, 
     }
 }
 
-void GameController::UpdateScene(GLFWwindow* window, Mesh* New) {
-    static bool isMousePressed = false; // Tracks the mouse button state
-
-    // Update Suzanne and light positions
-    if (suzanne) suzanne->SetPosition({ 5, 5, 5 });
-    if (light) light->SetPosition({ 4, 4, 4 });
-
-    // Render the sphere
-    if (sphere) {
-        sphere->Render(camera.GetProjection() * camera.GetView());
-    }
-
-    // Check for left mouse button click
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        if (!isMousePressed) { // Only trigger on a fresh press
-            isMousePressed = true;
-
-            glm::vec3 randomOffset = glm::vec3(
-                glm::linearRand(-5.0f, 5.0f),
-                glm::linearRand(-5.0f, 5.0f),
-                glm::linearRand(-5.0f, 5.0f)
-            );
-
-            // Spawn a new cube
-            glm::vec3 cubePosition = sphere->GetPosition() + randomOffset;
-            newCube = new Mesh(); // Create a new cube instance
-            newCube->SetPosition(cubePosition);
-            cubes.push_back(newCube); // Add new cube to the list
-        }
-    }
-    else {
-        isMousePressed = false; // Reset when the button is released
-    }
-
-    // Update and render all cubes
-    auto it = cubes.begin();
-    while (it != cubes.end()) {
-        Mesh* cube = *it;
-
-        // Move the cube toward the sphere
-        glm::vec3 direction = glm::normalize(sphere->GetPosition() - cube->GetPosition());
-        glm::vec3 newPosition = cube->GetPosition() + direction * cubeSpeed * deltaTime;
-        cube->SetPosition(newPosition);
-        cube->Render(camera.GetProjection() * camera.GetView());
-
-        // Check if the cube reaches the sphere's center
-        if (glm::length(newPosition - sphere->GetPosition()) <= sphereRadius) {
-            delete cube;  // Clean up memory
-            it = cubes.erase(it); // Remove cube from the list
-        }
-        else {
-            ++it;
-        }
-    }
-
-    // Optional: Display the current number of cubes
-    std::cout << "Cubes remaining: " << cubes.size() << std::endl;
-}
-
-
-
-bool GameController::ResetObjPos() {
-    if (suzanne) {
-        suzanne->SetPosition({0,0,0}); 
-        suzanne->SetScalo({ 1,1,1 });
-        return clickO = false;
-    }
-}
-
-
-bool GameController::ResetLightPos() {
-    // Ensure the lastLightPosition has the correct values
-    if (light) {
-        light->SetPosition({0,0,4});
-        return clickL = false;
-    }
-}
 

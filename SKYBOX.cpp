@@ -2,8 +2,6 @@
 #include "Shader.h"
 #include "OBJ_Loader.h"
 
-
-
 SkyBox::~SkyBox()
 {
 	if (vertexBuffer != 0)
@@ -24,6 +22,7 @@ void SkyBox::Cleanup()
 void SkyBox::Create(Shader* _shader, std::string _file, std::vector<std::string> _faces)
 {
 	shader = _shader;
+
 	objl::Loader Loader;
 	M_ASSERT(Loader.LoadFile(_file) == true, "Failed to load mesh.");
 
