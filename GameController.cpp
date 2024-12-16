@@ -16,7 +16,7 @@ void GameController::Initialize() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+    glEnable(GL_CULL_FACE);
     srand(time(0));
 
     glGenVertexArrays(1, &vao);
@@ -40,10 +40,10 @@ void GameController::RunGame() {
     shaderDiffuse.LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
     shaderFont = Shader();
     shaderFont.LoadShaders("Font.vertexshader", "Font.fragmentshader");
-    shaderPixel = Shader();
-    //shaderPixel.LoadShaders("pixel.vertexShader", "pixel.fragmentshader");
     shaderPost = Shader();
     shaderPost.LoadShaders("pp.vertexshader", "pp.fragmentshader");
+    shaderSkyBox = Shader();
+    shaderSkyBox.LoadShaders("Skybox.vertexshader", "Skybox.fragmentshader");
 
 #pragma region Post processor
     pP = PostProcessor();
@@ -84,11 +84,22 @@ void GameController::RunGame() {
     fish->SetSpecularStrength(specularStrength);
     meshes.push_back(fish);
 
+    skybox = new SkyBox();
+    skybox->Create(&shaderSkyBox, "C:/Users/leana/source/repos/OpenGL/Assets/Models/SkyBox.obj",
+        {
+            "C:/Users/leana/source/repos/OpenGL/Textures/Skybox/right.jpg",
+            "C:/Users/leana/source/repos/OpenGL/Textures/Skybox/left.jpg",
+            "C:/Users/leana/source/repos/OpenGL/Textures/Skybox/top.jpg",
+            "C:/Users/leana/source/repos/OpenGL/Textures/Skybox/bottom.jpg",
+            "C:/Users/leana/source/repos/OpenGL/Textures/Skybox/front.jpg",
+            "C:/Users/leana/source/repos/OpenGL/Textures/Skybox/back.jpg"
+        });
+
     float currentTime = static_cast<float>(glfwGetTime());
-    // mesh->SetTime(currentTime);
+    //mesh->SetTime(currentTime);
 #pragma endregion
 
-    Font* arialFont = new Font();
+    arialFont = new Font();
     arialFont->Create(&shaderFont, "C:/Users/leana/source/repos/OpenGL/Assets/Fonts/arial.ttf", 48);
 
     // Initialize GameTime
@@ -110,30 +121,32 @@ void GameController::RunGame() {
         pP.Start();
 
         float currentTime = (float)glfwGetTime();
-
-        if (moveLight == true) {  // moveLight flag is set from the checkbox in MyForm
-            double mouseX, mouseY;
-            glfwGetCursorPos(win, &mouseX, &mouseY);  // Get mouse position
-            UpdateObjToMouse(mouseX, mouseY, win, light);  // Update light position based on mouse
-
-            std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
-            arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
-        }
-        if (Transform)
+        if (!waterScene && !space)
         {
-            double mouseX, mouseY;
-            glfwGetCursorPos(win, &mouseX, &mouseY);
-            UpdateObjToMouse(mouseX, mouseY, win, suzanne);  // Update light position based on mouse
+            camera.LookAt({ 0, 0, 5 }, { 0, 0, 0 }, { 0, 1, 0 });
+            
+            if (moveLight == true) {  // moveLight flag is set from the checkbox in MyForm
+                double mouseX, mouseY;
+                glfwGetCursorPos(win, &mouseX, &mouseY);  // Get mouse position
+                UpdateObjToMouse(mouseX, mouseY, win, light);  // Update light position based on mouse
 
-            std::string mousePositionText = "Mouse Position: (" + std::to_string(mouseX) + ", " + std::to_string(mouseY) + ")";
-            arialFont->RenderText(mousePositionText, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
+                textRender(arialFont, suzanne, mouseX, mouseY, win);
+            }
+            if (Transform)
+            {
+                double mouseX, mouseY;
+                glfwGetCursorPos(win, &mouseX, &mouseY);
+                UpdateObjToMouse(mouseX, mouseY, win, suzanne);  // Update light position based on mouse
 
+                textRender(arialFont, suzanne, mouseX, mouseY, win);
+            }
         }
+        
         if (waterScene)
         {
-            // Update Suzanne and light positions
-            if (suzanne) suzanne->SetPosition({ 5, 5, 5 });
-            if (light) light->SetPosition({ 4, 4, 4 });
+            light->SetPosition({ 500, 500, 500 });
+            suzanne->SetPosition({ 500, 500, 500 });
+
             camera.LookAt({ 0, 0, 50 }, { 0, 0, 0 }, { 0, 1, 0 }); // Camera at {0, 0, 5}
 
             glm::vec3 rotationSpeed = { 0,1,0 };
@@ -141,14 +154,25 @@ void GameController::RunGame() {
             {
                 fish->Render(camera.GetProjection() * camera.GetView());
             }
+            
 
         }
         if (space) {
+            camera.LookAt({ 0, 0, 20 }, { 0, 0, 0 }, { 0, 1, 0 });
 
+
+            light->SetPosition({0,0,0});
+            suzanne->SetPosition(lastObjPosition);
+
+            camera.Rotate();
+            glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
+            skybox->Render(camera.GetProjection() * view);
         }
         else {
             // Normal rendering mode, use the default shader
-            glUseProgram(shaderDiffuse.GetProgramID());  // Use the default diffuse shader for regular rendering
+            glUseProgram(shaderDiffuse.GetProgramID()); 
+            camera.LookAt({ 0, 0, 5 }, { 0, 0, 0 }, { 0, 1, 0 }); 
+
         }
         
         if (UpdatedRed || UpdatedGreen || UpdatedBlue) {
@@ -325,4 +349,41 @@ void GameController::UpdateObjToMouse(double mX, double mY, GLFWwindow* window, 
     }
 }
 
+void GameController::textRender(Font* arialFont, Mesh* suzanne, double mouseX, double mouseY, GLFWwindow* win)
+{
+    // Display FPS or Game State information
+    std::string fpsText = "Final Project";
+    std::string fpsValue = std::to_string((int)(1.0f / GameTime::GetInstance().DeltaTime())); // Calculated FPS
+    std::string mousePosText = "Mouse Pos: " + std::to_string(mouseX) + " " + std::to_string(mouseY);
+    std::string leftButtonStatus = "Left Button: " + std::string(glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS ? "Down" : "Up");
+    std::string middleButtonStatus = "Middle Button: " + std::string(glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS ? "Down" : "Up");
 
+    std::string fighterPosition = "Fighter Position: {" +
+        std::to_string(suzanne->GetPosition().x) + " " +
+        std::to_string(suzanne->GetPosition().y) + " " +
+        std::to_string(suzanne->GetPosition().z) + "}";
+
+    std::string fighterRotation = "Fighter Rotation: {" +
+        std::to_string(suzanne->GetRotation().x) + " " +
+        std::to_string(suzanne->GetRotation().y) + " " +
+        std::to_string(suzanne->GetRotation().z) + "}";
+
+    std::string fighterScale = "Fighter Scale: {" +
+        std::to_string(suzanne->GetScale().x) + " " +
+        std::to_string(suzanne->GetScale().y) + " " +
+        std::to_string(suzanne->GetScale().z) + "}";
+
+    // Render all the information to the top-left of the screen
+    float scale = 0.5f;
+    glm::vec3 color = { 1.0f, 1.0f, 0.0f }; // Yellow color
+
+    arialFont->RenderText(fpsText, 10, 580, scale, color);
+    arialFont->RenderText(fpsValue, 10, 550, scale, color);
+    arialFont->RenderText(mousePosText, 10, 520, scale, color);
+    arialFont->RenderText(leftButtonStatus, 10, 490, scale, color);
+    arialFont->RenderText(middleButtonStatus, 10, 460, scale, color);
+    arialFont->RenderText(fighterPosition, 10, 430, scale, color);
+    arialFont->RenderText(fighterRotation, 10, 400, scale, color);
+    arialFont->RenderText(fighterScale, 10, 370, scale, color);
+
+}

@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "SKYBOX.h"
 #include "Camera.h"
+#include "Font.h"
 #include "PostProcessor.h"
 #include "StandardInclude.h"
 
@@ -32,6 +33,7 @@ public:
 	float Getf() { return frequency; }
 	float setA(float a) { return amplitude = a; }
 	float GetA() { return amplitude; }
+	void textRender(Font* arialFont, Mesh* suzanne, double mouseX, double mouseY, GLFWwindow* win);
 
 	std::vector<Mesh*>& GetLights() { return lights; }
 	const Camera& GetCamera() { return camera; }
@@ -93,6 +95,7 @@ private:
 	Mesh* cube;
 	Mesh* sphere;
 	Mesh* newCube;
+	Font* arialFont;
 	
 	glm::vec3 lastLightPosition;
 	glm::vec3 lastObjPosition;
