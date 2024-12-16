@@ -44,8 +44,12 @@ public:
 	GLuint GetAttrROP() {
 		return setObjPos;
 	}
-	GLuint GetAttrMC() {
-		return moveCube;
+	GLuint GetAttrWire() {
+		return wireframe;
+	}
+	GLuint GetTint()
+	{
+		return tint;
 	}
 
 	// Methods
@@ -86,6 +90,8 @@ private:
 	GLuint frequency = 0;
 	GLuint amplitude = 0;
 	GLuint time = 0;
+	GLuint wireframe = 0;
+	GLuint tint = 0;
 	GLuint answer = 0;
 
 	GLint result = GL_FALSE;

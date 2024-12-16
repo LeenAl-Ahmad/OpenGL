@@ -212,8 +212,8 @@ void Mesh::Render(glm::mat4 _pv) {
 	CalculateTransform();
 
 	glUseProgram(shader->GetProgramID());
-	
-	
+
+
 	SetShaderVariable(_pv);
 
 	BindAttributes();
@@ -236,13 +236,13 @@ void Mesh::Render(glm::mat4 _pv) {
 	if (enableInstancing)
 	{
 		glDisableVertexAttribArray(shader->GetAttrInstanceMatrix());
-		glDisableVertexAttribArray(shader->GetAttrInstanceMatrix()+1);
-		glDisableVertexAttribArray(shader->GetAttrInstanceMatrix()+2);
-		glDisableVertexAttribArray(shader->GetAttrInstanceMatrix()+3);
+		glDisableVertexAttribArray(shader->GetAttrInstanceMatrix() + 1);
+		glDisableVertexAttribArray(shader->GetAttrInstanceMatrix() + 2);
+		glDisableVertexAttribArray(shader->GetAttrInstanceMatrix() + 3);
 	}
 
 #pragma region Tools
-	
+
 	glUniform1i(shader->GetAttrSPS(), specularStrength);
 	glUniform1i(shader->GetTracKBarR(), red);
 	glUniform1i(shader->GetTracKBarG(), green);
@@ -251,7 +251,8 @@ void Mesh::Render(glm::mat4 _pv) {
 	glUniform1f(shader->GetAttrAmplitude(), amplitude);
 	glUniform1f(shader->GetAttrTime(), time);
 	glUniform1f(shader->GetIfTrue(), answer);
-
+	glUniform1f(shader->GetAttrWire(), WireFrame);
+	glUniform1f(shader->GetTint(), Tint);
 }
 
 void Mesh::SetRotation(float rotationX, float rotationY) {
@@ -284,13 +285,15 @@ void Mesh::SetShaderVariable(glm::mat4 _pv)
 	shader->SetFloat("Amplitude", amplitude);
 	shader->SetFloat("Time", time);
 	shader->SetBool("answer", answer);
+	shader->SetBool("wireFrame", WireFrame);
+	shader->SetBool("UseTint", Tint);
 
 	std::vector<Mesh*>& lights = GameController::GetInstance().GetLights();
 	for (int i = 0; i < lights.size(); i++)
 	{
 		shader->SetVec3(Concat("light[", i,"].ambientColor").c_str(), {0.1f, 0.1f, 0.1f});
 		shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), lights[i]->GetColor());
-		shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), { 3.0f, 3.0f, 3.0f });
+		shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), { 3, 3, 3});
 
 
 		shader->SetVec3(Concat("light[", i, "].position").c_str(), lights[i]->GetPosition());

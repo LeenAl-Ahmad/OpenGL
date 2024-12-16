@@ -68,6 +68,8 @@ public:
 	float frequency = 0.0f;
 	float amplitude = 0.0f;
 	float time = 0;
+	bool WireFrame = false;
+	bool Tint = false;
 	void SetTime(float newTime) { time = newTime; }
 	float GetTime() const { return time; }
 	bool answer = false;

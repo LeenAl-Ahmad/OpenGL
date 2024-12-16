@@ -33,6 +33,8 @@ void Shader::LoadAttributes()
 	frequency = glGetUniformLocation(programID, "Frequency");
 	amplitude = glGetUniformLocation(programID, "Amplitude");
 	time = glGetUniformLocation(programID, "Time");
+	wireframe = glGetUniformLocation(programID, "wireFrame");
+	tint = glGetUniformLocation(programID, "UseTint");
 	answer = glGetUniformLocation(programID, "answer");
 }
 

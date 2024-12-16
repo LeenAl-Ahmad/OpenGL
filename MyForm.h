@@ -509,24 +509,22 @@ private: System::Void resetObj_Click(System::Object^ sender, System::EventArgs^ 
 	GameController::GetInstance().clickT = clickedO;
 }
 private: System::Void redtrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
-	float redBar = redtrackBar->Value;
-	// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
-	float val = redBar / 100.0f;
+	float redBar = redtrackBar->Value; // Map to range 0.0 - 3
 
 	// Check if the new value differs from the previous value
-	if (GameController::GetInstance().GetR() != val) {
+	if (GameController::GetInstance().GetR() != redBar) {
 		// Update the GameController and set UpdatedRed to true
-		GameController::GetInstance().SetR(val);
+		GameController::GetInstance().SetR(redBar);
 		GameController::GetInstance().UpdatedRed = true;
 	}
 
 	// Update the text label
-	textBox1->Text = val.ToString("F2");
+	textBox1->Text = redBar.ToString("F2");
 }
 private: System::Void greentrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	float greenBar = greentrackBar->Value;
 	// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
-	float val = greenBar / 100.0f;
+	float val = greenBar;
 
 	// Check if the new value differs from the previous value
 	if (GameController::GetInstance().GetG() != val) {
@@ -541,7 +539,7 @@ private: System::Void greentrackBar_Scroll(System::Object^ sender, System::Event
 private: System::Void bluetrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 		float blueBar = bluetrackBar->Value;
 		// Map the trackbar value (0 - 300) to the specular color component (0.00 - 3.00)
-		float val = blueBar / 100.0f;
+		float val = blueBar;
 
 		// Check if the new value differs from the previous value
 		if (GameController::GetInstance().GetB() != val) {

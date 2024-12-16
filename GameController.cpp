@@ -167,12 +167,20 @@ void GameController::RunGame() {
             {
                 fish->Render(camera.GetProjection() * camera.GetView());
             }
-            
+            if (wireFrame)
+            {
+                glLineWidth(0.5f);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                wireFrame = false;
+            }
 
         }
         if (space) {
+            
             camera.LookAt({ 0, 0, 20 }, { 0, 0, 0 }, { 0, 1, 0 });
 
+            double mouseX, mouseY;
+            glfwGetCursorPos(win, &mouseX, &mouseY);
 
             light->SetPosition({0,0,0});
             suzanne->SetPosition(lastObjPosition);
@@ -180,6 +188,21 @@ void GameController::RunGame() {
             camera.Rotate();
             glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
             skybox->Render(camera.GetProjection() * view);
+
+            std::srand(static_cast<unsigned int>(std::time(0)));  // Initialize random seed using current time
+            // Random number for range [-100, -10]
+            float r1 = -100.0f + static_cast<float>(std::rand()) / (static_cast<float>(RAND_MAX / (90.0f)));  // Range [-100, -10]
+
+            // Random number for range [10, 100]
+            float r2 = 10.0f + static_cast<float>(std::rand()) / (static_cast<float>(RAND_MAX / (90.0f)));  // Range [10, 100]
+
+            for (int i = 0; i < 100; i++) {
+               
+                // Apply random positions to the fish
+                fish->SetScalo({ 0.5, 0.5, 0.5 });
+                fish->SetPosition({ r1, r2, r2 });  // Just an example of setting different positions for each axis
+                
+            }
         }
         else {
             // Normal rendering mode, use the default shader
@@ -228,6 +251,7 @@ void GameController::RunGame() {
         glfwPollEvents();
 
     } while (glfwGetKey(win, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(win) == 0);
+    
     pP.Cleanup();
     // Cleanup
     for (auto light : lights) {

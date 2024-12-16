@@ -2,12 +2,9 @@
 
 out vec4 FragColor;
 
-uniform float red;   // Red channel
-uniform float green; // Green channel
-uniform float blue;  // Blue channel
 
 void main()
 {
-    // Combine red, green, and blue into the final color
-    FragColor = vec4(red*2, green*2, blue*2, 1.0);
+    
+    FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }

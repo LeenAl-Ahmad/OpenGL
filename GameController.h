@@ -33,6 +33,10 @@ public:
 	float Getf() { return frequency; }
 	float setA(float a) { return amplitude = a; }
 	float GetA() { return amplitude; }
+	bool SetW(bool w) { wireFrame = w; }
+	bool GetW() { return wireFrame; }
+	bool SetT(bool t) { tint = t; }
+	bool getTint() { return tint; }
 	void textRender(Font* arialFont, Mesh* suzanne, double mouseX, double mouseY, GLFWwindow* win);
 
 	std::vector<Mesh*>& GetLights() { return lights; }

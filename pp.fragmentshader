@@ -9,12 +9,20 @@ uniform bool answer;              // Flag to enable water scene effects
 uniform float Frequency;          // Frequency of the sine wave
 uniform float Amplitude;          // Amplitude of the sine wave
 uniform float Time;               // Game time passed from the application
-uniform vec3 WaterColor;          // Color tint for the water effect
+uniform vec3 WaterColor;
+uniform bool wireFrame;
 
 void main()
 {
-    vec2 distortedTexCoords = retTexCoords;          // Default texture coordinates
+    vec2 distortedTexCoords = retTexCoords; // Default texture coordinates
     vec3 col = texture(screenTexture, retTexCoords).rgb; // Default texture color
+
+    // Early exit for wireframe mode
+    if (wireFrame)
+    {
+        FragColor = vec4(1, 1, 1, 1); // For wireframe, render in white
+        return; // Exit early to avoid further processing
+    }
 
     if (answer)  // If WaterScene is enabled
     {
@@ -23,12 +31,13 @@ void main()
         distortedTexCoords += vec2(ripple, ripple * 0.5); // Apply ripple distortion
         col = texture(screenTexture, distortedTexCoords).rgb; // Sample distorted texture color
 
-        // Apply water tint if enabled
         if (UseTint)
         {
-            col = mix(col, WaterColor, 0.3); // Mix original color with water tint
+            col.r = col.r / 2.0;  // Halve the red channel
+            col.g = col.g / 2.0;  // Halve the green channel
         }
     }
 
-    FragColor = vec4(col, 1.0); // Output the final color
+    // Final color output (either default or modified by water effects)
+    FragColor = vec4(col, 1.0);
 }

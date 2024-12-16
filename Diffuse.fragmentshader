@@ -19,7 +19,8 @@ struct Light {
     vec3 ambientColor;                 // Ambient color
     vec3 diffuseColor;                 // Diffuse color
     vec3 specularColor;                // Specular color
-    float specularStrength;            // Light's specular strength
+    float specularStrength;  
+    
 };
 
 uniform Material material;            // Material properties
