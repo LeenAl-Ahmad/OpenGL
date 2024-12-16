@@ -500,6 +500,7 @@ bool Mesh::EndsWith(const std::string& _str, const std::string& _suffix)
 bool Mesh::ResetObjPos(Mesh* obj) {
 	if (obj) {
 		obj->SetPosition({ 0,0,0 });
+		obj->SetRotation({0,0,0});
 		obj->SetScalo({ 1,1,1 });
 		return false;
 	}

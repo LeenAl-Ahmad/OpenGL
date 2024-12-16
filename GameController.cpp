@@ -131,6 +131,12 @@ void GameController::RunGame() {
                 UpdateObjToMouse(mouseX, mouseY, win, light);  // Update light position based on mouse
 
                 textRender(arialFont, suzanne, mouseX, mouseY, win);
+
+                if (clickL)
+                {
+                    light->ResetLightPos(light);
+                    clickL = false;
+                }
             }
             if (Transform)
             {
@@ -139,7 +145,14 @@ void GameController::RunGame() {
                 UpdateObjToMouse(mouseX, mouseY, win, suzanne);  // Update light position based on mouse
 
                 textRender(arialFont, suzanne, mouseX, mouseY, win);
+
+                if (clickT)
+                {
+                    suzanne->ResetObjPos(suzanne);
+                    clickT = false;
+                }
             }
+            
         }
         
         if (waterScene)
@@ -189,15 +202,6 @@ void GameController::RunGame() {
             }
             
         }
-        if (clickL)
-        {
-            light->ResetLightPos(light);
-        }
-        if (clickT)
-        {
-            suzanne->ResetObjPos(suzanne);
-        }
-        
 
         // Continuous rotation for objects
         glm::vec3 rotationspeed  { 0.0f, 5.0f, 0.0f };
